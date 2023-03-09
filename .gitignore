@@ -3,3 +3,7 @@ _build
 content.html
 
 /.quarto/
+
+_extensions/
+
+content_files/

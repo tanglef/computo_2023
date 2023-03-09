@@ -1,35 +1,935 @@
-@article{computo,
-  title = {Computo: reproducible computational/algorithmic contributions in statistics and machine learning},
-  author = {{Computo Team}},
-  year = {2021},
-  journal = {computo}
+@STRING{OPTTHEORY = {J. Optim. Theory. App.}}
+@STRING{SIAMOPT = {SIAM J. Optim.}}
+@STRING{SIIMS = {SIAM J. Imaging Sci.}}
+@STRING{ACHA = {Appl. Comput. Harmon. Anal.}}
+@STRING{SS = {Statist. Sci.}}
+@STRING{JSS = {J. Stat. Softw.}}
+@STRING{PTRF = {Probab. Theory Related Fields}}
+@STRING{NEURIPS = {NeurIPS}}
+@STRING{NIPS = {NeurIPS}}
+@STRING{MMS = {Math. Methods Statist.}}
+@STRING{JRSSC = {J. R. Stat. Soc. Ser. C. Appl. Stat.}}
+@STRING{JRSSB = {J. R. Stat. Soc. Ser. B Stat. Methodol.}}
+@STRING{JMLR = {J. Mach. Learn. Res.}}
+@STRING{JMIV = {J. Math. Imaging Vis.}}
+@STRING{JASA = {J. Amer. Statist. Assoc.}}
+@STRING{IJCV = {Int. J. Comput. Vision}}
+@STRING{EJS = {Electron. J. Stat.}}
+@string{IEEE_J_TAC = {IEEE Trans. Autom. Control}}
+@STRING{IEEE_J_TSPL = {{IEEE} Trans. Signal Process. Lett.}}
+@STRING{IEEE_J_TSP = {{IEEE} Trans. Signal Process.}}
+@STRING{IEEE_J_MI = {{IEEE} Trans. Med. Imag.}}
+@STRING{IEEE_J_IT = {{IEEE} Trans. Inf. Theory}}
+@STRING{IEEE_J_IP = {{IEEE} Trans. Image Process.}}
+@STRING{IEEE_J_GRS = {{IEEE} Trans. Geosci. Remote Sens.}}
+@STRING{IEEE_J_PAMI = {{IEEE} Trans. Pattern Anal. Mach. Intell.}}
+@STRING{ICIKM = {ICIKM}}
+@STRING{ICLR = {ICLR}}
+@STRING{ICML = {ICML}}
+@STRING{ICASSP = {ICASSP}}
+@STRING{ICIP = {ICIP}}
+@STRING{ICCV = {ICCV}}
+@STRING{IJCAI = {IJCAI}}
+@STRING{CVPR = {CVPR}}
+@STRING{COLT = {COLT}}
+@STRING{AAS = {Ann. Appl. Stat.}}
+@STRING{AOS = {Ann. Statist.}}
+@STRING{AISTATS = {AISTATS}}
+% double names shortcuts
+% Beware such shortcuts might conflict with beamer + biber
+@preamble{ {\providecommand{\AC}{{A.-C}}} }
+@preamble{ {\providecommand{\AM}{{A.-M}}} }
+@preamble{ {\providecommand{\CA}{{C.-A}}} }
+@preamble{ {\providecommand{\CH}{{C.-H}}} }
+@preamble{ {\providecommand{\CC}{{C.-C}}} }
+@preamble{ {\providecommand{\CJ}{{C.-J}}} }
+@preamble{ {\providecommand{\CN}{{C.-N}}} }
+@preamble{ {\providecommand{\CP}{{C.-P}}} }
+@preamble{ {\providecommand{\DY}{{D.-Y}}} }
+@preamble{ {\providecommand{\HJ}{{H.-J}}} }
+@preamble{ {\providecommand{\HG}{{H.-G}}} }
+@preamble{ {\providecommand{\HT}{{H.-T}}} }
+@preamble{ {\providecommand{\HY}{{H.-Y}}} }
+@preamble{ {\providecommand{\JA}{{J.-A}}} }
+@preamble{ {\providecommand{\JB}{{J.-B}}} }
+@preamble{ {\providecommand{\JC}{{J.-C}}} }
+@preamble{ {\providecommand{\JF}{{J.-F}}} }
+@preamble{ {\providecommand{\JJ}{{J.-J}}} }
+@preamble{ {\providecommand{\JL}{{J.-L}}} }
+@preamble{ {\providecommand{\JM}{{J.-M}}} }
+@preamble{ {\providecommand{\JP}{{J.-P}}} }
+@preamble{ {\providecommand{\JS}{{J.-S}}} }
+@preamble{ {\providecommand{\JY}{{J.-Y}}} }
+@preamble{ {\providecommand{\KC}{{K.-C}}} }
+@preamble{ {\providecommand{\KR}{{K.-R}}} }
+@preamble{ {\providecommand{\KW}{{K.-W}}} }
+@preamble{ {\providecommand{\LJ}{{L.-J}}} }
+@preamble{ {\providecommand{\MR}{{M.-R}}} }
+@preamble{ {\providecommand{\PL}{{P.-L}}} }
+@preamble{ {\providecommand{\RE}{{R.-E}}} }
+@preamble{ {\providecommand{\SJ}{{S.-J}}} }
+@preamble{ {\providecommand{\TB}{{T.-B}}} }
+@preamble{ {\providecommand{\XR}{{X.-R}}} }
+@preamble{ {\providecommand{\WX}{{W.-X}}} }
+@preamble{ {\providecommand{\YX}{{Y.-X}}} }
+
+@inproceedings{Angelova_AbuMostafa_Perona05,
+  author    = {Angelova, Anelia and
+               Abu{-}Mostafa, Yaser S. and
+               Perona, Pietro},
+  booktitle = CVPR,
+  number    = {},
+  pages     = {494-501 vol. 1},
+  title     = {Pruning training sets for learning of object categories},
+  volume    = {1},
+  year      = {2005}
 }
 
-@Manual{R-base,
-  title = {R: A Language and Environment for Statistical Computing},
-  author = {{R Core Team}},
-  organization = {R Foundation for Statistical Computing},
-  address = {Vienna, Austria},
-  year = {2020},
-  url = {https://www.R-project.org/},
+@article{ada_pruning,
+  author     = {Ravi S. Raju and
+                Kyle Daruwalla and
+                Mikko H. Lipasti},
+  eprint     = {2111.12621},
+  eprinttype = {arXiv},
+  journal    = {CoRR},
+  timestamp  = {Fri, 26 Nov 2021 13:48:43 +0100},
+  title      = {Accelerating Deep Learning with Dynamic Data Pruning},
+  volume     = {abs/2111.12621},
+  year       = {2021}
 }
 
-@Manual{R-reticulate,
-  title = {reticulate: Interface to Python},
-  author = {Kevin Ushey and JJ Allaire and Yuan Tang},
-  year = {2020},
-  note = {R package version 1.18},
-  url = {https://github.com/rstudio/reticulate},
+@inproceedings{aitchison2020statistical,
+  author    = {Aitchison, Laurence},
+  booktitle = {ICLR},
+  journal   = {arXiv preprint arXiv:2008.05912},
+  title     = {A statistical theory of cold posteriors in deep neural networks},
+  year      = {2021}
 }
 
-@article{perez2011python,
-    title	= {Python: an ecosystem for scientific computing},
-    author	= {Perez, Fernando and Granger, Brian E and Hunter, John D},
-    journal	= {Computing in Science \\& Engineering},
-    volume	= {13},
-    number	= {2},
-    pages	= {13--21},
-    year	= {2011},
-    publisher	= {AIP Publishing}
+
+@article{albert2012combining,
+  author    = {Albert, Isabelle and Donnet, Sophie and Guihenneuc-Jouyaux, Chantal and Low-Choy, Samantha and Mengersen, Kerrie and Rousseau, Judith},
+  journal   = {Bayesian Analysis},
+  number    = {3},
+  pages     = {503--532},
+  publisher = {International Society for Bayesian Analysis},
+  title     = {Combining expert opinions in prior elicitation},
+  volume    = {7},
+  year      = {2012}
+}
+
+
+@article{birnbaum1968some,
+  author    = {Birnbaum, A Lord},
+  journal   = {Statistical theories of mental test scores},
+  publisher = {Addison-Wesley},
+  title     = {Some latent trait models and their use in inferring an examinee's ability},
+  year      = {1968}
+}
+
+
+@inproceedings{camilleri2019extended,
+  author       = {Camilleri, Michael PJ and Williams, Christopher KI},
+  booktitle    = {Joint European Conference on Machine Learning and Knowledge Discovery in Databases},
+  organization = {Springer},
+  pages        = {121--136},
+  title        = {The extended {Dawid-Skene} model},
+  year         = {2019}
+}
+
+@article{dawid_maximum_1979,
+  author  = {Dawid, AP and Skene, AM},
+  journal = JRSSC,
+  number  = {1},
+  pages   = {20--28},
+  title   = {Maximum Likelihood Estimation of Observer Error-Rates Using the {EM} Algorithm},
+  urldate = {2021-10-10},
+  volume  = {28},
+  year    = {1979}
+}
+
+@inproceedings{imagenet_cvpr09,
+  author    = {Deng, J. and Dong, W. and Socher, R. and Li, L.-J. and Li, K. and Fei-Fei, L.},
+  booktitle = CVPR,
+  title     = {ImageNet: A Large-Scale Hierarchical Image Database},
+  year      = {2009}
+}
+
+@inproceedings{draws2021checklist,
+  author    = {Draws, Tim and Rieger, Alisa and Inel, Oana and Gadiraju, Ujwal and Tintarev, Nava},
+  booktitle = {AAAI Conference on Human Computation and Crowdsourcing},
+  pages     = {48--59},
+  title     = {A checklist to combat cognitive biases in crowdsourcing},
+  volume    = {9},
+  year      = {2021}
+}
+
+@article{gao2013minimax,
+  author  = {Gao, Chao and Zhou, Dengyong},
+  journal = {arXiv preprint arXiv:1310.5764},
+  title   = {Minimax optimal convergence rates for estimating ground truth from crowdsourced labels},
+  year    = {2013}
+}
+
+@inproceedings{Garcin_Joly_Bonnet_Affouard_Lombardo_Chouet_Servajean_Lorieul_Salmon2021,
+  author    = {Garcin, C. and Joly, A. and Bonnet, P. and Affouard, A. and Lombardo, J.-C. and Chouet, M. and Servajean, M. and Lorieul, T. and Salmon, J.},
+  booktitle = {Proceedings of the Neural Information Processing Systems Track on Datasets and Benchmarks},
+  pdf       = {https://datasets-benchmarks-proceedings.neurips.cc/paper/2021/file/7e7757b1e12abcb736ab9a754ffb617a-Paper-round2.pdf},
+  title     = {Pl@ntNet-300K: a plant image dataset with high label ambiguity and a long-tailed distribution},
+  year      = {2021}
+}
+
+
+@inproceedings{Garcin_Servajean_Joly_Salmon22,
+  author    = {Garcin, C. and Servajean, M. and Joly, A. and Salmon, J.},
+  booktitle = {ICML},
+  pdf       = {https://arxiv.org/pdf/2202.02193.pdf},
+  title     = {Stochastic smoothing of the top-K calibrated hinge loss for deep imbalanced classification},
+  year      = {2022}
+}
+
+@article{Dempster_Laird_Rubin77,
+  author    = {Dempster, Arthur P and Laird, Nan M and Rubin, Donald B},
+  journal   = JRSSB,
+  number    = {1},
+  pages     = {1--22},
+  publisher = {Wiley Online Library},
+  title     = {Maximum likelihood from incomplete data via the EM algorithm},
+  volume    = {39},
+  year      = {1977}
+}
+
+@article{germain2015risk,
+  author  = {Germain, Pascal and Lacasse, Alexandre and Laviolette, Francois and Marchand, Mario and Roy, Jean-Francis},
+  journal = {J. Mach. Learn. Res.},
+  pages   = {787--860},
+  title   = {Risk bounds for the majority vote: from a PAC-Bayesian analysis to
+             a learning algorithm},
+  volume  = {16},
+  year    = {2015}
+}
+
+@inproceedings{guo_calibration_2017,
+  author    = {Guo, C and Pleiss, G and Sun, Y and Weinberger, KQ},
+  booktitle = ICML,
+  pages     = {1321},
+  title     = {On calibration of modern neural networks},
+  year      = {2017}
+}
+
+@inproceedings{han2019deep,
+  author    = {Han, Jiangfan and Luo, Ping and Wang, Xiaogang},
+  booktitle = ICCV,
+  pages     = {5138--5147},
+  title     = {Deep self-learning from noisy labels},
+  year      = {2019}
+}
+
+@inproceedings{harutyunyan2020improving,
+  author    = {Harutyunyan, Hrayr and Reing, Kyle and Ver Steeg, Greg and Galstyan, Aram},
+  booktitle = ICML,
+  pages     = {4071--4081},
+  title     = {Improving generalization by controlling label-noise information in neural network weights},
+  year      = {2020}
+}
+
+@inproceedings{he2016deep,
+  author    = {He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  booktitle = CVPR,
+  pages     = {770--778},
+  title     = {Deep residual learning for image recognition},
+  year      = {2016}
+}
+
+@article{hoang2021tournesol,
+  author  = {Hoang, L{\^{e}}{-}Nguy{\^{e}}n and
+             Faucon, Louis and
+             Jungo, Aidan and
+             Volodin, Sergei and
+             Papuc, Dalia and
+             Liossatos, Orfeas and
+             Crulis, Ben and
+             Tighanimine, Mariame and
+             Constantin, Isabela and
+             Kucherenko, Anastasiia and
+             Maurer, Alexandre  and
+             Grimberg, Felix  and
+             Nitu, Vlad  and
+             Vossen, Chris and
+             Rouault, S{\'{e}}bastien and
+             El{-}Mhamdi, El{-}Mahdi},
+  journal = {arXiv preprint arXiv:2107.07334},
+  title   = {Tournesol: A quest for a large, secure and trustworthy database of reliable human judgments},
+  year    = {2021}
+}
+@article{ibrahim2019crowdsourcing,
+  author  = {Ibrahim, Shahana and Fu, Xiao and Kargas, Nikolaos and Huang, Kejun},
+  journal = {Advances in neural information processing systems},
+  title   = {Crowdsourcing via pairwise co-occurrences: Identifiability and algorithms},
+  volume  = {32},
+  year    = {2019}
+}
+@article{ILSVRC15,
+  author  = {Russakovsky, Olga and Deng, Jia and Su, Hao and Krause, Jonathan and Satheesh, Sanjeev and Ma, Sean and Huang, Zhiheng and Karpathy, Andrej and Khosla, Aditya and Bernstein, Michael and Berg, Alexander C. and Fei-Fei, Li},
+  doi     = {10.1007/s11263-015-0816-y},
+  journal = IJCV,
+  number  = {3},
+  pages   = {211-252},
+  title   = {{ImageNet Large Scale Visual Recognition Challenge}},
+  volume  = {115},
+  year    = {2015}
+}
+
+@inproceedings{imamura2018analysis,
+  author    = {Imamura, Hideaki and Sato, Issei and Sugiyama, Masashi},
+  booktitle = ICML,
+  pages     = {2147--2156},
+  title     = {Analysis of minimax error rate for crowdsourcing and its application to worker clustering model},
+  year      = {2018}
+}
+
+@phdthesis{james1998majority,
+  author = {James, Gareth Michael},
+  school = {Stanford University},
+  title  = {Majority vote classifiers: theory and applications},
+  year   = {1998}
+}
+
+@inproceedings{jamison2015noise,
+  author    = {Jamison, Emily and Gurevych, Iryna},
+  booktitle = {Conference on Empirical Methods in Natural Language Processing},
+  pages     = {291--297},
+  title     = {Noise or additional information? Leveraging crowdsource annotation item agreement for natural language tasks.},
+  year      = {2015}
+}
+
+@article{jiang2012calibrating,
+  author    = {Jiang, Xiaoqian and Osl, Melanie and Kim, Jihoon and Ohno-Machado, Lucila},
+  journal   = {J. Am. Med. Inform. Assoc.},
+  number    = {2},
+  pages     = {263--274},
+  publisher = {BMJ Group},
+  title     = {Calibrating predictive model estimates to support personalized medicine},
+  volume    = {19},
+  year      = {2012}
+}
+
+@article{ju2018relative,
+  author    = {Ju, Cheng and Bibaut, Aur{\'e}lien and van der Laan, Mark},
+  journal   = {J. Appl. Stat.},
+  number    = {15},
+  pages     = {2800--2818},
+  publisher = {Taylor \& Francis},
+  title     = {The relative performance of ensemble methods with deep convolutional neural networks for image classification},
+  volume    = {45},
+  year      = {2018}
+}
+
+@inproceedings{kamar2015identifying,
+  author    = {Kamar, Ece and Kapoor, Ashish and Horvitz, Eric},
+  booktitle = {Third AAAI Conference on Human Computation and Crowdsourcing},
+  title     = {Identifying and accounting for task-dependent bias in crowdsourcing},
+  year      = {2015}
+}
+
+@phdthesis{khattak_toward_2017,
+  author = {Khattak, Faiza Khan},
+  school = {Columbia University},
+  title  = {Toward a Robust and Universal Crowd Labeling Framework},
+  year   = {2017}
+}
+
+@techreport{krizhevsky2009learning,
+  author      = {Krizhevsky, Alex and Hinton, Geoffrey},
+  institution = {University of Toronto},
+  title       = {Learning multiple layers of features from tiny images},
+  year        = {2009}
+}
+
+@inproceedings{kumar2019verified,
+  author    = {Kumar, Ananya and Liang, Percy S and Ma, Tengyu},
+  booktitle = NeurIPS,
+  title     = {Verified uncertainty calibration},
+  volume    = {32},
+  year      = {2019}
+}
+
+@inproceedings{lapin2016loss,
+  author    = {Lapin, Maksim and Hein, Matthias and Schiele, Bernt},
+  booktitle = CVPR,
+  pages     = {1468--1477},
+  title     = {Loss functions for top-k error: Analysis and insights},
+  year      = {2016}
+}
+
+@article{lecun1998gradient,
+  author    = {LeCun, Yann and Bottou, L{\'e}on and Bengio, Yoshua and Haffner, Patrick},
+  journal   = {Proceedings of the IEEE},
+  number    = {11},
+  pages     = {2278--2324},
+  publisher = {Ieee},
+  title     = {Gradient-based learning applied to document recognition},
+  volume    = {86},
+  year      = {1998}
+}
+  organization = {PMLR},
+
+@inproceedings{lee2018cleannet,
+  author    = {Lee, Kuang-Huei and He, Xiaodong and Zhang, Lei and Yang, Linjun},
+  booktitle = {Proceedings of the IEEE conference on computer vision and pattern recognition},
+  pages     = {5447--5456},
+  title     = {Cleannet: Transfer learning for scalable image classifier training with label noise},
+  year      = {2018}
+}
+
+@inproceedings{li2017does,
+  author    = {Li, Qunwei and Varshney, Pramod K},
+  booktitle = {International Workshop on Social Sensing},
+  pages     = {49--54},
+  title     = {Does confidence reporting from the crowd benefit crowdsourcing performance?},
+  year      = {2017}
+}
+
+@inproceedings{ma2020adversarial,
+  author    = {Ma, Qianqian and Olshevsky, Alex},
+  booktitle = NeurIPS,
+  pages     = {21841--21852},
+  title     = {Adversarial crowdsourcing through robust rank-one matrix completion},
+  volume    = {33},
+  year      = {2020}
+}
+
+@article{ma2020gradient,
+  author    = {Ma, Yao and Olshevsky, Alex and Saligrama, Venkatesh and Szepesvari, Csaba},
+  journal   = JMLR,
+  number    = {1},
+  pages     = {5245--5280},
+  publisher = {JMLRORG},
+  title     = {Gradient descent for sparse rank-one matrix completion for crowd-sourced aggregation of sparsely interacting workers},
+  volume    = {21},
+  year      = {2020}
+}
+
+@misc{metadataarchaelogy,
+  author    = {Siddiqui, Shoaib Ahmed and Rajkumar, Nitarshan and Maharaj, Tegan and Krueger, David and Hooker, Sara},
+  copyright = {Creative Commons Attribution Non Commercial Share Alike 4.0 International},
+  doi       = {10.48550/ARXIV.2209.10015},
+  keywords  = {Machine Learning (cs.LG), Artificial Intelligence (cs.AI), FOS: Computer and information sciences, FOS: Computer and information sciences},
+  publisher = {arXiv},
+  title     = {Metadata Archaeology: Unearthing Data Subsets by Leveraging Training Dynamics},
+  url       = {https://arxiv.org/abs/2209.10015},
+  year      = {2022}
+}
+
+@article{muller2019does,
+  author  = {M{\"u}ller, Rafael and Kornblith, Simon and Hinton, Geoffrey E},
+  journal = NeurIPS,
+  title   = {When does label smoothing help?},
+  volume  = {32},
+  year    = {2019}
+}
+
+@inproceedings{NEURIPS2021_ac56f8fe,
+  author    = {Paul, Mansheej and Ganguli, Surya and Dziugaite, Gintare Karolina},
+  booktitle = NeurIPS,
+  pages     = {20596--20607},
+  title     = {Deep Learning on a Data Diet: Finding Important Examples Early in Training},
+  volume    = {34},
+  year      = {2021}
+}
+
+@inproceedings{nishi2021augmentation,
+  author    = {Nishi, Kento and Ding, Yi and Rich, Alex and Hollerer, Tobias},
+  booktitle = CVPR,
+  pages     = {8022--8031},
+  title     = {Augmentation strategies for learning with noisy labels},
+  year      = {2021}
+}
+
+@article{northcutt_confident_2021,
+  author  = {Northcutt, Curtis and Jiang, Lu and Chuang, Isaac},
+  journal = {J. Artif. Intell. Res.},
+  pages   = {1373--1411},
+  title   = {Confident learning: Estimating uncertainty in dataset labels},
+  volume  = {70},
+  year    = {2021}
+}
+
+@inproceedings{northcutt_pervasive_2021,
+  author    = {Northcutt, Curtis G and Athalye, Anish and Mueller, Jonas},
+  booktitle = {Proceedings of the Neural Information Processing Systems Track on Datasets and Benchmarks},
+  title     = {Pervasive label errors in test sets destabilize machine learning benchmarks},
+  year      = {2021}
+}
+
+@inproceedings{oyama2013accurate,
+  author    = {Oyama, Satoshi and Baba, Yukino and Sakurai, Yuko and Kashima, Hisashi},
+  booktitle = IJCAI,
+  title     = {Accurate integration of crowdsourced labels using workers' self-reported confidence scores},
+  year      = {2013}
+}
+
+@inproceedings{park2022calibration,
+  author    = {Park, Seo Yeon and Caragea, Cornelia},
+  booktitle = {ACML},
+  pages     = {5364--5374},
+  title     = {On the Calibration of Pre-trained Language Models using Mixup Guided by Area Under the Margin and Saliency},
+  year      = {2022}
+}
+
+@article{passonneau-carpenter-2014-benefits,
+  address   = {Cambridge, MA},
+  author    = {Passonneau, Rebecca J.  and
+               Carpenter, Bob},
+  journal   = {Transactions of the Association for Computational Linguistics},
+  pages     = {311--326},
+  publisher = {MIT Press},
+  title     = {The Benefits of a Model of Annotation},
+  volume    = {2},
+  year      = {2014}
+}
+
+@inproceedings{peterson_human_2019,
+  author    = {Peterson, Joshua C.  and
+               Battleday, Ruairidh M. and
+               Griffiths, Thomas L. and
+               Russakovsky, Olga},
+  booktitle = ICCV,
+  pages     = {9617--9626},
+  title     = {Human Uncertainty Makes Classification More Robust},
+  urldate   = {2021-10-10},
+  year      = {2019}
+}
+
+@inproceedings{pleiss_identifying_2020,
+  author    = {Pleiss, Geoff and Zhang, Tianyi and Elenberg, Ethan R and Weinberger, Kilian Q},
+  booktitle = NeurIPS,
+  title     = {Identifying mislabeled data using the area under the margin ranking},
+  year      = {2020}
+}
+
+@inproceedings{pmlr-v22-kim12,
+  author    = {Kim, Hyun-Chul and Ghahramani, Zoubin},
+  booktitle = AISTATS,
+  pages     = {619--627},
+  title     = {Bayesian Classifier Combination},
+  volume    = {22},
+  year      = {2012}
+}
+
+@inproceedings{pytorch,
+  author    = {Paszke, Adam and Gross, Sam and Massa, Francisco and Lerer, Adam and Bradbury, James and Chanan, Gregory and Killeen, Trevor and Lin, Zeming and Gimelshein, Natalia and Antiga, Luca and Desmaison, Alban and Kopf, Andreas and Yang, Edward and DeVito, Zachary and Raison, Martin and Tejani, Alykhan and Chilamkurthy, Sasank and Steiner, Benoit and Fang, Lu and Bai, Junjie and Chintala, Soumith},
+  booktitle = NeurIPS,
+  pages     = {8024--8035},
+  title     = {PyTorch: An Imperative Style, High-Performance Deep Learning Library},
+  year      = {2019}
+}
+
+@misc{quickdraw,
+  howpublished = {\url{https://github.com/googlecreativelab/quickdraw-dataset}}
+}
+
+@inproceedings{raykar_ranking_2011,
+  author    = {Raykar, Vikas C and Yu, Shipeng},
+  booktitle = NeurIPS,
+  pages     = {1809--1817},
+  title     = {Ranking annotators for crowdsourced labeling tasks},
+  year      = {2011}
+}
+
+@inproceedings{rodrigues2018deep,
+  author    = {Rodrigues, Filipe and Pereira, Francisco},
+  booktitle = {AAAI},
+  title     = {Deep learning from crowds},
+  volume    = {32},
+  year      = {2018}
+}
+
+
+@article{scikit-learn,
+  author  = {Pedregosa, F. and Varoquaux, G. and Gramfort, A. and Michel, V.
+             and Thirion, B. and Grisel, O. and Blondel, M. and Prettenhofer, P.
+             and Weiss, R. and Dubourg, V. and Vanderplas, J. and Passos, A. and
+             Cournapeau, D. and Brucher, M. and Perrot, M. and Duchesnay, E.},
+  journal = JMLR,
+  pages   = {2825--2830},
+  title   = {Scikit-learn: Machine Learning in {P}ython},
+  volume  = {12},
+  year    = {2011}
+}
+
+
+@article{servajean2017crowdsourcing,
+  author    = {Servajean, Maximilien and Joly, Alexis and Shasha, Dennis and Champ, Julien and Pacitti, Esther},
+  journal   = {IEEE Transactions on Multimedia},
+  number    = {6},
+  pages     = {1376--1391},
+  publisher = {IEEE},
+  title     = {Crowdsourcing thousands of specialized labels: A {Bayesian} active training approach},
+  volume    = {19},
+  year      = {2017}
+}
+
+
+@article{simonyan2014very,
+  author  = {Simonyan, Karen and Zisserman, Andrew},
+  journal = {arXiv preprint arXiv:1409.1556},
+  title   = {Very deep convolutional networks for large-scale image recognition},
+  year    = {2014}
+}
+
+@article{sinha2018fast,
+  author  = {Sinha, Vaibhav B and Rao, Sukrut and Balasubramanian, Vineeth N},
+  journal = {arXiv preprint arXiv:1803.02781},
+  title   = {Fast {Dawid-Skene}: A fast vote aggregation scheme for sentiment classification},
+  year    = {2018}
+}
+
+@inproceedings{snow_cheap_2008,
+  author     = {Snow, Rion and O'Connor, Brendan and Jurafsky, Daniel and Ng, Andrew},
+  booktitle  = {Conference on Empirical Methods in Natural Language Processing},
+  eventtitle = {{EMNLP} 2008},
+  pages      = {254--263},
+  publisher  = {Association for Computational Linguistics},
+  shorttitle = {Cheap and Fast - But is it Good?},
+  title      = {Cheap and Fast - But is it Good? Evaluating Non-Expert Annotations for Natural Language Tasks},
+  year       = {2008}
+}
+
+@article{sorscher2022beyond,
+  author  = {Sorscher, Ben and Geirhos, Robert and Shekhar, Shashank and Ganguli, Surya and Morcos, Ari S},
+  journal = {arXiv preprint arXiv:2206.14486},
+  title   = {Beyond neural scaling laws: beating power law scaling via data pruning},
+  year    = {2022}
+}
+
+@article{Torralba_Fergus_Freeman08,
+  author    = {Torralba, Antonio and Fergus, Rob and Freeman, William T},
+  journal   = IEEE_J_PAMI,
+  number    = {11},
+  pages     = {1958--1970},
+  publisher = {IEEE},
+  title     = {80 million tiny images: A large data set for nonparametric object and scene recognition},
+  volume    = {30},
+  year      = {2008}
+}
+
+@article{UdayPrabhu_Vinay20,
+  author   = {{Uday Prabhu}, Vinay and {Birhane}, Abeba},
+  journal  = {arXiv e-prints},
+  keywords = {Computer Science - Computers and Society, Statistics - Applications, Statistics - Machine Learning},
+  month    = jun,
+  pages    = {arXiv:2006.16923},
+  title    = {{Large image datasets: A pyrrhic win for computer vision?}},
+  year     = {2020}
+}
+
+@inproceedings{wang2011managing,
+  author       = {Wang, Jing and Ipeirotis, Panagiotis G and Provost, Foster},
+  booktitle    = {The 2011 winter conference on business intelligence},
+  organization = {Citeseer},
+  pages        = {10--12},
+  title        = {Managing crowdsourcing workers},
+  year         = {2011}
+}
+
+@inproceedings{wen2020combining,
+  author    = {Wen, Yeming and
+               Jerfel, Ghassen and
+               Muller, Rafael and
+               W. Dusenberry, Michael and
+               Snoek, Jasper and
+               Lakshminarayanan, Balaji and
+               Tran, Dustin},
+  booktitle = ICLR,
+  title     = {Combining ensembles and data augmentation can harm your calibration},
+  year      = {2021}
+}
+
+@inproceedings{whitehill_whose_2009,
+  author     = {Whitehill, J and Wu, T and Bergsma, J and Movellan, J and Ruvolo, P},
+  booktitle  = NIPS,
+  shorttitle = {Whose Vote Should Count More},
+  title      = {Whose Vote Should Count More: Optimal Integration of Labels from Labelers of Unknown Expertise},
+  urldate    = {2021},
+  volume     = {22},
+  year       = {2009}
+}
+
+@inproceedings{yang2020consistency,
+  author    = {Yang, Forest and Koyejo, Sanmi},
+  booktitle = ICML,
+  pages     = {10727--10735},
+  title     = {On the consistency of top-k surrogate losses},
+  year      = {2020}
+}
+
+@inproceedings{zhang2017mixup,
+  author    = {Zhang, Hongyi and
+               Ciss{\'{e}}, Moustapha and
+               Dauphin, Yann N. and
+               Lopez{-}Paz, David},
+  booktitle = ICLR,
+  title     = {mixup: Beyond empirical risk minimization},
+  year      = {2018}
+}
+
+@inproceedings{zhong2021improving,
+  author    = {Zhong, Zhisheng and Cui, Jiequan and Liu, Shu and Jia, Jiaya},
+  booktitle = CVPR,
+  pages     = {16489--16498},
+  title     = {Improving calibration for long-tailed recognition},
+  year      = {2021}
+}
+
+@article{zhou2015regularized,
+  author  = {Zhou, Dengyong and Liu, Qiang and Platt, John C and Meek, Christopher and Shah, Nihar B},
+  journal = {arXiv preprint arXiv:1503.07240},
+  title   = {Regularized minimax conditional entropy for crowdsourcing},
+  year    = {2015}
+}
+
+@inproceedings{rodrigues2014gaussian,
+  author       = {Rodrigues, Filipe and Pereira, Francisco and Ribeiro, Bernardete},
+  booktitle    = ICML,
+  organization = {PMLR},
+  pages        = {433--441},
+  title        = {Gaussian process classification and active learning with multiple annotators},
+  year         = {2014}
+}
+
+@inproceedings{chu2021learning,
+  author    = {Chu, Zhendong and Ma, Jing and Wang, Hongning},
+  booktitle = {AAAI},
+  pages     = {5832--5840},
+  title     = {Learning from Crowds by Modeling Common Confusions.},
+  year      = {2021}
+}
+
+@inproceedings{muller2019,
+  author    = {Müller, Nicolas M. and Markert, Karla},
+  booktitle = {2019 International Joint Conference on Neural Networks (IJCNN)},
+  number    = {},
+  pages     = {1-8},
+  title     = {Identifying Mislabeled Instances in Classification Datasets},
+  volume    = {},
+  year      = {2019}
+}
+  doi       = {10.1109/IJCNN.2019.8851920}
+
+@article{ilyas2022datamodels,
+  author  = {Ilyas, Andrew and Park, Sung Min and Engstrom, Logan and Leclerc, Guillaume and Madry, Aleksander},
+  journal = {arXiv preprint arXiv:2202.00622},
+  title   = {Datamodels: Predicting predictions from training data},
+  year    = {2022}
+}
+
+@article{tanoreg,
+  author     = {Tanno, Ryutaro and
+                Saeedi, Ardavan  and
+                Sankaranarayanan, Swami  and
+                Alexander, Daniel C.  and
+                Silberman, Nathan },
+  bibsource  = {dblp computer science bibliography, https://dblp.org},
+  biburl     = {https://dblp.org/rec/journals/corr/abs-1902-03680.bib},
+  eprint     = {1902.03680},
+  eprinttype = {arXiv},
+  journal    = {CoRR},
+  timestamp  = {Tue, 21 May 2019 18:03:40 +0200},
+  title      = {Learning From Noisy Labels By Regularized Estimation Of Annotator
+                Confusion},
+  url        = {http://arxiv.org/abs/1902.03680},
+  volume     = {abs/1902.03680},
+  year       = {2019}
+}
+
+@article{doctornet,
+  author     = {Guan, Melody Y. and
+                Gulshan, Varun  and
+                Dai, Andrew M.  and
+                Hinton, Geoffrey E. },
+  bibsource  = {dblp computer science bibliography, https://dblp.org},
+  biburl     = {https://dblp.org/rec/journals/corr/GuanGDH17.bib},
+  eprint     = {1703.08774},
+  eprinttype = {arXiv},
+  journal    = {CoRR},
+  timestamp  = {Mon, 13 Aug 2018 16:46:35 +0200},
+  title      = {Who Said What: Modeling Individual Labelers Improves Classification},
+  url        = {http://arxiv.org/abs/1703.08774},
+  volume     = {abs/1703.08774},
+  year       = {2017}
+}
+
+@inproceedings{maxmig,
+  author    = {Cao, Peng  and
+               Xu, Yilun  and
+               Kong, Yuqing  and
+               Wang, Yizhou },
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/conf/iclr/CaoXKW19.bib},
+  booktitle = ICLR,
+  publisher = {OpenReview.net},
+  timestamp = {Wed, 09 Mar 2022 16:38:06 +0100},
+  title     = {Max-MIG: an Information Theoretic Approach for Joint Learning from Crowds},
+  url       = {https://openreview.net/forum?id=BJg9DoR9t7},
+  year      = {2019}
+}
+
+@article{aggnet,
+  author    = {Albarqouni, Shadi  and
+               Baur, Christoph   and
+               Achilles, Felix  and
+               Belagiannis, Vasileios  and
+               Demirci, Stefanie  and
+               Navab, Nassir },
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/journals/tmi/AlbarqouniBABDN16.bib},
+  doi       = {10.1109/TMI.2016.2528120},
+  journal   = {{IEEE} Trans. Medical Imaging},
+  number    = {5},
+  pages     = {1313--1321},
+  timestamp = {Thu, 18 Jun 2020 22:09:45 +0200},
+  title     = {AggNet: Deep Learning From Crowds for Mitosis Detection in Breast
+               Cancer Histology Images},
+  url       = {https://doi.org/10.1109/TMI.2016.2528120},
+  volume    = {35},
+  year      = {2016}
+}
+
+@inproceedings{honeypot,
+  author    = {Lee, Kyumin  and
+               Caverlee, James  and
+               Webb, Steve },
+  bibsource = {dblp computer science bibliography, https://dblp.org},
+  biburl    = {https://dblp.org/rec/conf/www/LeeCW10.bib},
+  booktitle = {WWW},
+  doi       = {10.1145/1772690.1772843},
+  pages     = {1139--1140},
+  publisher = {{ACM}},
+  timestamp = {Tue, 06 Nov 2018 16:57:09 +0100},
+  title     = {The social honeypot project: protecting online communities from spammers},
+  url       = {https://doi.org/10.1145/1772690.1772843},
+  year      = {2010}
+}
+  editor    = {Michael Rappa and
+               Paul Jones and
+               Juliana Freire and
+               Soumen Chakrabarti},
+
+@inproceedings{ZenCrowd,
+  abstract  = {We tackle the problem of entity linking for large collections of online pages; Our system, ZenCrowd, identifies entities from natural language text using state of the art techniques and automatically connects them to the Linked Open Data cloud. We show how one can take advantage of human intelligence to improve the quality of the links by dynamically generating micro-tasks on an online crowdsourcing platform. We develop a probabilistic framework to make sensible decisions about candidate links and to identify unreliable human workers. We evaluate ZenCrowd in a real deployment and show how a combination of both probabilistic reasoning and crowdsourcing techniques can significantly improve the quality of the links, while limiting the amount of work performed by the crowd.},
+  author    = {Demartini, Gianluca and Difallah, Djellel Eddine and Cudr\'{e}-Mauroux, Philippe},
+  booktitle = {WWW},
+  doi       = {10.1145/2187836.2187900},
+  isbn      = {9781450312295},
+  keywords  = {crowdsourcing, entity linking, probabilistic reasoning, linked data},
+  title     = {ZenCrowd: Leveraging Probabilistic Reasoning and Crowdsourcing Techniques for Large-Scale Entity Linking},
+  url       = {https://doi.org/10.1145/2187836.2187900},
+  year      = {2012}
+}
+
+@inproceedings{geocrowdnet,
+  author    = {Shahana Ibrahim and Tri Nguyen and Xiao Fu},
+  booktitle = ICLR,
+  title     = {Deep Learning From Crowdsourced Labels: Coupled Cross-Entropy Minimization, Identifiability, and Regularization},
+  url       = {https://openreview.net/forum?id=_qVhsWyWB9},
+  year      = {2023}
+}
+  year      = {2023},
+}
+
+@article{unionnet,
+  author  = {Wei, Hongxin and Xie, Renchunzi and Feng, Lei and Han, Bo and An, Bo},
+  doi     = {10.1109/TNNLS.2022.3168696},
+  journal = {IEEE Trans. Neural Netw. Learn. Syst.},
+  number  = {},
+  pages   = {1-11},
+  title   = {Deep Learning From Multiple Noisy Annotators as A Union},
+  volume  = {},
+  year    = {2022}
+}
+
+@article{lefort2022improve,
+  author  = {Lefort, Tanguy and Charlier, Benjamin and Joly, Alexis and Salmon, Joseph},
+  journal = {arXiv preprint arXiv:2209.15380},
+  title   = {Identify ambiguous tasks combining crowdsourced labels by weighting Areas Under the Margin},
+  year    = {2022}
+}
+
+@article{chagneux2023,
+  author    = {Chagneux, Mathis and LeCorff, Sylvain and Gloaguen, Pierre
+               and Ollion, Charles and Lepâtre, Océane and Bruge, Antoine},
+  publisher = {Société Française de Statistique},
+  title     = {Macrolitter Video Counting on Riverbanks Using State Space
+               Models and Moving Cameras},
+  journal   = {Computo},
+  date      = {2023-02-16},
+  url       = {https://computo.sfds.asso.fr/published-202301-chagneux-macrolitter},
+  doi       = {10.57750/845m-f805},
+  issn      = {2824-7795},
+  langid    = {en},
+  abstract  = {Litter is a known cause of degradation in marine
+               environments and most of it travels in rivers before reaching the
+               oceans. In this paper, we present a novel algorithm to assist waste
+               monitoring along watercourses. While several attempts have been made
+               to quantify litter using neural object detection in photographs of
+               floating items, we tackle the more challenging task of counting
+               directly in videos using boat-embedded cameras. We rely on
+               multi-object tracking (MOT) but focus on the key pitfalls of false
+               and redundant counts which arise in typical scenarios of poor
+               detection performance. Our system only requires supervision at the
+               image level and performs Bayesian filtering via a state space model
+               based on optical flow. We present a new open image dataset gathered
+               through a crowdsourced campaign and used to train a center-based
+               anchor-free object detector. Realistic video footage assembled by
+               water monitoring experts is annotated and provided for evaluation.
+               Improvements in count quality are demonstrated against systems built
+               from state-of-the-art multi-object trackers sharing the same
+               detection capabilities. A precise error decomposition allows clear
+               analysis and highlights the remaining challenges.}
+}
+
+
+ @article{cocodataset,
+  author        = {Tsung{-}Yi Lin and Michael Maire and Serge J. Belongie and Lubomir D. Bourdev and Ross B. Girshick and James Hays and Pietro Perona and Deva Ramanan and Piotr Doll{'{a} }r and C. Lawrence Zitnick},
+  title         = {Microsoft {COCO:} Common Objects in Context},
+  journal       = {CoRR},
+  volume        = {abs/1405.0312},
+  year          = {2014},
+  url           = {http://arxiv.org/abs/1405.0312},
+  archiveprefix = {arXiv},
+  eprint        = {1405.0312},
+  timestamp     = {Mon, 13 Aug 2018 16:48:13 +0200},
+  biburl        = {https://dblp.org/rec/bib/journals/corr/LinMBHPRDZ14},
+  bibsource     = {dblp computer science bibliography, https://dblp.org}
+}
+
+@article{kasmi2023crowdsourced,
+  title     = {A crowdsourced dataset of aerial images with annotated solar photovoltaic arrays and installation metadata},
+  author    = {Kasmi, Gabriel and Saint-Drenan, Yves-Marie and Trebosc, David and Jolivet, Rapha{\"e}l and Leloux, Jonathan and Sarr, Babacar and Dubus, Laurent},
+  journal   = {Scientific Data},
+  volume    = {10},
+  number    = {1},
+  pages     = {59},
+  year      = {2023},
+  publisher = {Nature Publishing Group UK London}
+}
+
+@inproceedings{torchvision,
+  author    = {Marcel, S\'{e}bastien and Rodriguez, Yann},
+  title     = {Torchvision the Machine-Vision Package of Torch},
+  year      = {2010},
+  isbn      = {9781605589336},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  url       = {https://doi.org/10.1145/1873951.1874254},
+  doi       = {10.1145/1873951.1874254},
+  abstract  = {This paper presents Torchvision an open source machine vision package for Torch. Torch is a machine learning library providing a series of the state-of-the-art algorithms such as Neural Networks, Support Vector Machines, Gaussian Mixture Models, Hidden Markov Models and many others. Torchvision provides additional functionalities to manipulate and process images with standard image processing algorithms. Hence, the resulting images can be used directly with the Torch machine learning algorithms as Torchvision is fully integrated with Torch. Both Torch and Torchvision are written in C++ language and are publicly available under the Free-BSD License.},
+  booktitle = {Proceedings of the 18th ACM International Conference on Multimedia},
+  pages     = {1485–1488},
+  numpages  = {4},
+  keywords  = {pattern recognition, vision, face detection and recognition, machine learning, open source},
+  location  = {Firenze, Italy},
+  series    = {MM '10}
 }
 
