@@ -65,7 +65,6 @@ format:
   computo-html: default
   computo-pdf: default
 jupyter: python3
-latex-tinytex: false
 ---
 
 # Introduction: crowdsourcing in image classification
@@ -167,7 +166,7 @@ $$
 \hat y_i^{\text{MV}} = \operatornamewithlimits{argmax}_{k\in[K]} \sum_{j\in\mathcal{A}(x_i)} 1_{\{y_i^{(j)}=k\}} \enspace.
 $$
 
-One pitfall with the MV is that the label produced is hard label, hence the ambiguity is discarded by construction. To remedy this, the Naive Soft (NS) labeling consists in using the empirical frequency distribution as the task label:
+One pitfall with the MV is that the label produced is hard, hence the ambiguity is discarded by construction. To remedy this, the Naive Soft (NS) labeling consists in using the empirical frequency distribution as the task label:
 
 $$
 \hat y_i^{\text{MV}} = \bigg(\frac{1}{\vert\mathcal{A}(x_i)\vert}\sum_{j\in\mathcal{A}(x_i)} 1_{\{y_i^{(j)}=k\}} \bigg)_{j\in[K]} \enspace.
@@ -221,10 +220,20 @@ While this metric is useful, in practice there are a few arguable issues:
 - the $\operatornamewithlimits{AccTrain}$ does not consider the ambiguity of the soft label, only the most probable class, whereas in some contexts ambiguity can be informative,
 - in crowdsourcing one goal is to identify difficult tasks [@lefort2022improve], pruning those tasks can easily artificially improve the $\operatornamewithlimits{AccTrain}$, but there is no guarantee over the predictive performance of a model based on the newly pruned dataset.
 
-- introduce Acctrain
-- Explain why Acctrain might not be reliable
+We first consider classical simulation settings in the literature that can easily be created and reproduced using `peerannot`.
 
 ### Simulated independent mistakes
+
+The independent mistakes consider that each worker $w_j$ answers following a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$.
+Answers are independent of one another as each matrix is generated independently and each worker answers independently of other workers.
+In this setting, the DS model is expected to perform the best with enough data as we are simulating data from its assumed noise model.
+
+```{python}
+! peerannot simulate --n-worker=30 --n-task=200  --n-classes=5 \
+                     --strategy independent-confusion \
+                     --feedback=10 --seed 0 \
+                     --folder ./simus/independent
+```
 
 ### Simulated correlated mistakes
 
