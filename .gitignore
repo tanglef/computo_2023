@@ -9,3 +9,5 @@ _extensions/
 content_files/
 
 simus/
+
+.jupyter_cache/
