@@ -294,8 +294,10 @@ With the obtained answers, we can look at the aforementioned aggregation strateg
 
 ```{python}
 #| output: false
-! for strat in MV NaiveSoft DS GLAD DSWC[L=5] DSWC[L=10]; do peerannot aggregate ./simus/independent/ -s $strat; done
+for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=5]", "DSWC[L=10]"]:
+  ! peerannot aggregate ./simus/independent/ -s {strat}
 ```
+
 ```{python}
 #| label: tbl-simu-independent
 #| tbl-cap: AccTrain metric on simulated independent mistakes considering classical feature-blind label aggregation strategies
@@ -370,8 +372,10 @@ With the obtained answers, we can look at the aforementioned aggregation strateg
 
 ```{python}
 #| output: false
-! for strat in MV NaiveSoft DS GLAD DSWC[L=5] DSWC[L=10]; do peerannot aggregate ./simus/student_teacher/ -s $strat; done
+for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=5]", "DSWC[L=10]"]:
+  ! peerannot aggregate ./simus/student_teacher/ -s {strat}
 ```
+
 ```{python}
 #| label: tbl-simu-corr
 #| tbl-cap: AccTrain metric on simulated correlated mistakes considering classical feature-blind label aggregation strategies
@@ -445,7 +449,8 @@ With the obtained answers, we can look at the aforementioned aggregation strateg
 
 ```{python}
 #| output: false
-! for strat in MV NaiveSoft DS GLAD DSWC[L=2] DSWC[L=5]; do peerannot aggregate ./simus/discrete_difficulty/ -s $strat; done
+for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=2]", "DSWC[L=5]"]:
+  ! peerannot aggregate ./simus/discrete_difficulty/ -s {strat}
 ```
 ```{python}
 #| label: tbl-simu-discrete-diff
@@ -503,9 +508,20 @@ And in the crowdsourcing setting, openly available datasets are often quite smal
 
 Few real crowdsourcing experiments have been released publicly.
 Among the available ones, CIFAR-10H [@peterson_human_2019] is one of the largest with $10 000$ tasks labeled by workers (the testing set of CIFAR-10).
+The issue with CIFAR-10H is that there are little to no disagreements and a simple majority voting leads to a near-perfect $\mathrm{AccTrain}$ error.
+While it is not very interesting to explore this dataset to compare generalization performance based on learning and aggregation strategies, it is a good benchmark for task difficulty identification and worker evaluation scoring XXX
+
 The LabelMe dataset was extracted from crowdsourcing segmentation experimentation and a subset of $K=8$ classes was released in XXX.
 Finally, a music genres classification with $K=10$ classes was crowdsourced.
 The music dataset shows that with spectrography techniques, `peerannot` with image classification models can be used with audio files.
+
+To install the datasets needed, we run the `install` command from `peerannot`:
+```{python}
+#| echo: true
+! peerannot install ./datasets/labelme/labelme.py
+! peerannot install ./datasets/cifar10H/cifar10h.py
+! peerannot install ./datasets/music/music.py
+```
 
 ### LabelMe dataset
 
@@ -513,7 +529,7 @@ The music dataset shows that with spectrography techniques, `peerannot` with ima
 
 ### Music dataset
 
-- Another real dataset
+The music dataset is constituted of $n_{\text{task}}=100$ audio files converted as images using Mel Spectrograms. Each audio file is $30$ seconds of music from the GTZAN dataset that needs to be classified into one of the $K=10$ possible music genres.
 
 # Exploring crowdsourced datasets
 
@@ -534,6 +550,7 @@ To explore the tasks' intrinsic difficulty, we propose to compare three scoring 
   - the WAUM: introduced in XXX, this weighted area under the margins indicates how difficult it is for a model to classify the task given the crowdsourced labels and the trust we have in each worker.
 
 Note that each of these statistics is useful in its context. The entropy can not be used in a setting with $|\mathcal{A}(x_i)|$ low (few labels per task), in particular for the LabelMe dataset it is not informative. The WAUM can work with any number of labels, but the larger the better. However, as it uses a deep learning classifier, the WAUM needs the tasks $(x_i)_i$ in addition to the proposed labels while the other strategies are feature-blind.
+
 
 
 - entropy

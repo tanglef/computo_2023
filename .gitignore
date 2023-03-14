@@ -11,3 +11,7 @@ content_files/
 simus/
 
 .jupyter_cache/
+
+datasets/*/**
+!datasets/*/*.py
+!datasets/*/*.json
