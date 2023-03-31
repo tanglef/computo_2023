@@ -69,15 +69,14 @@ execute:  # to remove at the end
   cache: true
 ---
 
-# TODOS:
+<!-- # TODOS:
 
   - interpreation of results !
   - Deep learning part / ECE issue with small datasets (XXX neurips NOLA)
   - images / schemes
   - XXXs
   - DRAWINGS and colors!
-  - identify module should be split into worker / tasks
-  - Tr(pi) for CL / CoNAL should only be run if CoNAL agg-deep is done
+  - Tr(pi) for CL / CoNAL should only be run if CoNAL agg-deep is done -->
 
 # Introduction: crowdsourcing in image classification
 
@@ -89,26 +88,27 @@ ImageNet [@imagenet_cvpr09] or [@Garcin_Joly_Bonnet_Affouard_Lombardo_Chouet_Ser
 Crowdsourced datasets induce at least three entangled problems to which we contribute with `peerannot`:
 
   - *How to aggregate multiple labels into a single label from crowdsourced tasks?* This problem occurs for example when dealing with a single dataset that has been labeled by multiple workers where there are disagreements. But it is also encountered with polls, reviewing, *etc.*
-  - *How to learn a classifier from crowdsourced datasets?* Where the first question is bound by aggregating multiple labels into a single one, this considers the case where we don't need a label to train on, but we need to train a classifier with the crowdsourced data that performs well on a testing set. This is the most common case in machine learning, however, this means that we need the actual tasks to train on -- and in crowdsourced datasets, they are not always available.
-  - *How to score workers in a crowdsourcing experiment?* Beyond learning a classifier or inferring the true label, one could wish to find a ranking between workers. For example, it is relevant for the gamification of labeling. **XXX**
+  - *How to learn a classifier from crowdsourced datasets?* Where the first question is bound by aggregating multiple labels into a single one, this considers the case where we don't need a label to train on, but we need to train a classifier with the crowdsourced data that performs well on a testing set. This end-to-end vision, is the most common case in machine learning, however, this means that we need the actual tasks to train on -- and in crowdsourced datasets, they are not always available.
+  - *How to score workers in a crowdsourcing experiment?* Beyond learning a classifier or inferring the true label, one could wish to find a ranking between workers. For example, it is relevant for the gamification of crowdsourcing experiments [@plantgame2016]
 
 The library `peerannot` addresses these practical questions within a reproducible setting. Indeed, the complexity of experiments often leads to a lack of transparency and reproducible results for simulations and real datasets.
 We propose standard simulation settings with explicit parameter implementations that can be shared.
 For real datasets, `peerannot` is compatible with standard neural networks architectures from the `Torchvision` [@torchvision] library and `Pytorch` [@pytorch], allowing a flexible framework with easy-to-share scripts to reproduce experiments.
+
+![From crowdsourced labels to training a classifier neural network, the full pipeline using the `peerannot` library.](./figures/strategiesbis.svg)
 
 # Notation and package structure
 
 ## Crowdsourcing notation
 
 Let us consider the classical supervised learning classification framework. A training set $\mathcal{D}=\{(x_i, y_i^\star)\}_{i=1}^{n_{\text{task}}}$ is composed of $n_{\text{task}}$ tasks $x_i\in\mathcal{X}$ with ground truth label $y_i^\star \in\mathcal [K]={1,\dots,K}$ one of the $K$ possible classes.
-In the following, the tasks considered are generally RGB images.
+In the following, the tasks considered are generally RGB images. We use the notation $\sigma$ for the softmax function.
 
 What differs from the classical setting with crowdsourced data, is that the ground truth $y_i^\star$ is unknown.
 However, instead for a given task $x_i$, a worker $w_j$ proposes their label denoted $y_i^{(j)}$.
 The set of workers answering the task $x_i$ is denoted $\mathcal{A}(x_i)=\{j: w_j \text{ answered }x_i\}$. The cardinal $\vert \mathcal{A}(x_i)\vert$ is called the feedback effort on the task $x_i$.
 The feedback effort can not exceed the total number of workers $n_{\text{worker}}$.
 Mirroring the point of view by considering the workers and not the tasks: the set of tasks answered by a worker $w_j$ is denoted $\mathcal{T}(w_j)=\{i: w_j \text{ answered } x_i\}$. The cardinal $\vert \mathcal{T}(w_j)\vert$ is called the workerload of $w_j$.
-
 The final dataset is:
 $$
 \mathcal{D}_{\text{train}} := \bigcup_{i\in[n_\text{task}]} \{(x_i, (y_i^{(j)}) \text{ for }j\in\mathcal{A}(x_i))\} = \bigcup_{j\in[n_\text{worker}]} \{(x_i, (y_i^{(j)})) \text{ for }i \in\mathcal{T}(w_j)\} \enspace.
@@ -133,7 +133,6 @@ datasetname
       │     └── classK
       ├── val
       ├── test
-      ├── dataset.py (optional)
       ├── metadata.json
       └── answers.json
 ```
@@ -142,19 +141,13 @@ Each dataset is its folder.
 If the tasks (images) are available, they must be stored as it is usual to store `ImageFolder` datasets with `pytorch` into a `train`, `val` and `test` folder.
 Each image can have its name followed by its index in the `answers.json` file.
 
-The `answers.json` file contains the different votes for each task as follows:
+The `answers.json` file stores the different votes for each task as described in @fig-answers. Finally, a `metadata.json` file include all relevant information related to the crowdsourcing experiment such as the number of workers, number of tasks, *etc.*
 
-```json
-{
-    0: {1: 2, 2: 2},
-    1: {0: 1, 1:1, 2:0}
-}
-```
+![From collected labels to data storage in the `answers.json` file for a binary classification task on recognising smiling faces.](./figures/json_answers.svg){#fig-answers fig-align="center"}
 
-In this example, there are two tasks, $n_{worker}=3$ workers and $K=3$ classes.
-For the task $1$, the feedback effort is $\vert\mathcal{A}(x_1)\vert=3$ and the workerload of $w_2$ is $\vert\mathcal{T}(w_2)\vert=1$.
-
-- talk about the metadata and the dataset.py file briefly ?
+In this example, there are three tasks, $n_{worker}=4$ workers and $K=2$ classes.
+For the first task, the feedback effort is $\vert\mathcal{A}(x_1)\vert=4$.
+The workerload of $w_2$ is $\vert\mathcal{T}(w_2)\vert=2$.
 
 # Aggregation strategies in crowdsourcing
 
@@ -201,10 +194,12 @@ $$
 
 with $T_{i,k}=1_{\{y_i^{\star}=k \}}$. The final aggregated soft label is $\hat y_i^{\text{DS}} = T_{i,\cdot}$.
 
+![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the DS model](./figures/bayesien_plaque_ds.svg){fig-align="center"}
+
 Many variants of the DS model have been proposed in the literature, using Dirichlet priors on the confusion matrices [@passonneau-carpenter-2014-benefits], using $L$ clusters of workers [@imamura2018analysis] with $1\leq L\leq n_{\text{worker}}$ (DSWC) or even faster implementation that produces only hard labels [@sinha2018fast].
 
 Finally, we present the GLAD model [@whitehill_whose_2009] that not only takes into account the worker's ability, but also the task difficulty in the noise model.
-Denoting $\alpha_j\in\mathbb{R}^+$ the worker ability (the higher the better) and $\beta_i\in\mathbb{R}^+_\star$ the task's difficulty (the higher the easier), the model noise is:
+Denoting $\alpha_j\in\mathbb{R}$ the worker ability (the higher the better) and $\beta_i\in\mathbb{R}^+_\star$ the task's difficulty (the higher the easier), the model noise is:
 
 $$
 \mathbb{P}(y_i^{(j)}=y_i^\star\vert \alpha_j,\beta_i) = \frac{1}{1+\exp(-\alpha_j\beta_i)} \enspace.
@@ -214,9 +209,15 @@ $$
 \forall k \in [K],\ \mathbb{P}(y_i^{(j)}=k\vert y_i^\star\neq k,\alpha_j,\beta_i) = \frac{1}{K-1}\left(1-\frac{1}{1+\exp(-\alpha_j\beta_i)}\right)\enspace.
 $$
 The likelihood can then be optimized using an EM algorithm to recover the soft label $\hat y_i^{\text{GLAD}}$.
-All of these aggregation strategies -- and more -- are available in the `peerannot` library from the `peerannot.models` module.
 
-## Experiments and evaluation of label aggregation strategies
+![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the GLAD model](./figures/schema_bayesien_glad.svg){fig-align="center"}
+
+All of these aggregation strategies -- and more -- are available in the `peerannot` library from the `peerannot.models` module.
+Each model is a class object in its own `Python` file. It inherits from the `CrowdModel` template class and is defined with at least two methods:
+- `run`: includes the optimization procedure to obtain needed weights (*e.g.* the EM algorithm for the DS model),
+- `get_probas`: returns the soft labels output for each task.
+
+## Experiments and evaluation of label aggregation strategies {#sec-evaluation-aggregation}
 
 One way to evaluate the label aggregation strategies is to measure their accuracy.
 This means that the underlying ground truth must be known -- or at least for a representative subset.
@@ -230,7 +231,7 @@ In the following, we write $\operatornamewithlimits{AccTrain}$ for $\operatornam
 While this metric is useful, in practice there are a few arguable issues:
 
 - the $\operatornamewithlimits{AccTrain}$ does not consider the ambiguity of the soft label, only the most probable class, whereas in some contexts ambiguity can be informative,
-- in crowdsourcing one goal is to identify difficult tasks [@lefort2022improve], pruning those tasks can easily artificially improve the $\operatornamewithlimits{AccTrain}$, but there is no guarantee over the predictive performance of a model based on the newly pruned dataset.
+- in supervised learning one objective is to identify difficult or mislabeled tasks [@pleiss_identifying_2020;@lefort2022improve], pruning those tasks can easily artificially improve the $\operatornamewithlimits{AccTrain}$, but there is no guarantee over the predictive performance of a model based on the newly pruned dataset.
 
 We first consider classical simulation settings in the literature that can easily be created and reproduced using `peerannot`.
 
@@ -479,21 +480,47 @@ display(results)
 # Learning from crowdsourced tasks
 
 Most often, tasks are crowdsourced to create a large training set as modern machine learning models require more and more data.
-The aggregation step then simply becomes the first step in the complete learning pipeline
-
-PUT THE PIPELINE IN SCHEME HERE
+The aggregation step then simply becomes the first step in the complete learning pipeline.
+However, instead of aggregating labels, modern neural networks let us directly train a classifier from multiple noisy labels.
 
 ## Classical models
 
+In recent years, directly learning a classifier from noisy labels was introduced.
+Two of the most used models: CrowdLayer [@rodrigues2018deep] and CoNAL [@chu2021learning], are directly available in `peerannot`.
+These two learning strategies directly incorporate a DS-based noise model in the neural network's architecture.
 
-- Introduce Crowdlayer
-- CrowdLayer merged DS into the Deep learning world
-- Tano introduced regularizations to help
-- CoNAL too
+CrowdLayer trains a classifier with noisy labels as follows.
+Let the scores (logits) output of a given classifier neural network $\mathcal{C}$ be $z_i=\mathcal{C}(x_i)$.
+Then CrowdLayer adds a new layer $\pi\in\mathbb{R}^{n_{\text{worker}}\times K\times K}$, the tensor of all $\pi^{(j)}$s such that the crossentropy loss $(\mathrm{CE})$ is adapted to the crowdsourcing setting into $\mathcal{L}_{CE}^{\text{CrowdLayer}}$ and computed as:
+$$
+\mathcal{L}_{CE}^{\text{CrowdLayer}}(x_i) = \sum_{j\in\mathcal{A}(x_i)} \mathrm{CE}(\sigma\left(\pi^{(j)}\sigma\big(z_i\big)\right), y_i^{(j)}) \enspace.
+$$
+
+The confusion matrices are incorporated as is into the network architecture as a new layer to transform the output probabilities to match each worker's answer.
+However, for some datasets, it was noticed that global confusion occurs between the proposed classes.
+It is the case for example in the LabelMe dataset [@rodrigues2017learning] where classes overlap.
+In this case, @chu2021learning proposed to extend the CrowdLayer model by not only modeling the worker confusion matrices; but also a global confusion matrix $\pi^g\in\mathbb{R}^{K\times K}$.
+
+![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for CoNAL model. Each worker is assigned a confusion matrix $\pi^{(j)}$. A global confusion matrix $\pi^g$ is shared between workers. A tradeoff between the global confusion and the local one is applied.](./figures/schema_bayesien_conal.svg){#fig-conal fig-align="center"}
+
+Given the output $z_i=\mathcal{C}(x_i)\in\mathbb{R}^K$ of a given classifier and task, CoNAL
+interpolates between the local confusion $\pi^{(j)}\sigma(z_i)$ and the global one $\pi^g\sigma(z_i)$.
+The loss function is computed as follows:
+$$
+\begin{aligned}
+&\mathcal{L}_{CE}^{\text{CoNAL}}(x_i) = \sum_{j\in\mathcal{A}(x_i)} \mathrm{CE}(h_i^{(j)}, y_i^{(j)}) \enspace, \\
+&\text{with } h_i^{(j)} = \sigma\left(\big(\omega_i^{(j)} \pi^g + (1-\omega_i^{(j)})\pi^{(j)}\big)z_i\right) \enspace.
+\end{aligned} \
+$$
+
+The interpolation weight is defined as $s_i^{(j)}\sim\mathcal{B}(w_i^{(j)})$ and is unobservable in practice.
+So, to compute $h_i^{(j)}$, the weight is obtained through an auxiliary network that projects the task $x_i$ onto $v_i$ and the worker $w_j$ onto $u_j$, two vectors in an embedding space of dimension $d\geq 1$. Finally, $w_i^{(j)}=(1+\exp(- u_j^\top v_i))^{-1}$.
+
+Both CrowdLayer and CoNAL model worker confusions directly in the classifier's weights to learn from the noisy collected labels and are available in `peerannot` as we will see in the following.
 
 ## Prediction error when learning from crowdsourced tasks
 
-The $\mathrm{AccTrain}$ metric presented in XXX might no longer be of interest when training a classifier. Classical error measurements involve a test dataset to estimate the generalization error.
+The $\mathrm{AccTrain}$ metric presented in @sec-evaluation-aggregation might no longer be of interest when training a classifier. Classical error measurements involve a test dataset to estimate the generalization error.
 To do so, we present hereafter two error metrics. Assuming we trained our classifier $f_\theta$ on a training set:
   - the test accuracy is computed as $\frac{1}{n_{\text{test}}}\sum_{i=1}^{n_{\text{test}}}1_{\{y_i^\star = \widehat{f_\theta(x_i)}\}}$
   - the expected calibration error [@guo_calibration_2017], computed as:
@@ -509,27 +536,29 @@ And in the crowdsourcing setting, openly available datasets are often quite smal
 Few real crowdsourcing experiments have been released publicly.
 Among the available ones, CIFAR-10H [@peterson_human_2019] is one of the largest with $10 000$ tasks labeled by workers (the testing set of CIFAR-10).
 The issue with CIFAR-10H is that there are little to no disagreements and a simple majority voting leads to a near-perfect $\mathrm{AccTrain}$ error.
-While it is not very interesting to explore this dataset to compare generalization performance based on learning and aggregation strategies, it is a good benchmark for task difficulty identification and worker evaluation scoring XXX
+While with this dataset comparing the implact of aggregation and end-to-end strategies might not be relevant, it is a good benchmark for task difficulty identification and worker evaluation scoring XXX
 
-The LabelMe dataset was extracted from crowdsourcing segmentation experimentation and a subset of $K=8$ classes was released in XXX.
-Finally, a music genres classification with $K=10$ classes was crowdsourced.
-The music dataset shows that with spectrography techniques, `peerannot` with image classification models can be used with audio files.
+The LabelMe dataset was extracted from crowdsourcing segmentation experimentation and a subset of $K=8$ classes was released in @rodrigues2017learning.
 
-To install the datasets needed, we run the `install` command from `peerannot`:
+To install these datasets, we run the `install` command from `peerannot`:
 ```{python}
-#| echo: true
+#| output: false
+#| eval: false
 ! peerannot install ./datasets/labelme/labelme.py
 ! peerannot install ./datasets/cifar10H/cifar10h.py
-! peerannot install ./datasets/music/music.py
 ```
 
-### LabelMe dataset
+Let us use `peerannot` to train a Resnet34 on the LabelMe dataset for:
 
-- on the importance of modeling common confusion
+- aggregation strategies: MV, NS, DS, GLAD,
+- end-to-end strategies: CrowdLayer and CoNAL.
 
-### Music dataset
+```{python}
+#| eval: false
+! peerannot
 
-The music dataset is constituted of $n_{\text{task}}=100$ audio files converted as images using Mel Spectrograms. Each audio file is $30$ seconds of music from the GTZAN dataset that needs to be classified into one of the $K=10$ possible music genres.
+```
+
 
 # Exploring crowdsourced datasets
 
@@ -551,18 +580,71 @@ To explore the tasks' intrinsic difficulty, we propose to compare three scoring 
 
 Note that each of these statistics is useful in its context. The entropy can not be used in a setting with $|\mathcal{A}(x_i)|$ low (few labels per task), in particular for the LabelMe dataset it is not informative. The WAUM can work with any number of labels, but the larger the better. However, as it uses a deep learning classifier, the WAUM needs the tasks $(x_i)_i$ in addition to the proposed labels while the other strategies are feature-blind.
 
+### CIFAR-1OH dataset:
+
+First, let us consider a dataset with a large number of tasks, annotations and workers: the CIFAR-10H dataset by @peterson_human_2019.
+
+```{python}
+#| output: false
+#| eval: false
+! peerannot identify ./datasets/cifar10H -s entropy -K 10 --labels ./datasets/cifar10H/answers.json
+! peerannot aggregate ./datasets/cifar10H/ -s GLAD
+```
+```{python}
+#| code-fold: true
+#| label: fig-difficulty-c10H
+#| fig-cap: Comparison of metrics scoring the task's intrinsic difficulty.
+
+from scipy.stats import pearsonr
+def corrfunc(x, y, ax=None, **kws):
+    r, _ = pearsonr(x, y)
+    ax = ax or plt.gca()
+    ax.annotate(rf'$\rho$ = {r:.2f}', xy=(.1, .9), xycoords=ax.transAxes)
+results = {'glad': [], "entropy": []}
+path = Path.cwd() / "datasets" / "cifar10H" / "identification"
+results["entropy"] = np.load(path / 'entropies.npy')
+results["glad"] = np.exp(np.load(path / "glad" / "difficulties.npy")[:, 1])
+# results["waum"] = pd.read_csv(path / "resnet34" / "waum_0.01_yang" / 'waum.csv')["waum"].values
+results = pd.DataFrame(results)
+g = sns.pairplot(results, corner=True, diag_kind="kde")
+g.map_lower(corrfunc)
+plt.show()
+```
+
+## LabelMe dataset
 
 
-- entropy
-- WAUM / GLAD use case
-- introduce GLAD's limitations (1 label is impossible to work with because we don't see the actual tasks) -> do the 3 difficulties expe
-- do an experiment with CIFAR-10H and 1<=|A(x_i)|<=5 labels with workers chosen randomly
+
+```{python}
+#| output: false
+! peerannot identify ./datasets/labelme -s entropy -K 10 --labels ./datasets/labelme/answers.json
+! peerannot aggregate ./datasets/labelme/ -s GLAD
+```
+```{python}
+#| code-fold: true
+#| label: fig-difficulty-labelme
+#| fig-cap: Comparison of metrics scoring the task's intrinsic difficulty.
+
+from scipy.stats import pearsonr
+def corrfunc(x, y, ax=None, **kws):
+    r, _ = pearsonr(x, y)
+    ax = ax or plt.gca()
+    ax.annotate(rf'$\rho$ = {r:.2f}', xy=(.1, .9), xycoords=ax.transAxes)
+results = {'glad': [], "entropy": []}
+path = Path.cwd() / "datasets" / "labelme" / "identification"
+results["entropy"] = np.load(path / 'entropies.npy')
+results["glad"] = np.exp(np.load(path / "glad" / "difficulties.npy")[:, 1])
+results = pd.DataFrame(results)
+g = sns.pairplot(results, corner=True, diag_kind="kde")
+g.map_lower(corrfunc)
+plt.show()
+```
+
 
 ## Exploring workers' reliability
 
 Let us first consider simulated data with $n_{\text{worker}}=40$ workers. Each worker answers according to their confusion matrix.
-Workers are dispatched as follows:
-  KEEP GOING
+Workers are dispatched as follows.
 
 ```{python}
 reliability = np.logspace(-1.5, 1, num=40)
@@ -598,13 +680,35 @@ With strategies looking to estimate confusion matrices, we investigate two scori
 
 Let us compare the ranking consistency between these three strategies on the simulated data.
 
-..................
+```{python}
+#| output: false
+! peerannot aggregate ./simus/exploring_reliability -s GLAD
+for method in ["trace_confusion", "spam_score"]:
+  ! peerannot identify ./simus/exploring_reliability/ --n-classes=5 \
+                       -s {method} --labels ./simus/exploring_reliability.answers.json
+```
+
+```{python}
+#| code-fold: true
+#| label: fig-abilities-simu
+#| fig-cap: Comparison of ability scores by workers.
+
+path_ = Path.cwd() / "simus" / "exploring_reliability"
+results_identif = {"trace_confusion": [], "spam_score": [], "glad": []}
+results_identif["trace_confusion"].extend(np.load(path_ / 'identification' / "traces_confusion.npy"))
+results_identif["spam_score"].extend(np.load(path_ / 'identification' / "spam_score.npy"))
+results_identif["glad"].extend(np.load(path_ / 'identification' / "glad" / "abilities.npy")[:, 1])
+results_identif = pd.DataFrame(results_identif)
+g = sns.pairplot(results_identif, corner=True, diag_kind="kde")
+g.map_lower(corrfunc)
+plt.show()
+```
 
 We can also compare workers' reliability in a real dataset.
 When the tasks are available, confusion-matrix-based deep learning models can also be of use.
-We thus add to the comparison the trace of the confusion matrices with CrowdLayer / CoNAL.
+We thus add to the comparison the trace of the confusion matrices with CrowdLayer and CoNAL on the CIFAR-10H dataset.
 
-...................
+
 
 
 # Conclusion
