@@ -536,7 +536,7 @@ And in the crowdsourcing setting, openly available datasets are often quite smal
 Few real crowdsourcing experiments have been released publicly.
 Among the available ones, CIFAR-10H [@peterson_human_2019] is one of the largest with $10 000$ tasks labeled by workers (the testing set of CIFAR-10).
 The issue with CIFAR-10H is that there are little to no disagreements and a simple majority voting leads to a near-perfect $\mathrm{AccTrain}$ error.
-While with this dataset comparing the implact of aggregation and end-to-end strategies might not be relevant, it is a good benchmark for task difficulty identification and worker evaluation scoring XXX
+While with this dataset comparing the impact of aggregation and end-to-end strategies might not be relevant, it is a good benchmark for task difficulty identification and worker evaluation scoring XXX
 
 The LabelMe dataset was extracted from crowdsourcing segmentation experimentation and a subset of $K=8$ classes was released in @rodrigues2017learning.
 
@@ -553,12 +553,10 @@ Let us use `peerannot` to train a Resnet34 on the LabelMe dataset for:
 - aggregation strategies: MV, NS, DS, GLAD,
 - end-to-end strategies: CrowdLayer and CoNAL.
 
-```{python}
-#| eval: false
-! peerannot
-
-```
-
+As we can see, CoNAL strategy performs best.
+In this case, it is expected behavior as CoNAL was created for the LabelMe dataset.
+However, using `peerannot` we can look into **why modeling common confusion returns better results with this dataset.
+To do so, we can explore the datasets from two points of view: worker-wise or task-wise.
 
 # Exploring crowdsourced datasets
 
@@ -580,9 +578,40 @@ To explore the tasks' intrinsic difficulty, we propose to compare three scoring 
 
 Note that each of these statistics is useful in its context. The entropy can not be used in a setting with $|\mathcal{A}(x_i)|$ low (few labels per task), in particular for the LabelMe dataset it is not informative. The WAUM can work with any number of labels, but the larger the better. However, as it uses a deep learning classifier, the WAUM needs the tasks $(x_i)_i$ in addition to the proposed labels while the other strategies are feature-blind.
 
-### CIFAR-1OH dataset:
+### CIFAR-1OH dataset
 
 First, let us consider a dataset with a large number of tasks, annotations and workers: the CIFAR-10H dataset by @peterson_human_2019.
+
+```{python}
+#| code-fold: true
+#| fig-cap: Example of images to label from the CIFAR-10H dataset with label `bird`, `car`, `cat`, `deer and `dog` (top to bottom) by row.
+import torch
+import matplotlib.pyplot as plt
+from PIL import Image
+from pathlib import Path
+nrow = 5
+ncol = 5
+fig, axs = plt.subplots(
+        nrow,
+        ncol,
+        sharey="row",
+        sharex="col",
+        figsize=(12,8)
+    )
+match_ = {0: "bird", 1: "car", 2: "cat", 3: "deer", 4: "dog", 5: "frog", 6: "horse", 7: "plane", 8: "ship", 9: "truck"}
+path = Path.cwd() / "datasets" / "cifar10H" / "train"
+for i in range(nrow):
+  img_folder = path / f"{match_[i]}"
+  all_imgs = list(img_folder.glob("*"))[:ncol]
+  for j in range(ncol):
+    image = np.asarray(Image.open(path / all_imgs[j]))
+    axs[i,j].imshow(image, aspect="equal")
+    axs[i,j].axis("off")
+    axs[i,j].set_yticklabels([])
+plt.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95, wspace=0.05, hspace=0.05)
+plt.show()
+```
+
 
 ```{python}
 #| output: false
@@ -608,15 +637,20 @@ results["glad"] = np.exp(np.load(path / "glad" / "difficulties.npy")[:, 1])
 results = pd.DataFrame(results)
 g = sns.pairplot(results, corner=True, diag_kind="kde")
 g.map_lower(corrfunc)
+
+# axes = g.axes.flatten()
+# for i, ax in enumerate(axes):
+#   if i % len(results) == 0:
+
 plt.show()
 ```
 
-## LabelMe dataset
-
-
+### LabelMe dataset
 
 ```{python}
 #| output: false
+#| eval: false
+
 ! peerannot identify ./datasets/labelme -s entropy -K 10 --labels ./datasets/labelme/answers.json
 ! peerannot aggregate ./datasets/labelme/ -s GLAD
 ```
@@ -643,9 +677,77 @@ plt.show()
 
 ## Exploring workers' reliability
 
-Let us first consider simulated data with $n_{\text{worker}}=40$ workers. Each worker answers according to their confusion matrix.
-Workers are dispatched as follows.
+From the labels, we can explore different worker evaluation scores.
+GLAD's strategy estimates a reliability scalar coefficient $\alpha_j$ per worker.
+With strategies looking to estimate confusion matrices, we investigate two scoring rules for workers:
 
+- the trace of the confusion matrix: the closer to K the better the worker,
+- the spammer score [@raykar_ranking_2011] that is the Frobenius norm between the estimated confusion matrix $\hat\pi^{(j)}$ and the closest rank-$1$ matrix. The further to zero the better the worker.
+
+When the tasks are available, confusion-matrix-based deep learning models can also be of use.
+We thus add to the comparison the trace of the confusion matrices with CrowdLayer and CoNAL on the datasets.
+For CoNAL, we only consider the trace of the confusion matrix $\pi^{(j)}$ in the pairwise comparison, and provide the common confusion matrix $\pi^g$ as separate.
+
+### CIFAR-10H
+
+The Cifar-10H dataset has few disagreements among workers.
+From XXX, we can see that
+
+```{python}
+#| output: false
+#| eval: false
+! peerannot aggregate ./datasets/cifar10H/ -s GLAD
+for method in ["trace_confusion", "spam_score"]:
+  ! peerannot identify ./datasets/cifar10H/ --n-classes=10 \
+                       -s {method} --labels ./datasets/cifar10H/answers.json
+```
+
+```{python}
+#| code-fold: true
+#| label: fig-abilities-cifar10H
+#| fig-cap: Comparison of ability scores by workers for the CIFAR-10H dataset.
+
+path_ = Path.cwd() / "datasets" / "cifar10H"
+results_identif = {"trace_confusion": [], "spam_score": [], "glad": []}
+results_identif["trace_confusion"].extend(np.load(path_ / 'identification' / "traces_confusion.npy"))
+results_identif["spam_score"].extend(np.load(path_ / 'identification' / "spam_score.npy"))
+results_identif["glad"].extend(np.load(path_ / 'identification' / "glad" / "abilities.npy")[:, 1])
+results_identif = pd.DataFrame(results_identif)
+g = sns.pairplot(results_identif, corner=True, diag_kind="kde")
+g.map_lower(corrfunc)
+plt.show()
+```
+
+
+### LabelMe
+
+```{python}
+#| output: false
+#| eval: false
+! peerannot aggregate ./datasets/labelme/ -s GLAD
+for method in ["trace_confusion", "spam_score"]:
+  ! peerannot identify ./datasets/labelme/ --n-classes=10 \
+                       -s {method} --labels ./datasets/labelme/answers.json
+```
+
+```{python}
+#| code-fold: true
+#| label: fig-abilities-labelme
+#| fig-cap: Comparison of ability scores by workers for the CIFAR-10H dataset.
+
+path_ = Path.cwd() / "datasets" / "labelme"
+results_identif = {"trace_confusion": [], "spam_score": [], "glad": []}
+results_identif["trace_confusion"].extend(np.load(path_ / 'identification' / "traces_confusion.npy"))
+results_identif["spam_score"].extend(np.load(path_ / 'identification' / "spam_score.npy"))
+results_identif["glad"].extend(np.load(path_ / 'identification' / "glad" / "abilities.npy")[:, 1])
+results_identif = pd.DataFrame(results_identif)
+g = sns.pairplot(results_identif, corner=True, diag_kind="kde")
+g.map_lower(corrfunc)
+plt.show()
+```
+
+
+<!--
 ```{python}
 reliability = np.logspace(-1.5, 1, num=40)
 rng = np.random.default_rng(0)
@@ -670,16 +772,10 @@ np.save(Path.cwd() / "simus" / "confusions_exploring_reliability.npy", matrices)
                      --folder ./simus/exploring_reliability \
                      --matrix-file ./simus/confusions_exploring_reliability.npy
 ```
+-->
 
-From the labels, we can explore different worker evaluation scores.
-GLAD's strategy estimates a reliability scalar coefficient $\alpha_j$ per worker.
-With strategies looking to estimate confusion matrices, we investigate two scoring rules for workers:
 
-- the trace of the confusion matrix: the closer to K the better the worker
-- the spammer score [@raykar_ranking_2011] that is the Frobenius norm between the estimated confusion matrix $\hat\pi^{(j)}$ and the closest rank-$1$ matrix. The further to zero the better the worker.
-
-Let us compare the ranking consistency between these three strategies on the simulated data.
-
+<!--
 ```{python}
 #| output: false
 ! peerannot aggregate ./simus/exploring_reliability -s GLAD
@@ -703,12 +799,7 @@ g = sns.pairplot(results_identif, corner=True, diag_kind="kde")
 g.map_lower(corrfunc)
 plt.show()
 ```
-
-We can also compare workers' reliability in a real dataset.
-When the tasks are available, confusion-matrix-based deep learning models can also be of use.
-We thus add to the comparison the trace of the confusion matrices with CrowdLayer and CoNAL on the CIFAR-10H dataset.
-
-
+ -->
 
 
 # Conclusion
@@ -716,4 +807,4 @@ We thus add to the comparison the trace of the confusion matrices with CrowdLaye
 We introduced `peerannot`, a library to handle crowdsourced datasets. This library enables both easy label aggregation and direct training strategies with classical state-of-the-art classifiers. The identification module of the library allows exploring the collected data from both the tasks and the workers' point of view for better scorings and data cleaning procedures.
 Our library also comes with templated datasets to better share crowdsourced datasets and have strategies more uniform to test on.
 
-We hope that this library helps reproducibility in the crowdsourcing community and also standardizes training from crowdsourced datasets. New strategies can easily be incorporated into the open-source code available online. Finally, as `peerannot` is mostly directed to handle classification datasets, one of our future works would be to consider other `peerannot` modules to handle crowdsourcing for detection, segmentation and even worker evaluation in other contexts like peer-grading.
+We hope that this library helps reproducibility in the crowdsourcing community and also standardizes training from crowdsourced datasets. New strategies can easily be incorporated into the open-source code [available on github](https://github.com/peerannot/peerannot). Finally, as `peerannot` is mostly directed to handle classification datasets, one of our future works would be to consider other `peerannot` modules to handle crowdsourcing for object detection, segmentation and even worker evaluation in other contexts like peer-grading.
