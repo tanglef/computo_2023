@@ -87,9 +87,9 @@ ImageNet [@imagenet_cvpr09] or [@Garcin_Joly_Bonnet_Affouard_Lombardo_Chouet_Ser
 
 Crowdsourced datasets induce at least three entangled problems to which we contribute with `peerannot`:
 
-  - *How to aggregate multiple labels into a single label from crowdsourced tasks?* This problem occurs for example when dealing with a single dataset that has been labeled by multiple workers where there are disagreements. But it is also encountered with polls, reviewing, *etc.*
-  - *How to learn a classifier from crowdsourced datasets?* Where the first question is bound by aggregating multiple labels into a single one, this considers the case where we don't need a label to train on, but we need to train a classifier with the crowdsourced data that performs well on a testing set. This end-to-end vision, is the most common case in machine learning, however, this means that we need the actual tasks to train on -- and in crowdsourced datasets, they are not always available.
-  - *How to score workers in a crowdsourcing experiment?* Beyond learning a classifier or inferring the true label, one could wish to find a ranking between workers. For example, it is relevant for the gamification of crowdsourcing experiments [@plantgame2016]
+  - *How to aggregate multiple labels into a single label from crowdsourced tasks?* This problem occurs for example when dealing with a single dataset that has been labeled by multiple workers where there are disagreements. But it is also encountered with polls, reviewing, *etc.* This is treated with the `aggregate` command.
+  - *How to learn a classifier from crowdsourced datasets?* Where the first question is bound by aggregating multiple labels into a single one, this considers the case where we don't need a label to train on, but we need to train a classifier with the crowdsourced data that performs well on a testing set. This end-to-end vision, is the most common case in machine learning, however, this means that we need the actual tasks to train on -- and in crowdsourced datasets, they are not always available. This is treated with the `aggregate-deep` command.
+  - *How to score workers in a crowdsourcing experiment?* Beyond learning a classifier or inferring the true label, one could wish to find a ranking between workers. For example, it is relevant for the gamification of crowdsourcing experiments [@plantgame2016]This is treated with the `identify` command.
 
 The library `peerannot` addresses these practical questions within a reproducible setting. Indeed, the complexity of experiments often leads to a lack of transparency and reproducible results for simulations and real datasets.
 We propose standard simulation settings with explicit parameter implementations that can be shared.
@@ -106,9 +106,9 @@ In the following, the tasks considered are generally RGB images. We use the nota
 
 What differs from the classical setting with crowdsourced data, is that the ground truth $y_i^\star$ is unknown.
 However, instead for a given task $x_i$, a worker $w_j$ proposes their label denoted $y_i^{(j)}$.
-The set of workers answering the task $x_i$ is denoted $\mathcal{A}(x_i)=\{j: w_j \text{ answered }x_i\}$. The cardinal $\vert \mathcal{A}(x_i)\vert$ is called the feedback effort on the task $x_i$.
+The set of workers answering the task $x_i$ is denoted $\mathcal{A}(x_i)=\{j\in[n_\text{worker}]: w_j \text{ answered }x_i\}$. The cardinal $\vert \mathcal{A}(x_i)\vert$ is called the feedback effort on the task $x_i$.
 The feedback effort can not exceed the total number of workers $n_{\text{worker}}$.
-Mirroring the point of view by considering the workers and not the tasks: the set of tasks answered by a worker $w_j$ is denoted $\mathcal{T}(w_j)=\{i: w_j \text{ answered } x_i\}$. The cardinal $\vert \mathcal{T}(w_j)\vert$ is called the workerload of $w_j$.
+Mirroring the point of view by considering the workers and not the tasks: the set of tasks answered by a worker $w_j$ is denoted $\mathcal{T}(w_j)=\{i\in[n_\text{task}]: w_j \text{ answered } x_i\}$. The cardinal $\vert \mathcal{T}(w_j)\vert$ is called the workerload of $w_j$.
 The final dataset is:
 $$
 \mathcal{D}_{\text{train}} := \bigcup_{i\in[n_\text{task}]} \{(x_i, (y_i^{(j)}) \text{ for }j\in\mathcal{A}(x_i))\} = \bigcup_{j\in[n_\text{worker}]} \{(x_i, (y_i^{(j)})) \text{ for }i \in\mathcal{T}(w_j)\} \enspace.
@@ -584,7 +584,7 @@ First, let us consider a dataset with a large number of tasks, annotations and w
 
 ```{python}
 #| code-fold: true
-#| fig-cap: Example of images to label from the CIFAR-10H dataset with label `bird`, `car`, `cat`, `deer and `dog` (top to bottom) by row.
+#| fig-cap: Example of images to label from the CIFAR-10H dataset with label `bird`, `car`, `cat`, `deer `and `dog` (top to bottom) by row.
 import torch
 import matplotlib.pyplot as plt
 from PIL import Image
@@ -651,7 +651,7 @@ plt.show()
 #| output: false
 #| eval: false
 
-! peerannot identify ./datasets/labelme -s entropy -K 10 --labels ./datasets/labelme/answers.json
+! peerannot identify ./datasets/labelme/ -s entropy -K 10 --labels ./datasets/labelme/answers.json
 ! peerannot aggregate ./datasets/labelme/ -s GLAD
 ```
 ```{python}
