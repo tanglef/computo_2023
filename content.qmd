@@ -95,7 +95,7 @@ The library `peerannot` addresses these practical questions within a reproducibl
 We propose standard simulation settings with explicit parameter implementations that can be shared.
 For real datasets, `peerannot` is compatible with standard neural networks architectures from the `Torchvision` [@torchvision] library and `Pytorch` [@pytorch], allowing a flexible framework with easy-to-share scripts to reproduce experiments.
 
-![From crowdsourced labels to training a classifier neural network, the full pipeline using the `peerannot` library.](./figures/strategiesbis.svg)
+![From crowdsourced labels to training a classifier neural network, the full pipeline using the `peerannot` library.](./figures/strategiesbis.png)
 
 # Notation and package structure
 
@@ -143,7 +143,7 @@ Each image can have its name followed by its index in the `answers.json` file.
 
 The `answers.json` file stores the different votes for each task as described in @fig-answers. Finally, a `metadata.json` file include all relevant information related to the crowdsourcing experiment such as the number of workers, number of tasks, *etc.*
 
-![From collected labels to data storage in the `answers.json` file for a binary classification task on recognising smiling faces.](./figures/json_answers.svg){#fig-answers fig-align="center"}
+![From collected labels to data storage in the `answers.json` file for a binary classification task on recognising smiling faces.](./figures/json_answers.png){#fig-answers fig-align="center"}
 
 In this example, there are three tasks, $n_{worker}=4$ workers and $K=2$ classes.
 For the first task, the feedback effort is $\vert\mathcal{A}(x_1)\vert=4$.
@@ -194,7 +194,7 @@ $$
 
 with $T_{i,k}=1_{\{y_i^{\star}=k \}}$. The final aggregated soft label is $\hat y_i^{\text{DS}} = T_{i,\cdot}$.
 
-![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the DS model](./figures/bayesien_plaque_ds.svg){fig-align="center"}
+![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the DS model](./figures/bayesien_plaque_ds.png){fig-align="center"}
 
 Many variants of the DS model have been proposed in the literature, using Dirichlet priors on the confusion matrices [@passonneau-carpenter-2014-benefits], using $L$ clusters of workers [@imamura2018analysis] with $1\leq L\leq n_{\text{worker}}$ (DSWC) or even faster implementation that produces only hard labels [@sinha2018fast].
 
@@ -210,7 +210,7 @@ $$
 $$
 The likelihood can then be optimized using an EM algorithm to recover the soft label $\hat y_i^{\text{GLAD}}$.
 
-![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the GLAD model](./figures/schema_bayesien_glad.svg){fig-align="center"}
+![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the GLAD model](./figures/schema_bayesien_glad.png){fig-align="center"}
 
 All of these aggregation strategies -- and more -- are available in the `peerannot` library from the `peerannot.models` module.
 Each model is a class object in its own `Python` file. It inherits from the `CrowdModel` template class and is defined with at least two methods:
@@ -501,7 +501,7 @@ However, for some datasets, it was noticed that global confusion occurs between 
 It is the case for example in the LabelMe dataset [@rodrigues2017learning] where classes overlap.
 In this case, @chu2021learning proposed to extend the CrowdLayer model by not only modeling the worker confusion matrices; but also a global confusion matrix $\pi^g\in\mathbb{R}^{K\times K}$.
 
-![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for CoNAL model. Each worker is assigned a confusion matrix $\pi^{(j)}$. A global confusion matrix $\pi^g$ is shared between workers. A tradeoff between the global confusion and the local one is applied.](./figures/schema_bayesien_conal.svg){#fig-conal fig-align="center"}
+![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for CoNAL model. Each worker is assigned a confusion matrix $\pi^{(j)}$. A global confusion matrix $\pi^g$ is shared between workers. A tradeoff between the global confusion and the local one is applied.](./figures/schema_bayesien_conal.png){#fig-conal fig-align="center"}
 
 Given the output $z_i=\mathcal{C}(x_i)\in\mathbb{R}^K$ of a given classifier and task, CoNAL
 interpolates between the local confusion $\pi^{(j)}\sigma(z_i)$ and the global one $\pi^g\sigma(z_i)$.
