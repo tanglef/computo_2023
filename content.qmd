@@ -262,11 +262,6 @@ from pathlib import Path
 import matplotlib.ticker as mtick
 sns.set_style("whitegrid")
 
-plt.rcParams["text.usetex"] = True
-plt.rcParams[
-    "text.latex.preamble"
-] = r"\usepackage{amsmath,amsfonts,amsthm,amssymb}"
-
 votes_path = Path.cwd() / "simus" / "independent" / "answers.json"
 metadata_path = Path.cwd() / "simus" / "independent" / "metadata.json"
 efforts = feedback_effort(votes_path)
@@ -280,8 +275,9 @@ ax[0].set_xlabel(r"$\vert\mathcal{T}(w_j)\vert$")
 sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
 ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
 ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
+ax[1].xaxis.set_major_locator(plt.MaxNLocator(3))
 for i in range(2):
-  ax[i].xaxis.set_major_locator(MaxNLocator(integer=True))
+  ax[i].xaxis.set_major_locator(MaxNLocator(3))
   ax[i].xaxis.label.set_size(15)
   ax[i].yaxis.label.set_size(15)
   ax[i].xaxis.set_tick_params(labelsize=13)
@@ -358,8 +354,9 @@ ax[0].set_xlabel(r"$\vert\mathcal{T}(w_j)\vert$")
 sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
 ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
 ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
+ax[1].xaxis.set_major_locator(plt.MaxNLocator(3))
 for i in range(2):
-  ax[i].xaxis.set_major_locator(MaxNLocator(integer=True))
+  ax[i].xaxis.set_major_locator(MaxNLocator(3))
   ax[i].xaxis.label.set_size(15)
   ax[i].yaxis.label.set_size(15)
   ax[i].xaxis.set_tick_params(labelsize=13)
@@ -413,7 +410,7 @@ We simulate $n_{\text{task}}=500$ tasks and $n_{\text{worker}}=100$ with $30\%$ 
 #| output: false
 ! peerannot simulate --n-worker=100 --n-task=200  --n-classes=5 \
                      --strategy discrete-difficulty \
-                     --ratio 0.3 --ratio-diff 1 \
+                     --ratio 0.35 --ratio-diff 1 \
                      --feedback 10 --seed 0 \
                      --folder ./simus/discrete_difficulty
 ```
@@ -436,7 +433,7 @@ sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
 ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
 ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
 for i in range(2):
-  ax[i].xaxis.set_major_locator(MaxNLocator(integer=True))
+  ax[i].xaxis.set_major_locator(MaxNLocator(3))
   ax[i].xaxis.label.set_size(15)
   ax[i].yaxis.label.set_size(15)
   ax[i].xaxis.set_tick_params(labelsize=13)
