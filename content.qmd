@@ -69,15 +69,6 @@ execute:  # to remove at the end
   cache: true
 ---
 
-<!-- # TODOS:
-
-  - interpreation of results !
-  - Deep learning part / ECE issue with small datasets (XXX neurips NOLA)
-  - images / schemes
-  - XXXs
-  - DRAWINGS and colors!
-  - Tr(pi) for CL / CoNAL should only be run if CoNAL agg-deep is done -->
-
 # Introduction: crowdsourcing in image classification
 
 Image datasets widely use crowdsourcing to collect labels.
@@ -114,7 +105,7 @@ $$
 \mathcal{D}_{\text{train}} := \bigcup_{i\in[n_\text{task}]} \{(x_i, (y_i^{(j)}) \text{ for }j\in\mathcal{A}(x_i))\} = \bigcup_{j\in[n_\text{worker}]} \{(x_i, (y_i^{(j)})) \text{ for }i \in\mathcal{T}(w_j)\} \enspace.
 $$
 
-In this article, we do not address the setting where workers report their self-confidence (XXX), nor settings where workers are presented a trapping set -- *i.e* a subset of tasks where the ground truth is known to evaluate them with known labels [@khattak_toward_2017].
+In this article, we do not address the setting where workers report their self-confidence [@YasminRomena2022ICIC], nor settings where workers are presented a trapping set -- *i.e* a subset of tasks where the ground truth is known to evaluate them with known labels [@khattak_toward_2017].
 
 ## Storing crowdsourced datasets in `peerannot`
 
@@ -157,7 +148,7 @@ The aggregation step can lead to two types of learnable labels $\hat y_i\in\Delt
 - a **hard** label: $\hat y_i$ is a Dirac distribution, this can be encoded as a classical label in $[K]$,
 - a **soft** label: $\hat y_i\in\Delta_{K}$ can be a probability distribution other than Dirac distribution, in that case, each coefficient in $\hat y_i$ represents the probability to belong to the given class.
 
-Learning from soft labels has been shown to improve learning performance and make the classifier learn the task ambiguity. **XXX**
+Learning from soft labels has been shown to improve learning performance and make the classifier learn the task ambiguity [@zhang2017mixup;@peterson_human_2019;@park2022calibration].
 However, crowdsourcing is often used as a stepping stone to creating a new dataset and we usually expect a classification dataset to associate a task $x_i$ to a single label and not a full probability distribution.
 In this case, we recommend in practice releasing the anonymous answered labels and the aggregation strategy used to reach a consensus on a single label.
 With `peerannot`, both soft and hard labels can be produced.
@@ -325,15 +316,17 @@ results = results.format(precision=3)
 display(results)
 ```
 
+As expected by the simulation framework, @tbl-simu-independent fits the DS model, thus leading to a better accuracy on the retrieval of the simulated label for the DS model. The MV aggregation doesn't consider any worker-ability scoring or the task's difficulty and performs the worse.
+
 ### Simulated correlated mistakes
 
 The correlated mistakes are also known as the student-teacher setting. Consider that the crowd of workers is divided into two categories: teachers and students such that $n_{\text{teacher}} + n_{\text{student}}=n_{\text{worker}}$. Each student is randomly assigned to one teacher at the beginning of the experiment. We generate the (diagonally dominant) confusion matrices of each teacher and the students are associated with their's teacher confusion matrix. Then, they all answer independently, following a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$.
 
-We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=50$ with $80\%$ of students in the crowd. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
+We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=30$ with $80\%$ of students in the crowd. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
 
 ```{python}
 #| output: false
-! peerannot simulate --n-worker=50 --n-task=200  --n-classes=5 \
+! peerannot simulate --n-worker=30 --n-task=200  --n-classes=5 \
                      --strategy student-teacher \
                      --ratio 0.8 \
                      --feedback=10 --seed 0 \
@@ -404,6 +397,7 @@ results = results.format(precision=3)
 display(results)
 ```
 
+With @tbl-simu-corr, we see that with correlated data ($24$ students and $6$ teachers), using $5$ confusion matrices with DSWC[L=5] outperforms the vanilla DS strategy that does not consider the correlations. And the best performing method here estimates $10$ different confusion matrices (insted of $30$ for the vanilla DS model).
 
 ### Simulated mistakes with discrete difficulty levels on tasks
 
@@ -483,6 +477,13 @@ results = results.format(precision=3)
 display(results)
 ```
 
+Finally, in this setting involving task diffulty coefficients, the only strategy that involves a latent variable for the task difficulty, knowing GLAD, outperforms the other other strategies (see @tbl-simu-discrete-diff). Note that in this case, creating clusters of answers leads to worse decisions than a MV aggregation.
+
+To summurize our simulations, we see that depending on workers answering strategies, different latent variable models perform best.
+However, these are unknown outside of a simulation framework, thus if we want to obtain labels from multiple responses, we need to investigate multiple models.
+This can be done easily with `peerannot` as we demonstrated using the `aggregate` module.
+However, one might not want to generate a label, simply learn a classifier to predict labels on unseen data. This leads us to another module part of `peerannot`.
+
 # Learning from crowdsourced tasks
 
 Most often, tasks are crowdsourced to create a large training set as modern machine learning models require more and more data.
@@ -528,11 +529,18 @@ Both CrowdLayer and CoNAL model worker confusions directly in the classifier's w
 
 The $\mathrm{AccTrain}$ metric presented in @sec-evaluation-aggregation might no longer be of interest when training a classifier. Classical error measurements involve a test dataset to estimate the generalization error.
 To do so, we present hereafter two error metrics. Assuming we trained our classifier $f_\theta$ on a training set:
-  - the test accuracy is computed as $\frac{1}{n_{\text{test}}}\sum_{i=1}^{n_{\text{test}}}1_{\{y_i^\star = \widehat{f_\theta(x_i)}\}}$
-  - the expected calibration error [@guo_calibration_2017], computed as:
-  XXX
 
-Where the accuracy represents how well the classifier generalizes, the expected calibration error (ECE) quantifies the deviation between the accuracy and the confidence of the classifier. Modern neural networks are known to often be overconfident in their predictions XXX. However, it has also been remarked that training on crowdsourced data, depending on the strategy, mitigates this confidence issue. That is why we propose to compare them both in our coming experiments.
+  - the test accuracy is computed as $\frac{1}{n_{\text{test}}}\sum_{i=1}^{n_{\text{test}}}1_{\{y_i^\star = \widehat{f_\theta(x_i)}\}}$
+  - the expected calibration error [@guo_calibration_2017] over $M$ equally spaced bins $I_1,\dots,I_M$, computed as:
+
+  $$
+\mathrm{ECE} = \sum_{m=1}^M \frac{|B_m|}{n_{\text{task}}}|\mathrm{acc}(B_m)
+- \mathrm{conf}(B_m)|\enspace,
+ $$
+
+with $B_m=\{x_i| \mathcal{C}(x_i)_{[1]}\in I_m\}$ the tasks with predicted probability in the $m$-th bin, $\mathrm{acc}(B_m)$ the accuracy of the network for the samples in $B_m$ and $\mathrm{conf}(B_m)$ the associated empirical confidence.
+
+The accuracy represents how well the classifier generalizes, the expected calibration error (ECE) quantifies the deviation between the accuracy and the confidence of the classifier. Modern neural networks are known to often be overconfident in their predictions [@guo_calibration_2017]. However, it has also been remarked that training on crowdsourced data, depending on the strategy, mitigates this confidence issue. That is why we propose to compare them both in our coming experiments.
 Note that the ECE error estimator is known to be biased [@gruber2022better].
 Smaller training sets are known to have a higher ECE estimation error.
 And in the crowdsourcing setting, openly available datasets are often quite small.
@@ -542,7 +550,7 @@ And in the crowdsourcing setting, openly available datasets are often quite smal
 Few real crowdsourcing experiments have been released publicly.
 Among the available ones, CIFAR-10H [@peterson_human_2019] is one of the largest with $10 000$ tasks labeled by workers (the testing set of CIFAR-10).
 The issue with CIFAR-10H is that there are little to no disagreements and a simple majority voting leads to a near-perfect $\mathrm{AccTrain}$ error.
-While with this dataset comparing the impact of aggregation and end-to-end strategies might not be relevant, it is a good benchmark for task difficulty identification and worker evaluation scoring XXX
+While with this dataset, because of the lack of disagreements and data curation [@peterson_human_2019;@aitchison2020statistical] comparing the impact of aggregation and end-to-end strategies might not be relevant, it is however a good benchmark for task difficulty identification and worker evaluation scoring
 
 The LabelMe dataset was extracted from crowdsourcing segmentation experimentation and a subset of $K=8$ classes was released in @rodrigues2017learning.
 
@@ -561,17 +569,17 @@ Let us use `peerannot` to train a Resnet34 on the LabelMe dataset for:
 
 As we can see, CoNAL strategy performs best.
 In this case, it is expected behavior as CoNAL was created for the LabelMe dataset.
-However, using `peerannot` we can look into **why modeling common confusion returns better results with this dataset.
+However, using `peerannot` we can look into **why modeling common confusion returns better results with this dataset**.
 To do so, we can explore the datasets from two points of view: worker-wise or task-wise.
 
 # Exploring crowdsourced datasets
 
-If a dataset requires citizen knowledge to be labeled, it is because expert knowledge is long and costly to obtain. In the era of big data, where datasets are built using web scraping XXX and other techniques, citizen science is popular as it is an easy way to produce many labels.
+If a dataset requires citizen knowledge to be labeled, it is because expert knowledge is long and costly to obtain. In the era of big data, where datasets are built using web scraping (or using a platform like [Amazon Mechanical Turk](https://www.mturk.com/)), citizen science is popular as it is an easy way to produce many labels.
 
 However, mistakes and confusions happen during these experiments.
 Sometimes involuntarily (*e.g.* because the task is too hard or the worker is unable to differentiate between two classes) and sometimes not (*e.g.* the worker is a spammer).
 
-Underlying all the learning models and aggregation strategies, the cornerstone of crowdsourcing is evaluating the trust we put in each worker depending on the presented task. And with the gamification of crowdsourcing XXX, it has become essential to find scoring metrics both for workers and tasks to keep citizens in the loop so to speak.
+Underlying all the learning models and aggregation strategies, the cornerstone of crowdsourcing is evaluating the trust we put in each worker depending on the presented task. And with the gamification of crowdsourcing [@plantgame2016;@tinati2017investigation], it has become essential to find scoring metrics both for workers and tasks to keep citizens in the loop so to speak.
 This is the purpose of the identification module in `peerannot`
 
 ## Exploring tasks' difficulty
@@ -580,7 +588,7 @@ To explore the tasks' intrinsic difficulty, we propose to compare three scoring 
 
   - the entropy of the NS distribution: reliable with a big enough and not adversarial crowd, the entropy measures the inherent uncertainty of the distribution to the possible outcomes.
   - GLAD's scoring: by construction, @whitehill_whose_2009 introduced a scalar coefficient to score the difficulty of a task $\beta_i>0$.
-  - the WAUM: introduced in XXX, this weighted area under the margins indicates how difficult it is for a model to classify the task given the crowdsourced labels and the trust we have in each worker.
+  - the WAUM: introduced in [@lefort2022improve], this weighted area under the margins indicates how difficult it is for a model to classify the task given the crowdsourced labels and the trust we have in each worker.
 
 Note that each of these statistics is useful in its context. The entropy can not be used in a setting with $|\mathcal{A}(x_i)|$ low (few labels per task), in particular for the LabelMe dataset it is not informative. The WAUM can work with any number of labels, but the larger the better. However, as it uses a deep learning classifier, the WAUM needs the tasks $(x_i)_i$ in addition to the proposed labels while the other strategies are feature-blind.
 
@@ -697,7 +705,7 @@ For CoNAL, we only consider the trace of the confusion matrix $\pi^{(j)}$ in the
 ### CIFAR-10H
 
 The Cifar-10H dataset has few disagreements among workers.
-From XXX, we can see that
+From @fig-abilities-cifar10H, we can see that
 
 ```{python}
 #| output: false
@@ -709,8 +717,8 @@ for method in ["trace_confusion", "spam_score"]:
 ```
 
 ```{python}
-#| code-fold: true
 #| label: fig-abilities-cifar10H
+#| code-fold: true
 #| fig-cap: Comparison of ability scores by workers for the CIFAR-10H dataset.
 
 path_ = Path.cwd() / "datasets" / "cifar10H"
