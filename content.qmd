@@ -744,61 +744,6 @@ plt.show()
 ```
 
 
-<!--
-```{python}
-reliability = np.logspace(-1.5, 1, num=40)
-rng = np.random.default_rng(0)
-K = 5
-matrices = []
-arr = np.arange(K)
-for j in range(len(reliability)):
-  mat = rng.dirichlet([reliability[j]] * K, size=K)
-  if reliability[j] <= 1:
-    argmax_ = np.argmax(mat, axis=1)
-    mat[arr, arr], mat[arr, argmax_] = mat[arr, argmax_], mat[arr, arr]
-  matrices.append(mat)
-matrices = np.stack(matrices)
-np.save(Path.cwd() / "simus" / "confusions_exploring_reliability.npy", matrices)
-```
-
-```{python}
-#| output: false
-! peerannot simulate --n-worker=40 --n-task=200  --n-classes=5 \
-                     --strategy independent-confusion \
-                     --feedback=10 --seed 0 \
-                     --folder ./simus/exploring_reliability \
-                     --matrix-file ./simus/confusions_exploring_reliability.npy
-```
--->
-
-
-<!--
-```{python}
-#| output: false
-! peerannot aggregate ./simus/exploring_reliability -s GLAD
-for method in ["trace_confusion", "spam_score"]:
-  ! peerannot identify ./simus/exploring_reliability/ --n-classes=5 \
-                       -s {method} --labels ./simus/exploring_reliability.answers.json
-```
-
-```{python}
-#| code-fold: true
-#| label: fig-abilities-simu
-#| fig-cap: Comparison of ability scores by workers.
-
-path_ = Path.cwd() / "simus" / "exploring_reliability"
-results_identif = {"trace_confusion": [], "spam_score": [], "glad": []}
-results_identif["trace_confusion"].extend(np.load(path_ / 'identification' / "traces_confusion.npy"))
-results_identif["spam_score"].extend(np.load(path_ / 'identification' / "spam_score.npy"))
-results_identif["glad"].extend(np.load(path_ / 'identification' / "glad" / "abilities.npy")[:, 1])
-results_identif = pd.DataFrame(results_identif)
-g = sns.pairplot(results_identif, corner=True, diag_kind="kde")
-g.map_lower(corrfunc)
-plt.show()
-```
- -->
-
-
 # Conclusion
 
 We introduced `peerannot`, a library to handle crowdsourced datasets. This library enables both easy label aggregation and direct training strategies with classical state-of-the-art classifiers. The identification module of the library allows exploring the collected data from both the tasks and the workers' point of view for better scorings and data cleaning procedures.
