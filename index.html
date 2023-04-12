@@ -492,52 +492,47 @@ ISSN 2824-7795</p>
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  results[strategy].append(acc)</span>
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.DataFrame(results, index<span class="op">=</span>[<span class="st">'AccTrain'</span>])</span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>results.columns <span class="op">=</span> <span class="bu">map</span>(<span class="bu">str</span>.upper, results.columns)</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>display(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> results.style.set_table_styles([<span class="bu">dict</span>(selector<span class="op">=</span><span class="st">'th'</span>, props<span class="op">=</span>[(<span class="st">'text-align'</span>, <span class="st">'center'</span>)])])</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>results.set_properties(<span class="op">**</span>{<span class="st">'text-align'</span>: <span class="st">'center'</span>})</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> results.<span class="bu">format</span>(precision<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>display(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
+<style type="text/css">
+#T_00106 th {
+  text-align: center;
+}
+#T_00106_row0_col0, #T_00106_row0_col1, #T_00106_row0_col2, #T_00106_row0_col3, #T_00106_row0_col4, #T_00106_row0_col5 {
+  text-align: center;
+}
 </style>
 
 <div id="tbl-simu-independent" class="anchored">
-<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table id="T_00106" data-quarto-postprocess="true" class="table table-sm table-striped small">
 <caption>Table&nbsp;1: AccTrain metric on simulated independent mistakes considering classical feature-blind label aggregation strategies</caption>
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">MV</th>
-<th data-quarto-table-cell-role="th">NAIVESOFT</th>
-<th data-quarto-table-cell-role="th">GLAD</th>
-<th data-quarto-table-cell-role="th">DS</th>
-<th data-quarto-table-cell-role="th">DSWC[L=5]</th>
-<th data-quarto-table-cell-role="th">DSWC[L=10]</th>
+<th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th id="T_00106_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">MV</th>
+<th id="T_00106_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">NAIVESOFT</th>
+<th id="T_00106_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">GLAD</th>
+<th id="T_00106_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">DS</th>
+<th id="T_00106_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">DSWC[L=5]</th>
+<th id="T_00106_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">DSWC[L=10]</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">AccTrain</td>
-<td>0.775</td>
-<td>0.76</td>
-<td>0.775</td>
-<td>0.89</td>
-<td>0.775</td>
-<td>0.77</td>
+<td id="T_00106_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">AccTrain</td>
+<td id="T_00106_row0_col0" class="data row0 col0">0.750</td>
+<td id="T_00106_row0_col1" class="data row0 col1">0.760</td>
+<td id="T_00106_row0_col2" class="data row0 col2">0.775</td>
+<td id="T_00106_row0_col3" class="data row0 col3">0.890</td>
+<td id="T_00106_row0_col4" class="data row0 col4">0.775</td>
+<td id="T_00106_row0_col5" class="data row0 col5">0.770</td>
 </tr>
 </tbody>
 </table>
-</div>
-
 </div>
 </div>
 </div>
@@ -615,52 +610,47 @@ ISSN 2824-7795</p>
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  results[strategy].append(acc)</span>
 <span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.DataFrame(results, index<span class="op">=</span>[<span class="st">'AccTrain'</span>])</span>
 <span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>results.columns <span class="op">=</span> <span class="bu">map</span>(<span class="bu">str</span>.upper, results.columns)</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>display(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> results.style.set_table_styles([<span class="bu">dict</span>(selector<span class="op">=</span><span class="st">'th'</span>, props<span class="op">=</span>[(<span class="st">'text-align'</span>, <span class="st">'center'</span>)])])</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>results.set_properties(<span class="op">**</span>{<span class="st">'text-align'</span>: <span class="st">'center'</span>})</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> results.<span class="bu">format</span>(precision<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>display(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
+<style type="text/css">
+#T_edb19 th {
+  text-align: center;
+}
+#T_edb19_row0_col0, #T_edb19_row0_col1, #T_edb19_row0_col2, #T_edb19_row0_col3, #T_edb19_row0_col4, #T_edb19_row0_col5 {
+  text-align: center;
+}
 </style>
 
 <div id="tbl-simu-corr" class="anchored">
-<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table id="T_edb19" data-quarto-postprocess="true" class="table table-sm table-striped small">
 <caption>Table&nbsp;2: AccTrain metric on simulated correlated mistakes considering classical feature-blind label aggregation strategies</caption>
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">MV</th>
-<th data-quarto-table-cell-role="th">NAIVESOFT</th>
-<th data-quarto-table-cell-role="th">GLAD</th>
-<th data-quarto-table-cell-role="th">DS</th>
-<th data-quarto-table-cell-role="th">DSWC[L=5]</th>
-<th data-quarto-table-cell-role="th">DSWC[L=10]</th>
+<th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th id="T_edb19_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">MV</th>
+<th id="T_edb19_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">NAIVESOFT</th>
+<th id="T_edb19_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">GLAD</th>
+<th id="T_edb19_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">DS</th>
+<th id="T_edb19_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">DSWC[L=5]</th>
+<th id="T_edb19_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">DSWC[L=10]</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">AccTrain</td>
-<td>0.72</td>
-<td>0.72</td>
-<td>0.68</td>
-<td>0.765</td>
-<td>0.725</td>
-<td>0.695</td>
+<td id="T_edb19_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">AccTrain</td>
+<td id="T_edb19_row0_col0" class="data row0 col0">0.720</td>
+<td id="T_edb19_row0_col1" class="data row0 col1">0.720</td>
+<td id="T_edb19_row0_col2" class="data row0 col2">0.680</td>
+<td id="T_edb19_row0_col3" class="data row0 col3">0.765</td>
+<td id="T_edb19_row0_col4" class="data row0 col4">0.725</td>
+<td id="T_edb19_row0_col5" class="data row0 col5">0.695</td>
 </tr>
 </tbody>
 </table>
-</div>
-
 </div>
 </div>
 </div>
@@ -668,7 +658,7 @@ ISSN 2824-7795</p>
 <section id="simulated-mistakes-with-discrete-difficulty-levels-on-tasks" class="level3" data-number="3.2.3">
 <h3 data-number="3.2.3" class="anchored" data-anchor-id="simulated-mistakes-with-discrete-difficulty-levels-on-tasks"><span class="header-section-number">3.2.3</span> Simulated mistakes with discrete difficulty levels on tasks</h3>
 <p>For the final simulation setting, we consider the discrete difficulty presented in <span class="citation" data-cites="whitehill_whose_2009">Whitehill et al. (<a href="#ref-whitehill_whose_2009" role="doc-biblioref">2009</a>)</span>. Contrary to other simulations, we here consider that each worker is either good or bad and each task is either easy or hard. Easy tasks are answered without mistakes by involved workers. However, hard tasks are answered following the worker’s confusion matrix. The confusion matrix <span class="math inline">\pi^{(j)}</span> is diagonally dominant for good workers while each row is drawn uniformly in the simplex <span class="math inline">\Delta_K</span> for bad workers. Each worker then answers independently to the presented tasks.</p>
-<p>We simulate <span class="math inline">n_{\text{task}}=500</span> tasks and <span class="math inline">n_{\text{worker}}=100</span> with <span class="math inline">30\%</span> of good workers in the crowd and <span class="math inline">50\%</span> of easy tasks. There are <span class="math inline">K=5</span> possible classes. Each task receives <span class="math inline">\vert\mathcal{A}(x_i)\vert=10</span> labels.</p>
+<p>We simulate <span class="math inline">n_{\text{task}}=500</span> tasks and <span class="math inline">n_{\text{worker}}=100</span> with <span class="math inline">35\%</span> of good workers in the crowd and <span class="math inline">50\%</span> of easy tasks. There are <span class="math inline">K=5</span> possible classes. Each task receives <span class="math inline">\vert\mathcal{A}(x_i)\vert=10</span> labels.</p>
 <div class="cell" data-execution_count="9">
 <details open="">
 <summary>Hide/Show the code</summary>
@@ -737,52 +727,47 @@ ISSN 2824-7795</p>
 <span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  results[strategy].append(acc)</span>
 <span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.DataFrame(results, index<span class="op">=</span>[<span class="st">'AccTrain'</span>])</span>
 <span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>results.columns <span class="op">=</span> <span class="bu">map</span>(<span class="bu">str</span>.upper, results.columns)</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>display(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> results.style.set_table_styles([<span class="bu">dict</span>(selector<span class="op">=</span><span class="st">'th'</span>, props<span class="op">=</span>[(<span class="st">'text-align'</span>, <span class="st">'center'</span>)])])</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>results.set_properties(<span class="op">**</span>{<span class="st">'text-align'</span>: <span class="st">'center'</span>})</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> results.<span class="bu">format</span>(precision<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>display(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
+<style type="text/css">
+#T_93eb4 th {
+  text-align: center;
+}
+#T_93eb4_row0_col0, #T_93eb4_row0_col1, #T_93eb4_row0_col2, #T_93eb4_row0_col3, #T_93eb4_row0_col4, #T_93eb4_row0_col5 {
+  text-align: center;
+}
 </style>
 
 <div id="tbl-simu-discrete-diff" class="anchored">
-<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<table id="T_93eb4" data-quarto-postprocess="true" class="table table-sm table-striped small">
 <caption>Table&nbsp;3: AccTrain metric on simulated mistakes when tasks are associated a difficulty level considering classical feature-blind label aggregation strategies</caption>
 <thead>
 <tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">MV</th>
-<th data-quarto-table-cell-role="th">NAIVESOFT</th>
-<th data-quarto-table-cell-role="th">GLAD</th>
-<th data-quarto-table-cell-role="th">DS</th>
-<th data-quarto-table-cell-role="th">DSWC[L=2]</th>
-<th data-quarto-table-cell-role="th">DSWC[L=5]</th>
+<th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
+<th id="T_93eb4_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">MV</th>
+<th id="T_93eb4_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">NAIVESOFT</th>
+<th id="T_93eb4_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">GLAD</th>
+<th id="T_93eb4_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">DS</th>
+<th id="T_93eb4_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">DSWC[L=2]</th>
+<th id="T_93eb4_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">DSWC[L=5]</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">AccTrain</td>
-<td>0.81</td>
-<td>0.79</td>
-<td>0.845</td>
-<td>0.81</td>
-<td>0.6</td>
-<td>0.66</td>
+<td id="T_93eb4_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">AccTrain</td>
+<td id="T_93eb4_row0_col0" class="data row0 col0">0.820</td>
+<td id="T_93eb4_row0_col1" class="data row0 col1">0.790</td>
+<td id="T_93eb4_row0_col2" class="data row0 col2">0.845</td>
+<td id="T_93eb4_row0_col3" class="data row0 col3">0.810</td>
+<td id="T_93eb4_row0_col4" class="data row0 col4">0.600</td>
+<td id="T_93eb4_row0_col5" class="data row0 col5">0.660</td>
 </tr>
 </tbody>
 </table>
-</div>
-
 </div>
 </div>
 </div>
@@ -1792,437 +1777,446 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb24-329"><a href="#cb24-329" aria-hidden="true" tabindex="-1"></a>  results[strategy].append(acc)</span>
 <span id="cb24-330"><a href="#cb24-330" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.DataFrame(results, index<span class="op">=</span>[<span class="st">'AccTrain'</span>])</span>
 <span id="cb24-331"><a href="#cb24-331" aria-hidden="true" tabindex="-1"></a>results.columns <span class="op">=</span> <span class="bu">map</span>(<span class="bu">str</span>.upper, results.columns)</span>
-<span id="cb24-332"><a href="#cb24-332" aria-hidden="true" tabindex="-1"></a>display(results)</span>
-<span id="cb24-333"><a href="#cb24-333" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-334"><a href="#cb24-334" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-335"><a href="#cb24-335" aria-hidden="true" tabindex="-1"></a><span class="fu">### Simulated correlated mistakes</span></span>
-<span id="cb24-336"><a href="#cb24-336" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-337"><a href="#cb24-337" aria-hidden="true" tabindex="-1"></a>The correlated mistakes are also known as the student-teacher setting. Consider that the crowd of workers is divided into two categories: teachers and students such that $n_{\text{teacher}} + n_{\text{student}}=n_{\text{worker}}$. Each student is randomly assigned to one teacher at the beginning of the experiment. We generate the (diagonally dominant) confusion matrices of each teacher and the students are associated with their's teacher confusion matrix. Then, they all answer independently, following a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$.</span>
-<span id="cb24-338"><a href="#cb24-338" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-339"><a href="#cb24-339" aria-hidden="true" tabindex="-1"></a>We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=50$ with $80\%$ of students in the crowd. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.</span>
-<span id="cb24-340"><a href="#cb24-340" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-343"><a href="#cb24-343" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-344"><a href="#cb24-344" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
-<span id="cb24-345"><a href="#cb24-345" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot simulate <span class="op">--</span>n<span class="op">-</span>worker<span class="op">=</span><span class="dv">50</span> <span class="op">--</span>n<span class="op">-</span>task<span class="op">=</span><span class="dv">200</span>  <span class="op">--</span>n<span class="op">-</span>classes<span class="op">=</span><span class="dv">5</span> <span class="op">\</span></span>
-<span id="cb24-346"><a href="#cb24-346" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>strategy student<span class="op">-</span>teacher <span class="op">\</span></span>
-<span id="cb24-347"><a href="#cb24-347" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>ratio <span class="fl">0.8</span> <span class="op">\</span></span>
-<span id="cb24-348"><a href="#cb24-348" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>feedback<span class="op">=</span><span class="dv">10</span> <span class="op">--</span>seed <span class="dv">0</span> <span class="op">\</span></span>
-<span id="cb24-349"><a href="#cb24-349" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>folder .<span class="op">/</span>simus<span class="op">/</span>student_teacher</span>
-<span id="cb24-350"><a href="#cb24-350" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-351"><a href="#cb24-351" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-352"><a href="#cb24-352" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-355"><a href="#cb24-355" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-356"><a href="#cb24-356" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb24-357"><a href="#cb24-357" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-358"><a href="#cb24-358" aria-hidden="true" tabindex="-1"></a>votes_path <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"simus"</span> <span class="op">/</span> <span class="st">"student_teacher"</span> <span class="op">/</span> <span class="st">"answers.json"</span></span>
-<span id="cb24-359"><a href="#cb24-359" aria-hidden="true" tabindex="-1"></a>metadata_path <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"simus"</span> <span class="op">/</span> <span class="st">"student_teacher"</span> <span class="op">/</span> <span class="st">"metadata.json"</span></span>
-<span id="cb24-360"><a href="#cb24-360" aria-hidden="true" tabindex="-1"></a>efforts <span class="op">=</span> feedback_effort(votes_path)</span>
-<span id="cb24-361"><a href="#cb24-361" aria-hidden="true" tabindex="-1"></a>workerload <span class="op">=</span> working_load(votes_path, metadata_path)</span>
-<span id="cb24-362"><a href="#cb24-362" aria-hidden="true" tabindex="-1"></a>feedback <span class="op">=</span> feedback_effort(votes_path)</span>
-<span id="cb24-363"><a href="#cb24-363" aria-hidden="true" tabindex="-1"></a>nbins <span class="op">=</span> <span class="dv">17</span></span>
-<span id="cb24-364"><a href="#cb24-364" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
-<span id="cb24-365"><a href="#cb24-365" aria-hidden="true" tabindex="-1"></a>sns.histplot(workerload, stat<span class="op">=</span><span class="st">"percent"</span>, bins<span class="op">=</span>nbins, shrink<span class="op">=</span><span class="dv">1</span>, ax<span class="op">=</span>ax[<span class="dv">0</span>])</span>
-<span id="cb24-366"><a href="#cb24-366" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].yaxis.set_major_formatter(mtick.PercentFormatter(decimals<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb24-367"><a href="#cb24-367" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_xlabel(<span class="vs">r"$\vert\mathcal</span><span class="sc">{T}</span><span class="vs">(w_j)\vert$"</span>)</span>
-<span id="cb24-368"><a href="#cb24-368" aria-hidden="true" tabindex="-1"></a>sns.histplot(feedback, stat<span class="op">=</span><span class="st">"percent"</span>, bins<span class="op">=</span>nbins, shrink<span class="op">=</span><span class="dv">1</span>, ax<span class="op">=</span>ax[<span class="dv">1</span>])</span>
-<span id="cb24-369"><a href="#cb24-369" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].yaxis.set_major_formatter(mtick.PercentFormatter(decimals<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb24-370"><a href="#cb24-370" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_xlabel(<span class="vs">r"$\vert\mathcal</span><span class="sc">{A}</span><span class="vs">(x_i)\vert$"</span>)</span>
-<span id="cb24-371"><a href="#cb24-371" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].xaxis.set_major_locator(plt.MaxNLocator(<span class="dv">3</span>))</span>
-<span id="cb24-372"><a href="#cb24-372" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>):</span>
-<span id="cb24-373"><a href="#cb24-373" aria-hidden="true" tabindex="-1"></a>  ax[i].xaxis.set_major_locator(MaxNLocator(<span class="dv">3</span>))</span>
-<span id="cb24-374"><a href="#cb24-374" aria-hidden="true" tabindex="-1"></a>  ax[i].xaxis.label.set_size(<span class="dv">15</span>)</span>
-<span id="cb24-375"><a href="#cb24-375" aria-hidden="true" tabindex="-1"></a>  ax[i].yaxis.label.set_size(<span class="dv">15</span>)</span>
-<span id="cb24-376"><a href="#cb24-376" aria-hidden="true" tabindex="-1"></a>  ax[i].xaxis.set_tick_params(labelsize<span class="op">=</span><span class="dv">13</span>)</span>
-<span id="cb24-377"><a href="#cb24-377" aria-hidden="true" tabindex="-1"></a>  ax[i].yaxis.set_tick_params(labelsize<span class="op">=</span><span class="dv">13</span>)</span>
-<span id="cb24-378"><a href="#cb24-378" aria-hidden="true" tabindex="-1"></a>  ax[i].title.set_size(<span class="dv">18</span>)</span>
-<span id="cb24-379"><a href="#cb24-379" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb24-380"><a href="#cb24-380" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb24-381"><a href="#cb24-381" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-382"><a href="#cb24-382" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-383"><a href="#cb24-383" aria-hidden="true" tabindex="-1"></a>With the obtained answers, we can look at the aforementioned aggregation strategies performance:</span>
-<span id="cb24-384"><a href="#cb24-384" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-387"><a href="#cb24-387" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-388"><a href="#cb24-388" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
-<span id="cb24-389"><a href="#cb24-389" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> strat <span class="kw">in</span> [<span class="st">"MV"</span>, <span class="st">"NaiveSoft"</span>, <span class="st">"DS"</span>, <span class="st">"GLAD"</span>, <span class="st">"DSWC[L=5]"</span>, <span class="st">"DSWC[L=10]"</span>]:</span>
-<span id="cb24-390"><a href="#cb24-390" aria-hidden="true" tabindex="-1"></a>  <span class="op">!</span> peerannot aggregate .<span class="op">/</span>simus<span class="op">/</span>student_teacher<span class="op">/</span> <span class="op">-</span>s {strat}</span>
-<span id="cb24-391"><a href="#cb24-391" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-392"><a href="#cb24-392" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-395"><a href="#cb24-395" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-396"><a href="#cb24-396" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-simu-corr</span></span>
-<span id="cb24-397"><a href="#cb24-397" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: AccTrain metric on simulated correlated mistakes considering classical feature-blind label aggregation strategies</span></span>
-<span id="cb24-398"><a href="#cb24-398" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb24-399"><a href="#cb24-399" aria-hidden="true" tabindex="-1"></a>simu_corr <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">'simus'</span> <span class="op">/</span> <span class="st">"student_teacher"</span></span>
-<span id="cb24-400"><a href="#cb24-400" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> {<span class="st">"mv"</span>: [], <span class="st">"naivesoft"</span>: [], <span class="st">"glad"</span>: [], <span class="st">"ds"</span>: [], <span class="st">"dswc[l=5]"</span>: [], <span class="st">"dswc[l=10]"</span>: []}</span>
-<span id="cb24-401"><a href="#cb24-401" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> strategy <span class="kw">in</span> results.keys():</span>
-<span id="cb24-402"><a href="#cb24-402" aria-hidden="true" tabindex="-1"></a>  path_labels <span class="op">=</span> simu_corr <span class="op">/</span> <span class="st">"labels"</span> <span class="op">/</span> <span class="ss">f"labels_student-teacher_</span><span class="sc">{</span>strategy<span class="sc">}</span><span class="ss">.npy"</span></span>
-<span id="cb24-403"><a href="#cb24-403" aria-hidden="true" tabindex="-1"></a>  ground_truth <span class="op">=</span> np.load(simu_corr <span class="op">/</span> <span class="st">"ground_truth.npy"</span>)</span>
-<span id="cb24-404"><a href="#cb24-404" aria-hidden="true" tabindex="-1"></a>  labels <span class="op">=</span> np.load(path_labels)</span>
-<span id="cb24-405"><a href="#cb24-405" aria-hidden="true" tabindex="-1"></a>  acc <span class="op">=</span> (</span>
-<span id="cb24-406"><a href="#cb24-406" aria-hidden="true" tabindex="-1"></a>          np.mean(labels <span class="op">==</span> ground_truth)</span>
-<span id="cb24-407"><a href="#cb24-407" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> labels.ndim <span class="op">==</span> <span class="dv">1</span></span>
-<span id="cb24-408"><a href="#cb24-408" aria-hidden="true" tabindex="-1"></a>          <span class="cf">else</span> np.mean(</span>
-<span id="cb24-409"><a href="#cb24-409" aria-hidden="true" tabindex="-1"></a>              np.argmax(labels, axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb24-410"><a href="#cb24-410" aria-hidden="true" tabindex="-1"></a>              <span class="op">==</span> ground_truth</span>
-<span id="cb24-411"><a href="#cb24-411" aria-hidden="true" tabindex="-1"></a>          )</span>
-<span id="cb24-412"><a href="#cb24-412" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb24-413"><a href="#cb24-413" aria-hidden="true" tabindex="-1"></a>  results[strategy].append(acc)</span>
-<span id="cb24-414"><a href="#cb24-414" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.DataFrame(results, index<span class="op">=</span>[<span class="st">'AccTrain'</span>])</span>
-<span id="cb24-415"><a href="#cb24-415" aria-hidden="true" tabindex="-1"></a>results.columns <span class="op">=</span> <span class="bu">map</span>(<span class="bu">str</span>.upper, results.columns)</span>
-<span id="cb24-416"><a href="#cb24-416" aria-hidden="true" tabindex="-1"></a>display(results)</span>
-<span id="cb24-417"><a href="#cb24-417" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-418"><a href="#cb24-418" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-419"><a href="#cb24-419" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-420"><a href="#cb24-420" aria-hidden="true" tabindex="-1"></a><span class="fu">### Simulated mistakes with discrete difficulty levels on tasks</span></span>
-<span id="cb24-421"><a href="#cb24-421" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-422"><a href="#cb24-422" aria-hidden="true" tabindex="-1"></a>For the final simulation setting, we consider the discrete difficulty presented in @whitehill_whose_2009. Contrary to other simulations, we here consider that each worker is either good or bad and each task is either easy or hard. Easy tasks are answered without mistakes by involved workers. However, hard tasks are answered following the worker's confusion matrix. The confusion matrix $\pi^{(j)}$ is diagonally dominant for good workers while each row is drawn uniformly in the simplex $\Delta_K$ for bad workers.</span>
-<span id="cb24-423"><a href="#cb24-423" aria-hidden="true" tabindex="-1"></a>Each worker then answers independently to the presented tasks.</span>
+<span id="cb24-332"><a href="#cb24-332" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> results.style.set_table_styles([<span class="bu">dict</span>(selector<span class="op">=</span><span class="st">'th'</span>, props<span class="op">=</span>[(<span class="st">'text-align'</span>, <span class="st">'center'</span>)])])</span>
+<span id="cb24-333"><a href="#cb24-333" aria-hidden="true" tabindex="-1"></a>results.set_properties(<span class="op">**</span>{<span class="st">'text-align'</span>: <span class="st">'center'</span>})</span>
+<span id="cb24-334"><a href="#cb24-334" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> results.<span class="bu">format</span>(precision<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb24-335"><a href="#cb24-335" aria-hidden="true" tabindex="-1"></a>display(results)</span>
+<span id="cb24-336"><a href="#cb24-336" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-337"><a href="#cb24-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-338"><a href="#cb24-338" aria-hidden="true" tabindex="-1"></a><span class="fu">### Simulated correlated mistakes</span></span>
+<span id="cb24-339"><a href="#cb24-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-340"><a href="#cb24-340" aria-hidden="true" tabindex="-1"></a>The correlated mistakes are also known as the student-teacher setting. Consider that the crowd of workers is divided into two categories: teachers and students such that $n_{\text{teacher}} + n_{\text{student}}=n_{\text{worker}}$. Each student is randomly assigned to one teacher at the beginning of the experiment. We generate the (diagonally dominant) confusion matrices of each teacher and the students are associated with their's teacher confusion matrix. Then, they all answer independently, following a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$.</span>
+<span id="cb24-341"><a href="#cb24-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-342"><a href="#cb24-342" aria-hidden="true" tabindex="-1"></a>We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=50$ with $80\%$ of students in the crowd. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.</span>
+<span id="cb24-343"><a href="#cb24-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-346"><a href="#cb24-346" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-347"><a href="#cb24-347" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb24-348"><a href="#cb24-348" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot simulate <span class="op">--</span>n<span class="op">-</span>worker<span class="op">=</span><span class="dv">50</span> <span class="op">--</span>n<span class="op">-</span>task<span class="op">=</span><span class="dv">200</span>  <span class="op">--</span>n<span class="op">-</span>classes<span class="op">=</span><span class="dv">5</span> <span class="op">\</span></span>
+<span id="cb24-349"><a href="#cb24-349" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>strategy student<span class="op">-</span>teacher <span class="op">\</span></span>
+<span id="cb24-350"><a href="#cb24-350" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>ratio <span class="fl">0.8</span> <span class="op">\</span></span>
+<span id="cb24-351"><a href="#cb24-351" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>feedback<span class="op">=</span><span class="dv">10</span> <span class="op">--</span>seed <span class="dv">0</span> <span class="op">\</span></span>
+<span id="cb24-352"><a href="#cb24-352" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>folder .<span class="op">/</span>simus<span class="op">/</span>student_teacher</span>
+<span id="cb24-353"><a href="#cb24-353" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-354"><a href="#cb24-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-355"><a href="#cb24-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-358"><a href="#cb24-358" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-359"><a href="#cb24-359" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb24-360"><a href="#cb24-360" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-361"><a href="#cb24-361" aria-hidden="true" tabindex="-1"></a>votes_path <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"simus"</span> <span class="op">/</span> <span class="st">"student_teacher"</span> <span class="op">/</span> <span class="st">"answers.json"</span></span>
+<span id="cb24-362"><a href="#cb24-362" aria-hidden="true" tabindex="-1"></a>metadata_path <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"simus"</span> <span class="op">/</span> <span class="st">"student_teacher"</span> <span class="op">/</span> <span class="st">"metadata.json"</span></span>
+<span id="cb24-363"><a href="#cb24-363" aria-hidden="true" tabindex="-1"></a>efforts <span class="op">=</span> feedback_effort(votes_path)</span>
+<span id="cb24-364"><a href="#cb24-364" aria-hidden="true" tabindex="-1"></a>workerload <span class="op">=</span> working_load(votes_path, metadata_path)</span>
+<span id="cb24-365"><a href="#cb24-365" aria-hidden="true" tabindex="-1"></a>feedback <span class="op">=</span> feedback_effort(votes_path)</span>
+<span id="cb24-366"><a href="#cb24-366" aria-hidden="true" tabindex="-1"></a>nbins <span class="op">=</span> <span class="dv">17</span></span>
+<span id="cb24-367"><a href="#cb24-367" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
+<span id="cb24-368"><a href="#cb24-368" aria-hidden="true" tabindex="-1"></a>sns.histplot(workerload, stat<span class="op">=</span><span class="st">"percent"</span>, bins<span class="op">=</span>nbins, shrink<span class="op">=</span><span class="dv">1</span>, ax<span class="op">=</span>ax[<span class="dv">0</span>])</span>
+<span id="cb24-369"><a href="#cb24-369" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].yaxis.set_major_formatter(mtick.PercentFormatter(decimals<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb24-370"><a href="#cb24-370" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_xlabel(<span class="vs">r"$\vert\mathcal</span><span class="sc">{T}</span><span class="vs">(w_j)\vert$"</span>)</span>
+<span id="cb24-371"><a href="#cb24-371" aria-hidden="true" tabindex="-1"></a>sns.histplot(feedback, stat<span class="op">=</span><span class="st">"percent"</span>, bins<span class="op">=</span>nbins, shrink<span class="op">=</span><span class="dv">1</span>, ax<span class="op">=</span>ax[<span class="dv">1</span>])</span>
+<span id="cb24-372"><a href="#cb24-372" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].yaxis.set_major_formatter(mtick.PercentFormatter(decimals<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb24-373"><a href="#cb24-373" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_xlabel(<span class="vs">r"$\vert\mathcal</span><span class="sc">{A}</span><span class="vs">(x_i)\vert$"</span>)</span>
+<span id="cb24-374"><a href="#cb24-374" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].xaxis.set_major_locator(plt.MaxNLocator(<span class="dv">3</span>))</span>
+<span id="cb24-375"><a href="#cb24-375" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>):</span>
+<span id="cb24-376"><a href="#cb24-376" aria-hidden="true" tabindex="-1"></a>  ax[i].xaxis.set_major_locator(MaxNLocator(<span class="dv">3</span>))</span>
+<span id="cb24-377"><a href="#cb24-377" aria-hidden="true" tabindex="-1"></a>  ax[i].xaxis.label.set_size(<span class="dv">15</span>)</span>
+<span id="cb24-378"><a href="#cb24-378" aria-hidden="true" tabindex="-1"></a>  ax[i].yaxis.label.set_size(<span class="dv">15</span>)</span>
+<span id="cb24-379"><a href="#cb24-379" aria-hidden="true" tabindex="-1"></a>  ax[i].xaxis.set_tick_params(labelsize<span class="op">=</span><span class="dv">13</span>)</span>
+<span id="cb24-380"><a href="#cb24-380" aria-hidden="true" tabindex="-1"></a>  ax[i].yaxis.set_tick_params(labelsize<span class="op">=</span><span class="dv">13</span>)</span>
+<span id="cb24-381"><a href="#cb24-381" aria-hidden="true" tabindex="-1"></a>  ax[i].title.set_size(<span class="dv">18</span>)</span>
+<span id="cb24-382"><a href="#cb24-382" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb24-383"><a href="#cb24-383" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb24-384"><a href="#cb24-384" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-385"><a href="#cb24-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-386"><a href="#cb24-386" aria-hidden="true" tabindex="-1"></a>With the obtained answers, we can look at the aforementioned aggregation strategies performance:</span>
+<span id="cb24-387"><a href="#cb24-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-390"><a href="#cb24-390" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-391"><a href="#cb24-391" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb24-392"><a href="#cb24-392" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> strat <span class="kw">in</span> [<span class="st">"MV"</span>, <span class="st">"NaiveSoft"</span>, <span class="st">"DS"</span>, <span class="st">"GLAD"</span>, <span class="st">"DSWC[L=5]"</span>, <span class="st">"DSWC[L=10]"</span>]:</span>
+<span id="cb24-393"><a href="#cb24-393" aria-hidden="true" tabindex="-1"></a>  <span class="op">!</span> peerannot aggregate .<span class="op">/</span>simus<span class="op">/</span>student_teacher<span class="op">/</span> <span class="op">-</span>s {strat}</span>
+<span id="cb24-394"><a href="#cb24-394" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-395"><a href="#cb24-395" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-398"><a href="#cb24-398" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-399"><a href="#cb24-399" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-simu-corr</span></span>
+<span id="cb24-400"><a href="#cb24-400" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: AccTrain metric on simulated correlated mistakes considering classical feature-blind label aggregation strategies</span></span>
+<span id="cb24-401"><a href="#cb24-401" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb24-402"><a href="#cb24-402" aria-hidden="true" tabindex="-1"></a>simu_corr <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">'simus'</span> <span class="op">/</span> <span class="st">"student_teacher"</span></span>
+<span id="cb24-403"><a href="#cb24-403" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> {<span class="st">"mv"</span>: [], <span class="st">"naivesoft"</span>: [], <span class="st">"glad"</span>: [], <span class="st">"ds"</span>: [], <span class="st">"dswc[l=5]"</span>: [], <span class="st">"dswc[l=10]"</span>: []}</span>
+<span id="cb24-404"><a href="#cb24-404" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> strategy <span class="kw">in</span> results.keys():</span>
+<span id="cb24-405"><a href="#cb24-405" aria-hidden="true" tabindex="-1"></a>  path_labels <span class="op">=</span> simu_corr <span class="op">/</span> <span class="st">"labels"</span> <span class="op">/</span> <span class="ss">f"labels_student-teacher_</span><span class="sc">{</span>strategy<span class="sc">}</span><span class="ss">.npy"</span></span>
+<span id="cb24-406"><a href="#cb24-406" aria-hidden="true" tabindex="-1"></a>  ground_truth <span class="op">=</span> np.load(simu_corr <span class="op">/</span> <span class="st">"ground_truth.npy"</span>)</span>
+<span id="cb24-407"><a href="#cb24-407" aria-hidden="true" tabindex="-1"></a>  labels <span class="op">=</span> np.load(path_labels)</span>
+<span id="cb24-408"><a href="#cb24-408" aria-hidden="true" tabindex="-1"></a>  acc <span class="op">=</span> (</span>
+<span id="cb24-409"><a href="#cb24-409" aria-hidden="true" tabindex="-1"></a>          np.mean(labels <span class="op">==</span> ground_truth)</span>
+<span id="cb24-410"><a href="#cb24-410" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> labels.ndim <span class="op">==</span> <span class="dv">1</span></span>
+<span id="cb24-411"><a href="#cb24-411" aria-hidden="true" tabindex="-1"></a>          <span class="cf">else</span> np.mean(</span>
+<span id="cb24-412"><a href="#cb24-412" aria-hidden="true" tabindex="-1"></a>              np.argmax(labels, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb24-413"><a href="#cb24-413" aria-hidden="true" tabindex="-1"></a>              <span class="op">==</span> ground_truth</span>
+<span id="cb24-414"><a href="#cb24-414" aria-hidden="true" tabindex="-1"></a>          )</span>
+<span id="cb24-415"><a href="#cb24-415" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb24-416"><a href="#cb24-416" aria-hidden="true" tabindex="-1"></a>  results[strategy].append(acc)</span>
+<span id="cb24-417"><a href="#cb24-417" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.DataFrame(results, index<span class="op">=</span>[<span class="st">'AccTrain'</span>])</span>
+<span id="cb24-418"><a href="#cb24-418" aria-hidden="true" tabindex="-1"></a>results.columns <span class="op">=</span> <span class="bu">map</span>(<span class="bu">str</span>.upper, results.columns)</span>
+<span id="cb24-419"><a href="#cb24-419" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> results.style.set_table_styles([<span class="bu">dict</span>(selector<span class="op">=</span><span class="st">'th'</span>, props<span class="op">=</span>[(<span class="st">'text-align'</span>, <span class="st">'center'</span>)])])</span>
+<span id="cb24-420"><a href="#cb24-420" aria-hidden="true" tabindex="-1"></a>results.set_properties(<span class="op">**</span>{<span class="st">'text-align'</span>: <span class="st">'center'</span>})</span>
+<span id="cb24-421"><a href="#cb24-421" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> results.<span class="bu">format</span>(precision<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb24-422"><a href="#cb24-422" aria-hidden="true" tabindex="-1"></a>display(results)</span>
+<span id="cb24-423"><a href="#cb24-423" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb24-424"><a href="#cb24-424" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-425"><a href="#cb24-425" aria-hidden="true" tabindex="-1"></a>We simulate $n_{\text{task}}=500$ tasks and $n_{\text{worker}}=100$ with $30\%$ of good workers in the crowd and $50\%$ of easy tasks. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.</span>
-<span id="cb24-426"><a href="#cb24-426" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-429"><a href="#cb24-429" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-430"><a href="#cb24-430" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
-<span id="cb24-431"><a href="#cb24-431" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot simulate <span class="op">--</span>n<span class="op">-</span>worker<span class="op">=</span><span class="dv">100</span> <span class="op">--</span>n<span class="op">-</span>task<span class="op">=</span><span class="dv">200</span>  <span class="op">--</span>n<span class="op">-</span>classes<span class="op">=</span><span class="dv">5</span> <span class="op">\</span></span>
-<span id="cb24-432"><a href="#cb24-432" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>strategy discrete<span class="op">-</span>difficulty <span class="op">\</span></span>
-<span id="cb24-433"><a href="#cb24-433" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>ratio <span class="fl">0.35</span> <span class="op">--</span>ratio<span class="op">-</span>diff <span class="dv">1</span> <span class="op">\</span></span>
-<span id="cb24-434"><a href="#cb24-434" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>feedback <span class="dv">10</span> <span class="op">--</span>seed <span class="dv">0</span> <span class="op">\</span></span>
-<span id="cb24-435"><a href="#cb24-435" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>folder .<span class="op">/</span>simus<span class="op">/</span>discrete_difficulty</span>
-<span id="cb24-436"><a href="#cb24-436" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-437"><a href="#cb24-437" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-438"><a href="#cb24-438" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-441"><a href="#cb24-441" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-442"><a href="#cb24-442" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb24-425"><a href="#cb24-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-426"><a href="#cb24-426" aria-hidden="true" tabindex="-1"></a><span class="fu">### Simulated mistakes with discrete difficulty levels on tasks</span></span>
+<span id="cb24-427"><a href="#cb24-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-428"><a href="#cb24-428" aria-hidden="true" tabindex="-1"></a>For the final simulation setting, we consider the discrete difficulty presented in @whitehill_whose_2009. Contrary to other simulations, we here consider that each worker is either good or bad and each task is either easy or hard. Easy tasks are answered without mistakes by involved workers. However, hard tasks are answered following the worker's confusion matrix. The confusion matrix $\pi^{(j)}$ is diagonally dominant for good workers while each row is drawn uniformly in the simplex $\Delta_K$ for bad workers.</span>
+<span id="cb24-429"><a href="#cb24-429" aria-hidden="true" tabindex="-1"></a>Each worker then answers independently to the presented tasks.</span>
+<span id="cb24-430"><a href="#cb24-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-431"><a href="#cb24-431" aria-hidden="true" tabindex="-1"></a>We simulate $n_{\text{task}}=500$ tasks and $n_{\text{worker}}=100$ with $35\%$ of good workers in the crowd and $50\%$ of easy tasks. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.</span>
+<span id="cb24-432"><a href="#cb24-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-435"><a href="#cb24-435" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-436"><a href="#cb24-436" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb24-437"><a href="#cb24-437" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot simulate <span class="op">--</span>n<span class="op">-</span>worker<span class="op">=</span><span class="dv">100</span> <span class="op">--</span>n<span class="op">-</span>task<span class="op">=</span><span class="dv">200</span>  <span class="op">--</span>n<span class="op">-</span>classes<span class="op">=</span><span class="dv">5</span> <span class="op">\</span></span>
+<span id="cb24-438"><a href="#cb24-438" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>strategy discrete<span class="op">-</span>difficulty <span class="op">\</span></span>
+<span id="cb24-439"><a href="#cb24-439" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>ratio <span class="fl">0.35</span> <span class="op">--</span>ratio<span class="op">-</span>diff <span class="dv">1</span> <span class="op">\</span></span>
+<span id="cb24-440"><a href="#cb24-440" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>feedback <span class="dv">10</span> <span class="op">--</span>seed <span class="dv">0</span> <span class="op">\</span></span>
+<span id="cb24-441"><a href="#cb24-441" aria-hidden="true" tabindex="-1"></a>                     <span class="op">--</span>folder .<span class="op">/</span>simus<span class="op">/</span>discrete_difficulty</span>
+<span id="cb24-442"><a href="#cb24-442" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb24-443"><a href="#cb24-443" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-444"><a href="#cb24-444" aria-hidden="true" tabindex="-1"></a>votes_path <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"simus"</span> <span class="op">/</span> <span class="st">"discrete_difficulty"</span> <span class="op">/</span> <span class="st">"answers.json"</span></span>
-<span id="cb24-445"><a href="#cb24-445" aria-hidden="true" tabindex="-1"></a>metadata_path <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"simus"</span> <span class="op">/</span> <span class="st">"discrete_difficulty"</span> <span class="op">/</span> <span class="st">"metadata.json"</span></span>
-<span id="cb24-446"><a href="#cb24-446" aria-hidden="true" tabindex="-1"></a>efforts <span class="op">=</span> feedback_effort(votes_path)</span>
-<span id="cb24-447"><a href="#cb24-447" aria-hidden="true" tabindex="-1"></a>workerload <span class="op">=</span> working_load(votes_path, metadata_path)</span>
-<span id="cb24-448"><a href="#cb24-448" aria-hidden="true" tabindex="-1"></a>feedback <span class="op">=</span> feedback_effort(votes_path)</span>
-<span id="cb24-449"><a href="#cb24-449" aria-hidden="true" tabindex="-1"></a>nbins <span class="op">=</span> <span class="dv">17</span></span>
-<span id="cb24-450"><a href="#cb24-450" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
-<span id="cb24-451"><a href="#cb24-451" aria-hidden="true" tabindex="-1"></a>sns.histplot(workerload, stat<span class="op">=</span><span class="st">"percent"</span>, bins<span class="op">=</span>nbins, shrink<span class="op">=</span><span class="dv">1</span>, ax<span class="op">=</span>ax[<span class="dv">0</span>])</span>
-<span id="cb24-452"><a href="#cb24-452" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].yaxis.set_major_formatter(mtick.PercentFormatter(decimals<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb24-453"><a href="#cb24-453" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_xlabel(<span class="vs">r"$\vert\mathcal</span><span class="sc">{T}</span><span class="vs">(w_j)\vert$"</span>)</span>
-<span id="cb24-454"><a href="#cb24-454" aria-hidden="true" tabindex="-1"></a>sns.histplot(feedback, stat<span class="op">=</span><span class="st">"percent"</span>, bins<span class="op">=</span>nbins, shrink<span class="op">=</span><span class="dv">1</span>, ax<span class="op">=</span>ax[<span class="dv">1</span>])</span>
-<span id="cb24-455"><a href="#cb24-455" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].yaxis.set_major_formatter(mtick.PercentFormatter(decimals<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb24-456"><a href="#cb24-456" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_xlabel(<span class="vs">r"$\vert\mathcal</span><span class="sc">{A}</span><span class="vs">(x_i)\vert$"</span>)</span>
-<span id="cb24-457"><a href="#cb24-457" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>):</span>
-<span id="cb24-458"><a href="#cb24-458" aria-hidden="true" tabindex="-1"></a>  ax[i].xaxis.set_major_locator(MaxNLocator(<span class="dv">3</span>))</span>
-<span id="cb24-459"><a href="#cb24-459" aria-hidden="true" tabindex="-1"></a>  ax[i].xaxis.label.set_size(<span class="dv">15</span>)</span>
-<span id="cb24-460"><a href="#cb24-460" aria-hidden="true" tabindex="-1"></a>  ax[i].yaxis.label.set_size(<span class="dv">15</span>)</span>
-<span id="cb24-461"><a href="#cb24-461" aria-hidden="true" tabindex="-1"></a>  ax[i].xaxis.set_tick_params(labelsize<span class="op">=</span><span class="dv">13</span>)</span>
-<span id="cb24-462"><a href="#cb24-462" aria-hidden="true" tabindex="-1"></a>  ax[i].yaxis.set_tick_params(labelsize<span class="op">=</span><span class="dv">13</span>)</span>
-<span id="cb24-463"><a href="#cb24-463" aria-hidden="true" tabindex="-1"></a>  ax[i].title.set_size(<span class="dv">18</span>)</span>
-<span id="cb24-464"><a href="#cb24-464" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb24-465"><a href="#cb24-465" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb24-466"><a href="#cb24-466" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-467"><a href="#cb24-467" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-468"><a href="#cb24-468" aria-hidden="true" tabindex="-1"></a>With the obtained answers, we can look at the aforementioned aggregation strategies performance:</span>
-<span id="cb24-469"><a href="#cb24-469" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-472"><a href="#cb24-472" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-473"><a href="#cb24-473" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
-<span id="cb24-474"><a href="#cb24-474" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> strat <span class="kw">in</span> [<span class="st">"MV"</span>, <span class="st">"NaiveSoft"</span>, <span class="st">"DS"</span>, <span class="st">"GLAD"</span>, <span class="st">"DSWC[L=2]"</span>, <span class="st">"DSWC[L=5]"</span>]:</span>
-<span id="cb24-475"><a href="#cb24-475" aria-hidden="true" tabindex="-1"></a>  <span class="op">!</span> peerannot aggregate .<span class="op">/</span>simus<span class="op">/</span>discrete_difficulty<span class="op">/</span> <span class="op">-</span>s {strat}</span>
-<span id="cb24-476"><a href="#cb24-476" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-479"><a href="#cb24-479" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-480"><a href="#cb24-480" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-simu-discrete-diff</span></span>
-<span id="cb24-481"><a href="#cb24-481" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: AccTrain metric on simulated mistakes when tasks are associated a difficulty level considering classical feature-blind label aggregation strategies</span></span>
-<span id="cb24-482"><a href="#cb24-482" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb24-483"><a href="#cb24-483" aria-hidden="true" tabindex="-1"></a>simu_corr <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">'simus'</span> <span class="op">/</span> <span class="st">"discrete_difficulty"</span></span>
-<span id="cb24-484"><a href="#cb24-484" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> {<span class="st">"mv"</span>: [], <span class="st">"naivesoft"</span>: [], <span class="st">"glad"</span>: [], <span class="st">"ds"</span>: [], <span class="st">"dswc[l=2]"</span>: [], <span class="st">"dswc[l=5]"</span>: []}</span>
-<span id="cb24-485"><a href="#cb24-485" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> strategy <span class="kw">in</span> results.keys():</span>
-<span id="cb24-486"><a href="#cb24-486" aria-hidden="true" tabindex="-1"></a>  path_labels <span class="op">=</span> simu_corr <span class="op">/</span> <span class="st">"labels"</span> <span class="op">/</span> <span class="ss">f"labels_discrete-difficulty_</span><span class="sc">{</span>strategy<span class="sc">}</span><span class="ss">.npy"</span></span>
-<span id="cb24-487"><a href="#cb24-487" aria-hidden="true" tabindex="-1"></a>  ground_truth <span class="op">=</span> np.load(simu_corr <span class="op">/</span> <span class="st">"ground_truth.npy"</span>)</span>
-<span id="cb24-488"><a href="#cb24-488" aria-hidden="true" tabindex="-1"></a>  labels <span class="op">=</span> np.load(path_labels)</span>
-<span id="cb24-489"><a href="#cb24-489" aria-hidden="true" tabindex="-1"></a>  acc <span class="op">=</span> (</span>
-<span id="cb24-490"><a href="#cb24-490" aria-hidden="true" tabindex="-1"></a>          np.mean(labels <span class="op">==</span> ground_truth)</span>
-<span id="cb24-491"><a href="#cb24-491" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> labels.ndim <span class="op">==</span> <span class="dv">1</span></span>
-<span id="cb24-492"><a href="#cb24-492" aria-hidden="true" tabindex="-1"></a>          <span class="cf">else</span> np.mean(</span>
-<span id="cb24-493"><a href="#cb24-493" aria-hidden="true" tabindex="-1"></a>              np.argmax(labels, axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb24-494"><a href="#cb24-494" aria-hidden="true" tabindex="-1"></a>              <span class="op">==</span> ground_truth</span>
-<span id="cb24-495"><a href="#cb24-495" aria-hidden="true" tabindex="-1"></a>          )</span>
-<span id="cb24-496"><a href="#cb24-496" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb24-497"><a href="#cb24-497" aria-hidden="true" tabindex="-1"></a>  results[strategy].append(acc)</span>
-<span id="cb24-498"><a href="#cb24-498" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.DataFrame(results, index<span class="op">=</span>[<span class="st">'AccTrain'</span>])</span>
-<span id="cb24-499"><a href="#cb24-499" aria-hidden="true" tabindex="-1"></a>results.columns <span class="op">=</span> <span class="bu">map</span>(<span class="bu">str</span>.upper, results.columns)</span>
-<span id="cb24-500"><a href="#cb24-500" aria-hidden="true" tabindex="-1"></a>display(results)</span>
-<span id="cb24-501"><a href="#cb24-501" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-502"><a href="#cb24-502" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-503"><a href="#cb24-503" aria-hidden="true" tabindex="-1"></a><span class="fu"># Learning from crowdsourced tasks</span></span>
-<span id="cb24-504"><a href="#cb24-504" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-505"><a href="#cb24-505" aria-hidden="true" tabindex="-1"></a>Most often, tasks are crowdsourced to create a large training set as modern machine learning models require more and more data.</span>
-<span id="cb24-506"><a href="#cb24-506" aria-hidden="true" tabindex="-1"></a>The aggregation step then simply becomes the first step in the complete learning pipeline.</span>
-<span id="cb24-507"><a href="#cb24-507" aria-hidden="true" tabindex="-1"></a>However, instead of aggregating labels, modern neural networks let us directly train a classifier from multiple noisy labels.</span>
-<span id="cb24-508"><a href="#cb24-508" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-509"><a href="#cb24-509" aria-hidden="true" tabindex="-1"></a><span class="fu">## Classical models</span></span>
-<span id="cb24-510"><a href="#cb24-510" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-511"><a href="#cb24-511" aria-hidden="true" tabindex="-1"></a>In recent years, directly learning a classifier from noisy labels was introduced.</span>
-<span id="cb24-512"><a href="#cb24-512" aria-hidden="true" tabindex="-1"></a>Two of the most used models: CrowdLayer <span class="co">[</span><span class="ot">@rodrigues2018deep</span><span class="co">]</span> and CoNAL <span class="co">[</span><span class="ot">@chu2021learning</span><span class="co">]</span>, are directly available in <span class="in">`peerannot`</span>.</span>
-<span id="cb24-513"><a href="#cb24-513" aria-hidden="true" tabindex="-1"></a>These two learning strategies directly incorporate a DS-based noise model in the neural network's architecture.</span>
-<span id="cb24-514"><a href="#cb24-514" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-515"><a href="#cb24-515" aria-hidden="true" tabindex="-1"></a>CrowdLayer trains a classifier with noisy labels as follows.</span>
-<span id="cb24-516"><a href="#cb24-516" aria-hidden="true" tabindex="-1"></a>Let the scores (logits) output of a given classifier neural network $\mathcal{C}$ be $z_i=\mathcal{C}(x_i)$.</span>
-<span id="cb24-517"><a href="#cb24-517" aria-hidden="true" tabindex="-1"></a>Then CrowdLayer adds a new layer $\pi\in\mathbb{R}^{n_{\text{worker}}\times K\times K}$, the tensor of all $\pi^{(j)}$s such that the crossentropy loss $(\mathrm{CE})$ is adapted to the crowdsourcing setting into $\mathcal{L}_{CE}^{\text{CrowdLayer}}$ and computed as:</span>
-<span id="cb24-518"><a href="#cb24-518" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb24-519"><a href="#cb24-519" aria-hidden="true" tabindex="-1"></a>\mathcal{L}_{CE}^{\text{CrowdLayer}}(x_i) = \sum_{j\in\mathcal{A}(x_i)} \mathrm{CE}(\sigma\left(\pi^{(j)}\sigma\big(z_i\big)\right), y_i^{(j)}) \enspace.</span>
-<span id="cb24-520"><a href="#cb24-520" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb24-521"><a href="#cb24-521" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-522"><a href="#cb24-522" aria-hidden="true" tabindex="-1"></a>The confusion matrices are incorporated as is into the network architecture as a new layer to transform the output probabilities to match each worker's answer.</span>
-<span id="cb24-523"><a href="#cb24-523" aria-hidden="true" tabindex="-1"></a>However, for some datasets, it was noticed that global confusion occurs between the proposed classes.</span>
-<span id="cb24-524"><a href="#cb24-524" aria-hidden="true" tabindex="-1"></a>It is the case for example in the LabelMe dataset <span class="co">[</span><span class="ot">@rodrigues2017learning</span><span class="co">]</span> where classes overlap.</span>
-<span id="cb24-525"><a href="#cb24-525" aria-hidden="true" tabindex="-1"></a>In this case, @chu2021learning proposed to extend the CrowdLayer model by not only modeling the worker confusion matrices; but also a global confusion matrix $\pi^g\in\mathbb{R}^{K\times K}$.</span>
-<span id="cb24-526"><a href="#cb24-526" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-527"><a href="#cb24-527" aria-hidden="true" tabindex="-1"></a>!<span class="co">[</span><span class="ot">Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for CoNAL model. Each worker is assigned a confusion matrix $\pi^{(j)}$. A global confusion matrix $\pi^g$ is shared between workers. A tradeoff between the global confusion and the local one is applied.</span><span class="co">](./figures/schema_bayesien_conal.png)</span>{#fig-conal fig-align="center"}</span>
-<span id="cb24-528"><a href="#cb24-528" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-529"><a href="#cb24-529" aria-hidden="true" tabindex="-1"></a>Given the output $z_i=\mathcal{C}(x_i)\in\mathbb{R}^K$ of a given classifier and task, CoNAL</span>
-<span id="cb24-530"><a href="#cb24-530" aria-hidden="true" tabindex="-1"></a>interpolates between the local confusion $\pi^{(j)}\sigma(z_i)$ and the global one $\pi^g\sigma(z_i)$.</span>
-<span id="cb24-531"><a href="#cb24-531" aria-hidden="true" tabindex="-1"></a>The loss function is computed as follows:</span>
-<span id="cb24-532"><a href="#cb24-532" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb24-533"><a href="#cb24-533" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb24-534"><a href="#cb24-534" aria-hidden="true" tabindex="-1"></a>&amp;\mathcal{L}_{CE}^{\text{CoNAL}}(x_i) = \sum_{j\in\mathcal{A}(x_i)} \mathrm{CE}(h_i^{(j)}, y_i^{(j)}) \enspace, <span class="sc">\\</span></span>
-<span id="cb24-535"><a href="#cb24-535" aria-hidden="true" tabindex="-1"></a>&amp;\text{with } h_i^{(j)} = \sigma\left(\big(\omega_i^{(j)} \pi^g + (1-\omega_i^{(j)})\pi^{(j)}\big)z_i\right) \enspace.</span>
-<span id="cb24-536"><a href="#cb24-536" aria-hidden="true" tabindex="-1"></a>\end{aligned} \</span>
-<span id="cb24-537"><a href="#cb24-537" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb24-538"><a href="#cb24-538" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-539"><a href="#cb24-539" aria-hidden="true" tabindex="-1"></a>The interpolation weight is defined as $s_i^{(j)}\sim\mathcal{B}(w_i^{(j)})$ and is unobservable in practice.</span>
-<span id="cb24-540"><a href="#cb24-540" aria-hidden="true" tabindex="-1"></a>So, to compute $h_i^{(j)}$, the weight is obtained through an auxiliary network that projects the task $x_i$ onto $v_i$ and the worker $w_j$ onto $u_j$, two vectors in an embedding space of dimension $d\geq 1$. Finally, $w_i^{(j)}=(1+\exp(- u_j^\top v_i))^{-1}$.</span>
-<span id="cb24-541"><a href="#cb24-541" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-542"><a href="#cb24-542" aria-hidden="true" tabindex="-1"></a>Both CrowdLayer and CoNAL model worker confusions directly in the classifier's weights to learn from the noisy collected labels and are available in <span class="in">`peerannot`</span> as we will see in the following.</span>
-<span id="cb24-543"><a href="#cb24-543" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-544"><a href="#cb24-544" aria-hidden="true" tabindex="-1"></a><span class="fu">## Prediction error when learning from crowdsourced tasks</span></span>
-<span id="cb24-545"><a href="#cb24-545" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-546"><a href="#cb24-546" aria-hidden="true" tabindex="-1"></a>The $\mathrm{AccTrain}$ metric presented in @sec-evaluation-aggregation might no longer be of interest when training a classifier. Classical error measurements involve a test dataset to estimate the generalization error.</span>
-<span id="cb24-547"><a href="#cb24-547" aria-hidden="true" tabindex="-1"></a>To do so, we present hereafter two error metrics. Assuming we trained our classifier $f_\theta$ on a training set:</span>
-<span id="cb24-548"><a href="#cb24-548" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>the test accuracy is computed as $\frac{1}{n_{\text{test}}}\sum_{i=1}^{n_{\text{test}}}1_{\{y_i^\star = \widehat{f_\theta(x_i)}<span class="sc">\}</span>}$</span>
-<span id="cb24-549"><a href="#cb24-549" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>the expected calibration error <span class="co">[</span><span class="ot">@guo_calibration_2017</span><span class="co">]</span>, computed as:</span>
-<span id="cb24-550"><a href="#cb24-550" aria-hidden="true" tabindex="-1"></a>  XXX</span>
-<span id="cb24-551"><a href="#cb24-551" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-552"><a href="#cb24-552" aria-hidden="true" tabindex="-1"></a>Where the accuracy represents how well the classifier generalizes, the expected calibration error (ECE) quantifies the deviation between the accuracy and the confidence of the classifier. Modern neural networks are known to often be overconfident in their predictions XXX. However, it has also been remarked that training on crowdsourced data, depending on the strategy, mitigates this confidence issue. That is why we propose to compare them both in our coming experiments.</span>
-<span id="cb24-553"><a href="#cb24-553" aria-hidden="true" tabindex="-1"></a>Note that the ECE error estimator is known to be biased <span class="co">[</span><span class="ot">@gruber2022better</span><span class="co">]</span>.</span>
-<span id="cb24-554"><a href="#cb24-554" aria-hidden="true" tabindex="-1"></a>Smaller training sets are known to have a higher ECE estimation error.</span>
-<span id="cb24-555"><a href="#cb24-555" aria-hidden="true" tabindex="-1"></a>And in the crowdsourcing setting, openly available datasets are often quite small.</span>
-<span id="cb24-556"><a href="#cb24-556" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-557"><a href="#cb24-557" aria-hidden="true" tabindex="-1"></a><span class="fu">## Use case with `peerannot` on real datasets</span></span>
-<span id="cb24-558"><a href="#cb24-558" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-559"><a href="#cb24-559" aria-hidden="true" tabindex="-1"></a>Few real crowdsourcing experiments have been released publicly.</span>
-<span id="cb24-560"><a href="#cb24-560" aria-hidden="true" tabindex="-1"></a>Among the available ones, CIFAR-10H <span class="co">[</span><span class="ot">@peterson_human_2019</span><span class="co">]</span> is one of the largest with $10 000$ tasks labeled by workers (the testing set of CIFAR-10).</span>
-<span id="cb24-561"><a href="#cb24-561" aria-hidden="true" tabindex="-1"></a>The issue with CIFAR-10H is that there are little to no disagreements and a simple majority voting leads to a near-perfect $\mathrm{AccTrain}$ error.</span>
-<span id="cb24-562"><a href="#cb24-562" aria-hidden="true" tabindex="-1"></a>While with this dataset comparing the impact of aggregation and end-to-end strategies might not be relevant, it is a good benchmark for task difficulty identification and worker evaluation scoring XXX</span>
-<span id="cb24-563"><a href="#cb24-563" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-564"><a href="#cb24-564" aria-hidden="true" tabindex="-1"></a>The LabelMe dataset was extracted from crowdsourcing segmentation experimentation and a subset of $K=8$ classes was released in @rodrigues2017learning.</span>
+<span id="cb24-444"><a href="#cb24-444" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-447"><a href="#cb24-447" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-448"><a href="#cb24-448" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb24-449"><a href="#cb24-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-450"><a href="#cb24-450" aria-hidden="true" tabindex="-1"></a>votes_path <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"simus"</span> <span class="op">/</span> <span class="st">"discrete_difficulty"</span> <span class="op">/</span> <span class="st">"answers.json"</span></span>
+<span id="cb24-451"><a href="#cb24-451" aria-hidden="true" tabindex="-1"></a>metadata_path <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"simus"</span> <span class="op">/</span> <span class="st">"discrete_difficulty"</span> <span class="op">/</span> <span class="st">"metadata.json"</span></span>
+<span id="cb24-452"><a href="#cb24-452" aria-hidden="true" tabindex="-1"></a>efforts <span class="op">=</span> feedback_effort(votes_path)</span>
+<span id="cb24-453"><a href="#cb24-453" aria-hidden="true" tabindex="-1"></a>workerload <span class="op">=</span> working_load(votes_path, metadata_path)</span>
+<span id="cb24-454"><a href="#cb24-454" aria-hidden="true" tabindex="-1"></a>feedback <span class="op">=</span> feedback_effort(votes_path)</span>
+<span id="cb24-455"><a href="#cb24-455" aria-hidden="true" tabindex="-1"></a>nbins <span class="op">=</span> <span class="dv">17</span></span>
+<span id="cb24-456"><a href="#cb24-456" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
+<span id="cb24-457"><a href="#cb24-457" aria-hidden="true" tabindex="-1"></a>sns.histplot(workerload, stat<span class="op">=</span><span class="st">"percent"</span>, bins<span class="op">=</span>nbins, shrink<span class="op">=</span><span class="dv">1</span>, ax<span class="op">=</span>ax[<span class="dv">0</span>])</span>
+<span id="cb24-458"><a href="#cb24-458" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].yaxis.set_major_formatter(mtick.PercentFormatter(decimals<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb24-459"><a href="#cb24-459" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_xlabel(<span class="vs">r"$\vert\mathcal</span><span class="sc">{T}</span><span class="vs">(w_j)\vert$"</span>)</span>
+<span id="cb24-460"><a href="#cb24-460" aria-hidden="true" tabindex="-1"></a>sns.histplot(feedback, stat<span class="op">=</span><span class="st">"percent"</span>, bins<span class="op">=</span>nbins, shrink<span class="op">=</span><span class="dv">1</span>, ax<span class="op">=</span>ax[<span class="dv">1</span>])</span>
+<span id="cb24-461"><a href="#cb24-461" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].yaxis.set_major_formatter(mtick.PercentFormatter(decimals<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb24-462"><a href="#cb24-462" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_xlabel(<span class="vs">r"$\vert\mathcal</span><span class="sc">{A}</span><span class="vs">(x_i)\vert$"</span>)</span>
+<span id="cb24-463"><a href="#cb24-463" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>):</span>
+<span id="cb24-464"><a href="#cb24-464" aria-hidden="true" tabindex="-1"></a>  ax[i].xaxis.set_major_locator(MaxNLocator(<span class="dv">3</span>))</span>
+<span id="cb24-465"><a href="#cb24-465" aria-hidden="true" tabindex="-1"></a>  ax[i].xaxis.label.set_size(<span class="dv">15</span>)</span>
+<span id="cb24-466"><a href="#cb24-466" aria-hidden="true" tabindex="-1"></a>  ax[i].yaxis.label.set_size(<span class="dv">15</span>)</span>
+<span id="cb24-467"><a href="#cb24-467" aria-hidden="true" tabindex="-1"></a>  ax[i].xaxis.set_tick_params(labelsize<span class="op">=</span><span class="dv">13</span>)</span>
+<span id="cb24-468"><a href="#cb24-468" aria-hidden="true" tabindex="-1"></a>  ax[i].yaxis.set_tick_params(labelsize<span class="op">=</span><span class="dv">13</span>)</span>
+<span id="cb24-469"><a href="#cb24-469" aria-hidden="true" tabindex="-1"></a>  ax[i].title.set_size(<span class="dv">18</span>)</span>
+<span id="cb24-470"><a href="#cb24-470" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb24-471"><a href="#cb24-471" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb24-472"><a href="#cb24-472" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-473"><a href="#cb24-473" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-474"><a href="#cb24-474" aria-hidden="true" tabindex="-1"></a>With the obtained answers, we can look at the aforementioned aggregation strategies performance:</span>
+<span id="cb24-475"><a href="#cb24-475" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-478"><a href="#cb24-478" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-479"><a href="#cb24-479" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb24-480"><a href="#cb24-480" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> strat <span class="kw">in</span> [<span class="st">"MV"</span>, <span class="st">"NaiveSoft"</span>, <span class="st">"DS"</span>, <span class="st">"GLAD"</span>, <span class="st">"DSWC[L=2]"</span>, <span class="st">"DSWC[L=5]"</span>]:</span>
+<span id="cb24-481"><a href="#cb24-481" aria-hidden="true" tabindex="-1"></a>  <span class="op">!</span> peerannot aggregate .<span class="op">/</span>simus<span class="op">/</span>discrete_difficulty<span class="op">/</span> <span class="op">-</span>s {strat}</span>
+<span id="cb24-482"><a href="#cb24-482" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-485"><a href="#cb24-485" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-486"><a href="#cb24-486" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-simu-discrete-diff</span></span>
+<span id="cb24-487"><a href="#cb24-487" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: AccTrain metric on simulated mistakes when tasks are associated a difficulty level considering classical feature-blind label aggregation strategies</span></span>
+<span id="cb24-488"><a href="#cb24-488" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb24-489"><a href="#cb24-489" aria-hidden="true" tabindex="-1"></a>simu_corr <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">'simus'</span> <span class="op">/</span> <span class="st">"discrete_difficulty"</span></span>
+<span id="cb24-490"><a href="#cb24-490" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> {<span class="st">"mv"</span>: [], <span class="st">"naivesoft"</span>: [], <span class="st">"glad"</span>: [], <span class="st">"ds"</span>: [], <span class="st">"dswc[l=2]"</span>: [], <span class="st">"dswc[l=5]"</span>: []}</span>
+<span id="cb24-491"><a href="#cb24-491" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> strategy <span class="kw">in</span> results.keys():</span>
+<span id="cb24-492"><a href="#cb24-492" aria-hidden="true" tabindex="-1"></a>  path_labels <span class="op">=</span> simu_corr <span class="op">/</span> <span class="st">"labels"</span> <span class="op">/</span> <span class="ss">f"labels_discrete-difficulty_</span><span class="sc">{</span>strategy<span class="sc">}</span><span class="ss">.npy"</span></span>
+<span id="cb24-493"><a href="#cb24-493" aria-hidden="true" tabindex="-1"></a>  ground_truth <span class="op">=</span> np.load(simu_corr <span class="op">/</span> <span class="st">"ground_truth.npy"</span>)</span>
+<span id="cb24-494"><a href="#cb24-494" aria-hidden="true" tabindex="-1"></a>  labels <span class="op">=</span> np.load(path_labels)</span>
+<span id="cb24-495"><a href="#cb24-495" aria-hidden="true" tabindex="-1"></a>  acc <span class="op">=</span> (</span>
+<span id="cb24-496"><a href="#cb24-496" aria-hidden="true" tabindex="-1"></a>          np.mean(labels <span class="op">==</span> ground_truth)</span>
+<span id="cb24-497"><a href="#cb24-497" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> labels.ndim <span class="op">==</span> <span class="dv">1</span></span>
+<span id="cb24-498"><a href="#cb24-498" aria-hidden="true" tabindex="-1"></a>          <span class="cf">else</span> np.mean(</span>
+<span id="cb24-499"><a href="#cb24-499" aria-hidden="true" tabindex="-1"></a>              np.argmax(labels, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb24-500"><a href="#cb24-500" aria-hidden="true" tabindex="-1"></a>              <span class="op">==</span> ground_truth</span>
+<span id="cb24-501"><a href="#cb24-501" aria-hidden="true" tabindex="-1"></a>          )</span>
+<span id="cb24-502"><a href="#cb24-502" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb24-503"><a href="#cb24-503" aria-hidden="true" tabindex="-1"></a>  results[strategy].append(acc)</span>
+<span id="cb24-504"><a href="#cb24-504" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.DataFrame(results, index<span class="op">=</span>[<span class="st">'AccTrain'</span>])</span>
+<span id="cb24-505"><a href="#cb24-505" aria-hidden="true" tabindex="-1"></a>results.columns <span class="op">=</span> <span class="bu">map</span>(<span class="bu">str</span>.upper, results.columns)</span>
+<span id="cb24-506"><a href="#cb24-506" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> results.style.set_table_styles([<span class="bu">dict</span>(selector<span class="op">=</span><span class="st">'th'</span>, props<span class="op">=</span>[(<span class="st">'text-align'</span>, <span class="st">'center'</span>)])])</span>
+<span id="cb24-507"><a href="#cb24-507" aria-hidden="true" tabindex="-1"></a>results.set_properties(<span class="op">**</span>{<span class="st">'text-align'</span>: <span class="st">'center'</span>})</span>
+<span id="cb24-508"><a href="#cb24-508" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> results.<span class="bu">format</span>(precision<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb24-509"><a href="#cb24-509" aria-hidden="true" tabindex="-1"></a>display(results)</span>
+<span id="cb24-510"><a href="#cb24-510" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-511"><a href="#cb24-511" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-512"><a href="#cb24-512" aria-hidden="true" tabindex="-1"></a><span class="fu"># Learning from crowdsourced tasks</span></span>
+<span id="cb24-513"><a href="#cb24-513" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-514"><a href="#cb24-514" aria-hidden="true" tabindex="-1"></a>Most often, tasks are crowdsourced to create a large training set as modern machine learning models require more and more data.</span>
+<span id="cb24-515"><a href="#cb24-515" aria-hidden="true" tabindex="-1"></a>The aggregation step then simply becomes the first step in the complete learning pipeline.</span>
+<span id="cb24-516"><a href="#cb24-516" aria-hidden="true" tabindex="-1"></a>However, instead of aggregating labels, modern neural networks let us directly train a classifier from multiple noisy labels.</span>
+<span id="cb24-517"><a href="#cb24-517" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-518"><a href="#cb24-518" aria-hidden="true" tabindex="-1"></a><span class="fu">## Classical models</span></span>
+<span id="cb24-519"><a href="#cb24-519" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-520"><a href="#cb24-520" aria-hidden="true" tabindex="-1"></a>In recent years, directly learning a classifier from noisy labels was introduced.</span>
+<span id="cb24-521"><a href="#cb24-521" aria-hidden="true" tabindex="-1"></a>Two of the most used models: CrowdLayer <span class="co">[</span><span class="ot">@rodrigues2018deep</span><span class="co">]</span> and CoNAL <span class="co">[</span><span class="ot">@chu2021learning</span><span class="co">]</span>, are directly available in <span class="in">`peerannot`</span>.</span>
+<span id="cb24-522"><a href="#cb24-522" aria-hidden="true" tabindex="-1"></a>These two learning strategies directly incorporate a DS-based noise model in the neural network's architecture.</span>
+<span id="cb24-523"><a href="#cb24-523" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-524"><a href="#cb24-524" aria-hidden="true" tabindex="-1"></a>CrowdLayer trains a classifier with noisy labels as follows.</span>
+<span id="cb24-525"><a href="#cb24-525" aria-hidden="true" tabindex="-1"></a>Let the scores (logits) output of a given classifier neural network $\mathcal{C}$ be $z_i=\mathcal{C}(x_i)$.</span>
+<span id="cb24-526"><a href="#cb24-526" aria-hidden="true" tabindex="-1"></a>Then CrowdLayer adds a new layer $\pi\in\mathbb{R}^{n_{\text{worker}}\times K\times K}$, the tensor of all $\pi^{(j)}$s such that the crossentropy loss $(\mathrm{CE})$ is adapted to the crowdsourcing setting into $\mathcal{L}_{CE}^{\text{CrowdLayer}}$ and computed as:</span>
+<span id="cb24-527"><a href="#cb24-527" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb24-528"><a href="#cb24-528" aria-hidden="true" tabindex="-1"></a>\mathcal{L}_{CE}^{\text{CrowdLayer}}(x_i) = \sum_{j\in\mathcal{A}(x_i)} \mathrm{CE}(\sigma\left(\pi^{(j)}\sigma\big(z_i\big)\right), y_i^{(j)}) \enspace.</span>
+<span id="cb24-529"><a href="#cb24-529" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb24-530"><a href="#cb24-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-531"><a href="#cb24-531" aria-hidden="true" tabindex="-1"></a>The confusion matrices are incorporated as is into the network architecture as a new layer to transform the output probabilities to match each worker's answer.</span>
+<span id="cb24-532"><a href="#cb24-532" aria-hidden="true" tabindex="-1"></a>However, for some datasets, it was noticed that global confusion occurs between the proposed classes.</span>
+<span id="cb24-533"><a href="#cb24-533" aria-hidden="true" tabindex="-1"></a>It is the case for example in the LabelMe dataset <span class="co">[</span><span class="ot">@rodrigues2017learning</span><span class="co">]</span> where classes overlap.</span>
+<span id="cb24-534"><a href="#cb24-534" aria-hidden="true" tabindex="-1"></a>In this case, @chu2021learning proposed to extend the CrowdLayer model by not only modeling the worker confusion matrices; but also a global confusion matrix $\pi^g\in\mathbb{R}^{K\times K}$.</span>
+<span id="cb24-535"><a href="#cb24-535" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-536"><a href="#cb24-536" aria-hidden="true" tabindex="-1"></a>!<span class="co">[</span><span class="ot">Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for CoNAL model. Each worker is assigned a confusion matrix $\pi^{(j)}$. A global confusion matrix $\pi^g$ is shared between workers. A tradeoff between the global confusion and the local one is applied.</span><span class="co">](./figures/schema_bayesien_conal.png)</span>{#fig-conal fig-align="center"}</span>
+<span id="cb24-537"><a href="#cb24-537" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-538"><a href="#cb24-538" aria-hidden="true" tabindex="-1"></a>Given the output $z_i=\mathcal{C}(x_i)\in\mathbb{R}^K$ of a given classifier and task, CoNAL</span>
+<span id="cb24-539"><a href="#cb24-539" aria-hidden="true" tabindex="-1"></a>interpolates between the local confusion $\pi^{(j)}\sigma(z_i)$ and the global one $\pi^g\sigma(z_i)$.</span>
+<span id="cb24-540"><a href="#cb24-540" aria-hidden="true" tabindex="-1"></a>The loss function is computed as follows:</span>
+<span id="cb24-541"><a href="#cb24-541" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb24-542"><a href="#cb24-542" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb24-543"><a href="#cb24-543" aria-hidden="true" tabindex="-1"></a>&amp;\mathcal{L}_{CE}^{\text{CoNAL}}(x_i) = \sum_{j\in\mathcal{A}(x_i)} \mathrm{CE}(h_i^{(j)}, y_i^{(j)}) \enspace, <span class="sc">\\</span></span>
+<span id="cb24-544"><a href="#cb24-544" aria-hidden="true" tabindex="-1"></a>&amp;\text{with } h_i^{(j)} = \sigma\left(\big(\omega_i^{(j)} \pi^g + (1-\omega_i^{(j)})\pi^{(j)}\big)z_i\right) \enspace.</span>
+<span id="cb24-545"><a href="#cb24-545" aria-hidden="true" tabindex="-1"></a>\end{aligned} \</span>
+<span id="cb24-546"><a href="#cb24-546" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb24-547"><a href="#cb24-547" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-548"><a href="#cb24-548" aria-hidden="true" tabindex="-1"></a>The interpolation weight is defined as $s_i^{(j)}\sim\mathcal{B}(w_i^{(j)})$ and is unobservable in practice.</span>
+<span id="cb24-549"><a href="#cb24-549" aria-hidden="true" tabindex="-1"></a>So, to compute $h_i^{(j)}$, the weight is obtained through an auxiliary network that projects the task $x_i$ onto $v_i$ and the worker $w_j$ onto $u_j$, two vectors in an embedding space of dimension $d\geq 1$. Finally, $w_i^{(j)}=(1+\exp(- u_j^\top v_i))^{-1}$.</span>
+<span id="cb24-550"><a href="#cb24-550" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-551"><a href="#cb24-551" aria-hidden="true" tabindex="-1"></a>Both CrowdLayer and CoNAL model worker confusions directly in the classifier's weights to learn from the noisy collected labels and are available in <span class="in">`peerannot`</span> as we will see in the following.</span>
+<span id="cb24-552"><a href="#cb24-552" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-553"><a href="#cb24-553" aria-hidden="true" tabindex="-1"></a><span class="fu">## Prediction error when learning from crowdsourced tasks</span></span>
+<span id="cb24-554"><a href="#cb24-554" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-555"><a href="#cb24-555" aria-hidden="true" tabindex="-1"></a>The $\mathrm{AccTrain}$ metric presented in @sec-evaluation-aggregation might no longer be of interest when training a classifier. Classical error measurements involve a test dataset to estimate the generalization error.</span>
+<span id="cb24-556"><a href="#cb24-556" aria-hidden="true" tabindex="-1"></a>To do so, we present hereafter two error metrics. Assuming we trained our classifier $f_\theta$ on a training set:</span>
+<span id="cb24-557"><a href="#cb24-557" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>the test accuracy is computed as $\frac{1}{n_{\text{test}}}\sum_{i=1}^{n_{\text{test}}}1_{\{y_i^\star = \widehat{f_\theta(x_i)}<span class="sc">\}</span>}$</span>
+<span id="cb24-558"><a href="#cb24-558" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>the expected calibration error <span class="co">[</span><span class="ot">@guo_calibration_2017</span><span class="co">]</span>, computed as:</span>
+<span id="cb24-559"><a href="#cb24-559" aria-hidden="true" tabindex="-1"></a>  XXX</span>
+<span id="cb24-560"><a href="#cb24-560" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-561"><a href="#cb24-561" aria-hidden="true" tabindex="-1"></a>Where the accuracy represents how well the classifier generalizes, the expected calibration error (ECE) quantifies the deviation between the accuracy and the confidence of the classifier. Modern neural networks are known to often be overconfident in their predictions XXX. However, it has also been remarked that training on crowdsourced data, depending on the strategy, mitigates this confidence issue. That is why we propose to compare them both in our coming experiments.</span>
+<span id="cb24-562"><a href="#cb24-562" aria-hidden="true" tabindex="-1"></a>Note that the ECE error estimator is known to be biased <span class="co">[</span><span class="ot">@gruber2022better</span><span class="co">]</span>.</span>
+<span id="cb24-563"><a href="#cb24-563" aria-hidden="true" tabindex="-1"></a>Smaller training sets are known to have a higher ECE estimation error.</span>
+<span id="cb24-564"><a href="#cb24-564" aria-hidden="true" tabindex="-1"></a>And in the crowdsourcing setting, openly available datasets are often quite small.</span>
 <span id="cb24-565"><a href="#cb24-565" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-566"><a href="#cb24-566" aria-hidden="true" tabindex="-1"></a>To install these datasets, we run the <span class="in">`install`</span> command from <span class="in">`peerannot`</span>:</span>
-<span id="cb24-569"><a href="#cb24-569" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-570"><a href="#cb24-570" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
-<span id="cb24-571"><a href="#cb24-571" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb24-572"><a href="#cb24-572" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot install .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span>labelme.py</span>
-<span id="cb24-573"><a href="#cb24-573" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot install .<span class="op">/</span>datasets<span class="op">/</span>cifar10H<span class="op">/</span>cifar10h.py</span>
-<span id="cb24-574"><a href="#cb24-574" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-575"><a href="#cb24-575" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-576"><a href="#cb24-576" aria-hidden="true" tabindex="-1"></a>Let us use <span class="in">`peerannot`</span> to train a Resnet34 on the LabelMe dataset for:</span>
-<span id="cb24-577"><a href="#cb24-577" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-578"><a href="#cb24-578" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>aggregation strategies: MV, NS, DS, GLAD,</span>
-<span id="cb24-579"><a href="#cb24-579" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>end-to-end strategies: CrowdLayer and CoNAL.</span>
-<span id="cb24-580"><a href="#cb24-580" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-581"><a href="#cb24-581" aria-hidden="true" tabindex="-1"></a>As we can see, CoNAL strategy performs best.</span>
-<span id="cb24-582"><a href="#cb24-582" aria-hidden="true" tabindex="-1"></a>In this case, it is expected behavior as CoNAL was created for the LabelMe dataset.</span>
-<span id="cb24-583"><a href="#cb24-583" aria-hidden="true" tabindex="-1"></a>However, using <span class="in">`peerannot`</span> we can look into **why modeling common confusion returns better results with this dataset.</span>
-<span id="cb24-584"><a href="#cb24-584" aria-hidden="true" tabindex="-1"></a>To do so, we can explore the datasets from two points of view: worker-wise or task-wise.</span>
-<span id="cb24-585"><a href="#cb24-585" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-586"><a href="#cb24-586" aria-hidden="true" tabindex="-1"></a><span class="fu"># Exploring crowdsourced datasets</span></span>
-<span id="cb24-587"><a href="#cb24-587" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-588"><a href="#cb24-588" aria-hidden="true" tabindex="-1"></a>If a dataset requires citizen knowledge to be labeled, it is because expert knowledge is long and costly to obtain. In the era of big data, where datasets are built using web scraping XXX and other techniques, citizen science is popular as it is an easy way to produce many labels.</span>
+<span id="cb24-566"><a href="#cb24-566" aria-hidden="true" tabindex="-1"></a><span class="fu">## Use case with `peerannot` on real datasets</span></span>
+<span id="cb24-567"><a href="#cb24-567" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-568"><a href="#cb24-568" aria-hidden="true" tabindex="-1"></a>Few real crowdsourcing experiments have been released publicly.</span>
+<span id="cb24-569"><a href="#cb24-569" aria-hidden="true" tabindex="-1"></a>Among the available ones, CIFAR-10H <span class="co">[</span><span class="ot">@peterson_human_2019</span><span class="co">]</span> is one of the largest with $10 000$ tasks labeled by workers (the testing set of CIFAR-10).</span>
+<span id="cb24-570"><a href="#cb24-570" aria-hidden="true" tabindex="-1"></a>The issue with CIFAR-10H is that there are little to no disagreements and a simple majority voting leads to a near-perfect $\mathrm{AccTrain}$ error.</span>
+<span id="cb24-571"><a href="#cb24-571" aria-hidden="true" tabindex="-1"></a>While with this dataset comparing the impact of aggregation and end-to-end strategies might not be relevant, it is a good benchmark for task difficulty identification and worker evaluation scoring XXX</span>
+<span id="cb24-572"><a href="#cb24-572" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-573"><a href="#cb24-573" aria-hidden="true" tabindex="-1"></a>The LabelMe dataset was extracted from crowdsourcing segmentation experimentation and a subset of $K=8$ classes was released in @rodrigues2017learning.</span>
+<span id="cb24-574"><a href="#cb24-574" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-575"><a href="#cb24-575" aria-hidden="true" tabindex="-1"></a>To install these datasets, we run the <span class="in">`install`</span> command from <span class="in">`peerannot`</span>:</span>
+<span id="cb24-578"><a href="#cb24-578" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-579"><a href="#cb24-579" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb24-580"><a href="#cb24-580" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb24-581"><a href="#cb24-581" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot install .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span>labelme.py</span>
+<span id="cb24-582"><a href="#cb24-582" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot install .<span class="op">/</span>datasets<span class="op">/</span>cifar10H<span class="op">/</span>cifar10h.py</span>
+<span id="cb24-583"><a href="#cb24-583" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-584"><a href="#cb24-584" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-585"><a href="#cb24-585" aria-hidden="true" tabindex="-1"></a>Let us use <span class="in">`peerannot`</span> to train a Resnet34 on the LabelMe dataset for:</span>
+<span id="cb24-586"><a href="#cb24-586" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-587"><a href="#cb24-587" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>aggregation strategies: MV, NS, DS, GLAD,</span>
+<span id="cb24-588"><a href="#cb24-588" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>end-to-end strategies: CrowdLayer and CoNAL.</span>
 <span id="cb24-589"><a href="#cb24-589" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-590"><a href="#cb24-590" aria-hidden="true" tabindex="-1"></a>However, mistakes and confusions happen during these experiments.</span>
-<span id="cb24-591"><a href="#cb24-591" aria-hidden="true" tabindex="-1"></a>Sometimes involuntarily (*e.g.* because the task is too hard or the worker is unable to differentiate between two classes) and sometimes not (*e.g.* the worker is a spammer).</span>
-<span id="cb24-592"><a href="#cb24-592" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-593"><a href="#cb24-593" aria-hidden="true" tabindex="-1"></a>Underlying all the learning models and aggregation strategies, the cornerstone of crowdsourcing is evaluating the trust we put in each worker depending on the presented task. And with the gamification of crowdsourcing XXX, it has become essential to find scoring metrics both for workers and tasks to keep citizens in the loop so to speak.</span>
-<span id="cb24-594"><a href="#cb24-594" aria-hidden="true" tabindex="-1"></a>This is the purpose of the identification module in <span class="in">`peerannot`</span></span>
-<span id="cb24-595"><a href="#cb24-595" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-596"><a href="#cb24-596" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exploring tasks' difficulty</span></span>
-<span id="cb24-597"><a href="#cb24-597" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-598"><a href="#cb24-598" aria-hidden="true" tabindex="-1"></a>To explore the tasks' intrinsic difficulty, we propose to compare three scoring metrics:</span>
-<span id="cb24-599"><a href="#cb24-599" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-600"><a href="#cb24-600" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>the entropy of the NS distribution: reliable with a big enough and not adversarial crowd, the entropy measures the inherent uncertainty of the distribution to the possible outcomes.</span>
-<span id="cb24-601"><a href="#cb24-601" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>GLAD's scoring: by construction, @whitehill_whose_2009 introduced a scalar coefficient to score the difficulty of a task $\beta_i&gt;0$.</span>
-<span id="cb24-602"><a href="#cb24-602" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>the WAUM: introduced in XXX, this weighted area under the margins indicates how difficult it is for a model to classify the task given the crowdsourced labels and the trust we have in each worker.</span>
-<span id="cb24-603"><a href="#cb24-603" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-604"><a href="#cb24-604" aria-hidden="true" tabindex="-1"></a>Note that each of these statistics is useful in its context. The entropy can not be used in a setting with $|\mathcal{A}(x_i)|$ low (few labels per task), in particular for the LabelMe dataset it is not informative. The WAUM can work with any number of labels, but the larger the better. However, as it uses a deep learning classifier, the WAUM needs the tasks $(x_i)_i$ in addition to the proposed labels while the other strategies are feature-blind.</span>
-<span id="cb24-605"><a href="#cb24-605" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-606"><a href="#cb24-606" aria-hidden="true" tabindex="-1"></a><span class="fu">### CIFAR-1OH dataset</span></span>
-<span id="cb24-607"><a href="#cb24-607" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-608"><a href="#cb24-608" aria-hidden="true" tabindex="-1"></a>First, let us consider a dataset with a large number of tasks, annotations and workers: the CIFAR-10H dataset by @peterson_human_2019.</span>
-<span id="cb24-609"><a href="#cb24-609" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-612"><a href="#cb24-612" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-613"><a href="#cb24-613" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb24-614"><a href="#cb24-614" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Example of images to label from the CIFAR-10H dataset with label `bird`, `car`, `cat`, `deer `and `dog` (top to bottom) by row.</span></span>
-<span id="cb24-615"><a href="#cb24-615" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb24-616"><a href="#cb24-616" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb24-617"><a href="#cb24-617" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
-<span id="cb24-618"><a href="#cb24-618" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
-<span id="cb24-619"><a href="#cb24-619" aria-hidden="true" tabindex="-1"></a>nrow <span class="op">=</span> <span class="dv">5</span></span>
-<span id="cb24-620"><a href="#cb24-620" aria-hidden="true" tabindex="-1"></a>ncol <span class="op">=</span> <span class="dv">5</span></span>
-<span id="cb24-621"><a href="#cb24-621" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(</span>
-<span id="cb24-622"><a href="#cb24-622" aria-hidden="true" tabindex="-1"></a>        nrow,</span>
-<span id="cb24-623"><a href="#cb24-623" aria-hidden="true" tabindex="-1"></a>        ncol,</span>
-<span id="cb24-624"><a href="#cb24-624" aria-hidden="true" tabindex="-1"></a>        sharey<span class="op">=</span><span class="st">"row"</span>,</span>
-<span id="cb24-625"><a href="#cb24-625" aria-hidden="true" tabindex="-1"></a>        sharex<span class="op">=</span><span class="st">"col"</span>,</span>
-<span id="cb24-626"><a href="#cb24-626" aria-hidden="true" tabindex="-1"></a>        figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">8</span>)</span>
-<span id="cb24-627"><a href="#cb24-627" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb24-628"><a href="#cb24-628" aria-hidden="true" tabindex="-1"></a>match_ <span class="op">=</span> {<span class="dv">0</span>: <span class="st">"bird"</span>, <span class="dv">1</span>: <span class="st">"car"</span>, <span class="dv">2</span>: <span class="st">"cat"</span>, <span class="dv">3</span>: <span class="st">"deer"</span>, <span class="dv">4</span>: <span class="st">"dog"</span>, <span class="dv">5</span>: <span class="st">"frog"</span>, <span class="dv">6</span>: <span class="st">"horse"</span>, <span class="dv">7</span>: <span class="st">"plane"</span>, <span class="dv">8</span>: <span class="st">"ship"</span>, <span class="dv">9</span>: <span class="st">"truck"</span>}</span>
-<span id="cb24-629"><a href="#cb24-629" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"datasets"</span> <span class="op">/</span> <span class="st">"cifar10H"</span> <span class="op">/</span> <span class="st">"train"</span></span>
-<span id="cb24-630"><a href="#cb24-630" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(nrow):</span>
-<span id="cb24-631"><a href="#cb24-631" aria-hidden="true" tabindex="-1"></a>  img_folder <span class="op">=</span> path <span class="op">/</span> <span class="ss">f"</span><span class="sc">{</span>match_[i]<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb24-632"><a href="#cb24-632" aria-hidden="true" tabindex="-1"></a>  all_imgs <span class="op">=</span> <span class="bu">list</span>(img_folder.glob(<span class="st">"*"</span>))[:ncol]</span>
-<span id="cb24-633"><a href="#cb24-633" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(ncol):</span>
-<span id="cb24-634"><a href="#cb24-634" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> np.asarray(Image.<span class="bu">open</span>(path <span class="op">/</span> all_imgs[j]))</span>
-<span id="cb24-635"><a href="#cb24-635" aria-hidden="true" tabindex="-1"></a>    axs[i,j].imshow(image, aspect<span class="op">=</span><span class="st">"equal"</span>)</span>
-<span id="cb24-636"><a href="#cb24-636" aria-hidden="true" tabindex="-1"></a>    axs[i,j].axis(<span class="st">"off"</span>)</span>
-<span id="cb24-637"><a href="#cb24-637" aria-hidden="true" tabindex="-1"></a>    axs[i,j].set_yticklabels([])</span>
-<span id="cb24-638"><a href="#cb24-638" aria-hidden="true" tabindex="-1"></a>plt.subplots_adjust(left<span class="op">=</span><span class="fl">0.05</span>, bottom<span class="op">=</span><span class="fl">0.05</span>, right<span class="op">=</span><span class="fl">0.95</span>, top<span class="op">=</span><span class="fl">0.95</span>, wspace<span class="op">=</span><span class="fl">0.05</span>, hspace<span class="op">=</span><span class="fl">0.05</span>)</span>
-<span id="cb24-639"><a href="#cb24-639" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb24-640"><a href="#cb24-640" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-641"><a href="#cb24-641" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-642"><a href="#cb24-642" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-645"><a href="#cb24-645" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-646"><a href="#cb24-646" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
-<span id="cb24-647"><a href="#cb24-647" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb24-648"><a href="#cb24-648" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot identify .<span class="op">/</span>datasets<span class="op">/</span>cifar10H <span class="op">-</span>s entropy <span class="op">-</span>K <span class="dv">10</span> <span class="op">--</span>labels .<span class="op">/</span>datasets<span class="op">/</span>cifar10H<span class="op">/</span>answers.json</span>
-<span id="cb24-649"><a href="#cb24-649" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot aggregate .<span class="op">/</span>datasets<span class="op">/</span>cifar10H<span class="op">/</span> <span class="op">-</span>s GLAD</span>
-<span id="cb24-650"><a href="#cb24-650" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-653"><a href="#cb24-653" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-654"><a href="#cb24-654" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb24-655"><a href="#cb24-655" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-difficulty-c10H</span></span>
-<span id="cb24-656"><a href="#cb24-656" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Comparison of metrics scoring the task's intrinsic difficulty.</span></span>
-<span id="cb24-657"><a href="#cb24-657" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-658"><a href="#cb24-658" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> pearsonr</span>
-<span id="cb24-659"><a href="#cb24-659" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> corrfunc(x, y, ax<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kws):</span>
-<span id="cb24-660"><a href="#cb24-660" aria-hidden="true" tabindex="-1"></a>    r, _ <span class="op">=</span> pearsonr(x, y)</span>
-<span id="cb24-661"><a href="#cb24-661" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> ax <span class="kw">or</span> plt.gca()</span>
-<span id="cb24-662"><a href="#cb24-662" aria-hidden="true" tabindex="-1"></a>    ax.annotate(<span class="vs">rf'$\rho$ = </span><span class="sc">{</span>r<span class="sc">:.2f}</span><span class="vs">'</span>, xy<span class="op">=</span>(<span class="fl">.1</span>, <span class="fl">.9</span>), xycoords<span class="op">=</span>ax.transAxes)</span>
-<span id="cb24-663"><a href="#cb24-663" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> {<span class="st">'glad'</span>: [], <span class="st">"entropy"</span>: []}</span>
-<span id="cb24-664"><a href="#cb24-664" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"datasets"</span> <span class="op">/</span> <span class="st">"cifar10H"</span> <span class="op">/</span> <span class="st">"identification"</span></span>
-<span id="cb24-665"><a href="#cb24-665" aria-hidden="true" tabindex="-1"></a>results[<span class="st">"entropy"</span>] <span class="op">=</span> np.load(path <span class="op">/</span> <span class="st">'entropies.npy'</span>)</span>
-<span id="cb24-666"><a href="#cb24-666" aria-hidden="true" tabindex="-1"></a>results[<span class="st">"glad"</span>] <span class="op">=</span> np.exp(np.load(path <span class="op">/</span> <span class="st">"glad"</span> <span class="op">/</span> <span class="st">"difficulties.npy"</span>)[:, <span class="dv">1</span>])</span>
-<span id="cb24-667"><a href="#cb24-667" aria-hidden="true" tabindex="-1"></a><span class="co"># results["waum"] = pd.read_csv(path / "resnet34" / "waum_0.01_yang" / 'waum.csv')["waum"].values</span></span>
-<span id="cb24-668"><a href="#cb24-668" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.DataFrame(results)</span>
-<span id="cb24-669"><a href="#cb24-669" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.pairplot(results, corner<span class="op">=</span><span class="va">True</span>, diag_kind<span class="op">=</span><span class="st">"kde"</span>)</span>
-<span id="cb24-670"><a href="#cb24-670" aria-hidden="true" tabindex="-1"></a>g.map_lower(corrfunc)</span>
-<span id="cb24-671"><a href="#cb24-671" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-672"><a href="#cb24-672" aria-hidden="true" tabindex="-1"></a><span class="co"># axes = g.axes.flatten()</span></span>
-<span id="cb24-673"><a href="#cb24-673" aria-hidden="true" tabindex="-1"></a><span class="co"># for i, ax in enumerate(axes):</span></span>
-<span id="cb24-674"><a href="#cb24-674" aria-hidden="true" tabindex="-1"></a><span class="co">#   if i % len(results) == 0:</span></span>
-<span id="cb24-675"><a href="#cb24-675" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-676"><a href="#cb24-676" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb24-677"><a href="#cb24-677" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-678"><a href="#cb24-678" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-679"><a href="#cb24-679" aria-hidden="true" tabindex="-1"></a><span class="fu">### LabelMe dataset</span></span>
+<span id="cb24-590"><a href="#cb24-590" aria-hidden="true" tabindex="-1"></a>As we can see, CoNAL strategy performs best.</span>
+<span id="cb24-591"><a href="#cb24-591" aria-hidden="true" tabindex="-1"></a>In this case, it is expected behavior as CoNAL was created for the LabelMe dataset.</span>
+<span id="cb24-592"><a href="#cb24-592" aria-hidden="true" tabindex="-1"></a>However, using <span class="in">`peerannot`</span> we can look into **why modeling common confusion returns better results with this dataset.</span>
+<span id="cb24-593"><a href="#cb24-593" aria-hidden="true" tabindex="-1"></a>To do so, we can explore the datasets from two points of view: worker-wise or task-wise.</span>
+<span id="cb24-594"><a href="#cb24-594" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-595"><a href="#cb24-595" aria-hidden="true" tabindex="-1"></a><span class="fu"># Exploring crowdsourced datasets</span></span>
+<span id="cb24-596"><a href="#cb24-596" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-597"><a href="#cb24-597" aria-hidden="true" tabindex="-1"></a>If a dataset requires citizen knowledge to be labeled, it is because expert knowledge is long and costly to obtain. In the era of big data, where datasets are built using web scraping XXX and other techniques, citizen science is popular as it is an easy way to produce many labels.</span>
+<span id="cb24-598"><a href="#cb24-598" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-599"><a href="#cb24-599" aria-hidden="true" tabindex="-1"></a>However, mistakes and confusions happen during these experiments.</span>
+<span id="cb24-600"><a href="#cb24-600" aria-hidden="true" tabindex="-1"></a>Sometimes involuntarily (*e.g.* because the task is too hard or the worker is unable to differentiate between two classes) and sometimes not (*e.g.* the worker is a spammer).</span>
+<span id="cb24-601"><a href="#cb24-601" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-602"><a href="#cb24-602" aria-hidden="true" tabindex="-1"></a>Underlying all the learning models and aggregation strategies, the cornerstone of crowdsourcing is evaluating the trust we put in each worker depending on the presented task. And with the gamification of crowdsourcing XXX, it has become essential to find scoring metrics both for workers and tasks to keep citizens in the loop so to speak.</span>
+<span id="cb24-603"><a href="#cb24-603" aria-hidden="true" tabindex="-1"></a>This is the purpose of the identification module in <span class="in">`peerannot`</span></span>
+<span id="cb24-604"><a href="#cb24-604" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-605"><a href="#cb24-605" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exploring tasks' difficulty</span></span>
+<span id="cb24-606"><a href="#cb24-606" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-607"><a href="#cb24-607" aria-hidden="true" tabindex="-1"></a>To explore the tasks' intrinsic difficulty, we propose to compare three scoring metrics:</span>
+<span id="cb24-608"><a href="#cb24-608" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-609"><a href="#cb24-609" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>the entropy of the NS distribution: reliable with a big enough and not adversarial crowd, the entropy measures the inherent uncertainty of the distribution to the possible outcomes.</span>
+<span id="cb24-610"><a href="#cb24-610" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>GLAD's scoring: by construction, @whitehill_whose_2009 introduced a scalar coefficient to score the difficulty of a task $\beta_i&gt;0$.</span>
+<span id="cb24-611"><a href="#cb24-611" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>the WAUM: introduced in XXX, this weighted area under the margins indicates how difficult it is for a model to classify the task given the crowdsourced labels and the trust we have in each worker.</span>
+<span id="cb24-612"><a href="#cb24-612" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-613"><a href="#cb24-613" aria-hidden="true" tabindex="-1"></a>Note that each of these statistics is useful in its context. The entropy can not be used in a setting with $|\mathcal{A}(x_i)|$ low (few labels per task), in particular for the LabelMe dataset it is not informative. The WAUM can work with any number of labels, but the larger the better. However, as it uses a deep learning classifier, the WAUM needs the tasks $(x_i)_i$ in addition to the proposed labels while the other strategies are feature-blind.</span>
+<span id="cb24-614"><a href="#cb24-614" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-615"><a href="#cb24-615" aria-hidden="true" tabindex="-1"></a><span class="fu">### CIFAR-1OH dataset</span></span>
+<span id="cb24-616"><a href="#cb24-616" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-617"><a href="#cb24-617" aria-hidden="true" tabindex="-1"></a>First, let us consider a dataset with a large number of tasks, annotations and workers: the CIFAR-10H dataset by @peterson_human_2019.</span>
+<span id="cb24-618"><a href="#cb24-618" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-621"><a href="#cb24-621" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-622"><a href="#cb24-622" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb24-623"><a href="#cb24-623" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Example of images to label from the CIFAR-10H dataset with label `bird`, `car`, `cat`, `deer `and `dog` (top to bottom) by row.</span></span>
+<span id="cb24-624"><a href="#cb24-624" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb24-625"><a href="#cb24-625" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb24-626"><a href="#cb24-626" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb24-627"><a href="#cb24-627" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb24-628"><a href="#cb24-628" aria-hidden="true" tabindex="-1"></a>nrow <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb24-629"><a href="#cb24-629" aria-hidden="true" tabindex="-1"></a>ncol <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb24-630"><a href="#cb24-630" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(</span>
+<span id="cb24-631"><a href="#cb24-631" aria-hidden="true" tabindex="-1"></a>        nrow,</span>
+<span id="cb24-632"><a href="#cb24-632" aria-hidden="true" tabindex="-1"></a>        ncol,</span>
+<span id="cb24-633"><a href="#cb24-633" aria-hidden="true" tabindex="-1"></a>        sharey<span class="op">=</span><span class="st">"row"</span>,</span>
+<span id="cb24-634"><a href="#cb24-634" aria-hidden="true" tabindex="-1"></a>        sharex<span class="op">=</span><span class="st">"col"</span>,</span>
+<span id="cb24-635"><a href="#cb24-635" aria-hidden="true" tabindex="-1"></a>        figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">8</span>)</span>
+<span id="cb24-636"><a href="#cb24-636" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb24-637"><a href="#cb24-637" aria-hidden="true" tabindex="-1"></a>match_ <span class="op">=</span> {<span class="dv">0</span>: <span class="st">"bird"</span>, <span class="dv">1</span>: <span class="st">"car"</span>, <span class="dv">2</span>: <span class="st">"cat"</span>, <span class="dv">3</span>: <span class="st">"deer"</span>, <span class="dv">4</span>: <span class="st">"dog"</span>, <span class="dv">5</span>: <span class="st">"frog"</span>, <span class="dv">6</span>: <span class="st">"horse"</span>, <span class="dv">7</span>: <span class="st">"plane"</span>, <span class="dv">8</span>: <span class="st">"ship"</span>, <span class="dv">9</span>: <span class="st">"truck"</span>}</span>
+<span id="cb24-638"><a href="#cb24-638" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"datasets"</span> <span class="op">/</span> <span class="st">"cifar10H"</span> <span class="op">/</span> <span class="st">"train"</span></span>
+<span id="cb24-639"><a href="#cb24-639" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(nrow):</span>
+<span id="cb24-640"><a href="#cb24-640" aria-hidden="true" tabindex="-1"></a>  img_folder <span class="op">=</span> path <span class="op">/</span> <span class="ss">f"</span><span class="sc">{</span>match_[i]<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb24-641"><a href="#cb24-641" aria-hidden="true" tabindex="-1"></a>  all_imgs <span class="op">=</span> <span class="bu">list</span>(img_folder.glob(<span class="st">"*"</span>))[:ncol]</span>
+<span id="cb24-642"><a href="#cb24-642" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(ncol):</span>
+<span id="cb24-643"><a href="#cb24-643" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> np.asarray(Image.<span class="bu">open</span>(path <span class="op">/</span> all_imgs[j]))</span>
+<span id="cb24-644"><a href="#cb24-644" aria-hidden="true" tabindex="-1"></a>    axs[i,j].imshow(image, aspect<span class="op">=</span><span class="st">"equal"</span>)</span>
+<span id="cb24-645"><a href="#cb24-645" aria-hidden="true" tabindex="-1"></a>    axs[i,j].axis(<span class="st">"off"</span>)</span>
+<span id="cb24-646"><a href="#cb24-646" aria-hidden="true" tabindex="-1"></a>    axs[i,j].set_yticklabels([])</span>
+<span id="cb24-647"><a href="#cb24-647" aria-hidden="true" tabindex="-1"></a>plt.subplots_adjust(left<span class="op">=</span><span class="fl">0.05</span>, bottom<span class="op">=</span><span class="fl">0.05</span>, right<span class="op">=</span><span class="fl">0.95</span>, top<span class="op">=</span><span class="fl">0.95</span>, wspace<span class="op">=</span><span class="fl">0.05</span>, hspace<span class="op">=</span><span class="fl">0.05</span>)</span>
+<span id="cb24-648"><a href="#cb24-648" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb24-649"><a href="#cb24-649" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-650"><a href="#cb24-650" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-651"><a href="#cb24-651" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-654"><a href="#cb24-654" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-655"><a href="#cb24-655" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb24-656"><a href="#cb24-656" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb24-657"><a href="#cb24-657" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot identify .<span class="op">/</span>datasets<span class="op">/</span>cifar10H <span class="op">-</span>s entropy <span class="op">-</span>K <span class="dv">10</span> <span class="op">--</span>labels .<span class="op">/</span>datasets<span class="op">/</span>cifar10H<span class="op">/</span>answers.json</span>
+<span id="cb24-658"><a href="#cb24-658" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot aggregate .<span class="op">/</span>datasets<span class="op">/</span>cifar10H<span class="op">/</span> <span class="op">-</span>s GLAD</span>
+<span id="cb24-659"><a href="#cb24-659" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-662"><a href="#cb24-662" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-663"><a href="#cb24-663" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb24-664"><a href="#cb24-664" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-difficulty-c10H</span></span>
+<span id="cb24-665"><a href="#cb24-665" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Comparison of metrics scoring the task's intrinsic difficulty.</span></span>
+<span id="cb24-666"><a href="#cb24-666" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-667"><a href="#cb24-667" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> pearsonr</span>
+<span id="cb24-668"><a href="#cb24-668" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> corrfunc(x, y, ax<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kws):</span>
+<span id="cb24-669"><a href="#cb24-669" aria-hidden="true" tabindex="-1"></a>    r, _ <span class="op">=</span> pearsonr(x, y)</span>
+<span id="cb24-670"><a href="#cb24-670" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> ax <span class="kw">or</span> plt.gca()</span>
+<span id="cb24-671"><a href="#cb24-671" aria-hidden="true" tabindex="-1"></a>    ax.annotate(<span class="vs">rf'$\rho$ = </span><span class="sc">{</span>r<span class="sc">:.2f}</span><span class="vs">'</span>, xy<span class="op">=</span>(<span class="fl">.1</span>, <span class="fl">.9</span>), xycoords<span class="op">=</span>ax.transAxes)</span>
+<span id="cb24-672"><a href="#cb24-672" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> {<span class="st">'glad'</span>: [], <span class="st">"entropy"</span>: []}</span>
+<span id="cb24-673"><a href="#cb24-673" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"datasets"</span> <span class="op">/</span> <span class="st">"cifar10H"</span> <span class="op">/</span> <span class="st">"identification"</span></span>
+<span id="cb24-674"><a href="#cb24-674" aria-hidden="true" tabindex="-1"></a>results[<span class="st">"entropy"</span>] <span class="op">=</span> np.load(path <span class="op">/</span> <span class="st">'entropies.npy'</span>)</span>
+<span id="cb24-675"><a href="#cb24-675" aria-hidden="true" tabindex="-1"></a>results[<span class="st">"glad"</span>] <span class="op">=</span> np.exp(np.load(path <span class="op">/</span> <span class="st">"glad"</span> <span class="op">/</span> <span class="st">"difficulties.npy"</span>)[:, <span class="dv">1</span>])</span>
+<span id="cb24-676"><a href="#cb24-676" aria-hidden="true" tabindex="-1"></a><span class="co"># results["waum"] = pd.read_csv(path / "resnet34" / "waum_0.01_yang" / 'waum.csv')["waum"].values</span></span>
+<span id="cb24-677"><a href="#cb24-677" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.DataFrame(results)</span>
+<span id="cb24-678"><a href="#cb24-678" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.pairplot(results, corner<span class="op">=</span><span class="va">True</span>, diag_kind<span class="op">=</span><span class="st">"kde"</span>)</span>
+<span id="cb24-679"><a href="#cb24-679" aria-hidden="true" tabindex="-1"></a>g.map_lower(corrfunc)</span>
 <span id="cb24-680"><a href="#cb24-680" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-683"><a href="#cb24-683" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-684"><a href="#cb24-684" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
-<span id="cb24-685"><a href="#cb24-685" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb24-686"><a href="#cb24-686" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-687"><a href="#cb24-687" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot identify .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span> <span class="op">-</span>s entropy <span class="op">-</span>K <span class="dv">10</span> <span class="op">--</span>labels .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span>answers.json</span>
-<span id="cb24-688"><a href="#cb24-688" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot aggregate .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span> <span class="op">-</span>s GLAD</span>
-<span id="cb24-689"><a href="#cb24-689" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-681"><a href="#cb24-681" aria-hidden="true" tabindex="-1"></a><span class="co"># axes = g.axes.flatten()</span></span>
+<span id="cb24-682"><a href="#cb24-682" aria-hidden="true" tabindex="-1"></a><span class="co"># for i, ax in enumerate(axes):</span></span>
+<span id="cb24-683"><a href="#cb24-683" aria-hidden="true" tabindex="-1"></a><span class="co">#   if i % len(results) == 0:</span></span>
+<span id="cb24-684"><a href="#cb24-684" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-685"><a href="#cb24-685" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb24-686"><a href="#cb24-686" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-687"><a href="#cb24-687" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-688"><a href="#cb24-688" aria-hidden="true" tabindex="-1"></a><span class="fu">### LabelMe dataset</span></span>
+<span id="cb24-689"><a href="#cb24-689" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-692"><a href="#cb24-692" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-693"><a href="#cb24-693" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb24-694"><a href="#cb24-694" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-difficulty-labelme</span></span>
-<span id="cb24-695"><a href="#cb24-695" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Comparison of metrics scoring the task's intrinsic difficulty.</span></span>
-<span id="cb24-696"><a href="#cb24-696" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-697"><a href="#cb24-697" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> pearsonr</span>
-<span id="cb24-698"><a href="#cb24-698" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> corrfunc(x, y, ax<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kws):</span>
-<span id="cb24-699"><a href="#cb24-699" aria-hidden="true" tabindex="-1"></a>    r, _ <span class="op">=</span> pearsonr(x, y)</span>
-<span id="cb24-700"><a href="#cb24-700" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> ax <span class="kw">or</span> plt.gca()</span>
-<span id="cb24-701"><a href="#cb24-701" aria-hidden="true" tabindex="-1"></a>    ax.annotate(<span class="vs">rf'$\rho$ = </span><span class="sc">{</span>r<span class="sc">:.2f}</span><span class="vs">'</span>, xy<span class="op">=</span>(<span class="fl">.1</span>, <span class="fl">.9</span>), xycoords<span class="op">=</span>ax.transAxes)</span>
-<span id="cb24-702"><a href="#cb24-702" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> {<span class="st">'glad'</span>: [], <span class="st">"entropy"</span>: []}</span>
-<span id="cb24-703"><a href="#cb24-703" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"datasets"</span> <span class="op">/</span> <span class="st">"labelme"</span> <span class="op">/</span> <span class="st">"identification"</span></span>
-<span id="cb24-704"><a href="#cb24-704" aria-hidden="true" tabindex="-1"></a>results[<span class="st">"entropy"</span>] <span class="op">=</span> np.load(path <span class="op">/</span> <span class="st">'entropies.npy'</span>)</span>
-<span id="cb24-705"><a href="#cb24-705" aria-hidden="true" tabindex="-1"></a>results[<span class="st">"glad"</span>] <span class="op">=</span> np.exp(np.load(path <span class="op">/</span> <span class="st">"glad"</span> <span class="op">/</span> <span class="st">"difficulties.npy"</span>)[:, <span class="dv">1</span>])</span>
-<span id="cb24-706"><a href="#cb24-706" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.DataFrame(results)</span>
-<span id="cb24-707"><a href="#cb24-707" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.pairplot(results, corner<span class="op">=</span><span class="va">True</span>, diag_kind<span class="op">=</span><span class="st">"kde"</span>)</span>
-<span id="cb24-708"><a href="#cb24-708" aria-hidden="true" tabindex="-1"></a>g.map_lower(corrfunc)</span>
-<span id="cb24-709"><a href="#cb24-709" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb24-710"><a href="#cb24-710" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-711"><a href="#cb24-711" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-712"><a href="#cb24-712" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-713"><a href="#cb24-713" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exploring workers' reliability</span></span>
-<span id="cb24-714"><a href="#cb24-714" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-715"><a href="#cb24-715" aria-hidden="true" tabindex="-1"></a>From the labels, we can explore different worker evaluation scores.</span>
-<span id="cb24-716"><a href="#cb24-716" aria-hidden="true" tabindex="-1"></a>GLAD's strategy estimates a reliability scalar coefficient $\alpha_j$ per worker.</span>
-<span id="cb24-717"><a href="#cb24-717" aria-hidden="true" tabindex="-1"></a>With strategies looking to estimate confusion matrices, we investigate two scoring rules for workers:</span>
-<span id="cb24-718"><a href="#cb24-718" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-719"><a href="#cb24-719" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the trace of the confusion matrix: the closer to K the better the worker,</span>
-<span id="cb24-720"><a href="#cb24-720" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the spammer score <span class="co">[</span><span class="ot">@raykar_ranking_2011</span><span class="co">]</span> that is the Frobenius norm between the estimated confusion matrix $\hat\pi^{(j)}$ and the closest rank-$1$ matrix. The further to zero the better the worker.</span>
+<span id="cb24-693"><a href="#cb24-693" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb24-694"><a href="#cb24-694" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb24-695"><a href="#cb24-695" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-696"><a href="#cb24-696" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot identify .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span> <span class="op">-</span>s entropy <span class="op">-</span>K <span class="dv">10</span> <span class="op">--</span>labels .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span>answers.json</span>
+<span id="cb24-697"><a href="#cb24-697" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot aggregate .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span> <span class="op">-</span>s GLAD</span>
+<span id="cb24-698"><a href="#cb24-698" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-701"><a href="#cb24-701" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-702"><a href="#cb24-702" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb24-703"><a href="#cb24-703" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-difficulty-labelme</span></span>
+<span id="cb24-704"><a href="#cb24-704" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Comparison of metrics scoring the task's intrinsic difficulty.</span></span>
+<span id="cb24-705"><a href="#cb24-705" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-706"><a href="#cb24-706" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> pearsonr</span>
+<span id="cb24-707"><a href="#cb24-707" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> corrfunc(x, y, ax<span class="op">=</span><span class="va">None</span>, <span class="op">**</span>kws):</span>
+<span id="cb24-708"><a href="#cb24-708" aria-hidden="true" tabindex="-1"></a>    r, _ <span class="op">=</span> pearsonr(x, y)</span>
+<span id="cb24-709"><a href="#cb24-709" aria-hidden="true" tabindex="-1"></a>    ax <span class="op">=</span> ax <span class="kw">or</span> plt.gca()</span>
+<span id="cb24-710"><a href="#cb24-710" aria-hidden="true" tabindex="-1"></a>    ax.annotate(<span class="vs">rf'$\rho$ = </span><span class="sc">{</span>r<span class="sc">:.2f}</span><span class="vs">'</span>, xy<span class="op">=</span>(<span class="fl">.1</span>, <span class="fl">.9</span>), xycoords<span class="op">=</span>ax.transAxes)</span>
+<span id="cb24-711"><a href="#cb24-711" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> {<span class="st">'glad'</span>: [], <span class="st">"entropy"</span>: []}</span>
+<span id="cb24-712"><a href="#cb24-712" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"datasets"</span> <span class="op">/</span> <span class="st">"labelme"</span> <span class="op">/</span> <span class="st">"identification"</span></span>
+<span id="cb24-713"><a href="#cb24-713" aria-hidden="true" tabindex="-1"></a>results[<span class="st">"entropy"</span>] <span class="op">=</span> np.load(path <span class="op">/</span> <span class="st">'entropies.npy'</span>)</span>
+<span id="cb24-714"><a href="#cb24-714" aria-hidden="true" tabindex="-1"></a>results[<span class="st">"glad"</span>] <span class="op">=</span> np.exp(np.load(path <span class="op">/</span> <span class="st">"glad"</span> <span class="op">/</span> <span class="st">"difficulties.npy"</span>)[:, <span class="dv">1</span>])</span>
+<span id="cb24-715"><a href="#cb24-715" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.DataFrame(results)</span>
+<span id="cb24-716"><a href="#cb24-716" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.pairplot(results, corner<span class="op">=</span><span class="va">True</span>, diag_kind<span class="op">=</span><span class="st">"kde"</span>)</span>
+<span id="cb24-717"><a href="#cb24-717" aria-hidden="true" tabindex="-1"></a>g.map_lower(corrfunc)</span>
+<span id="cb24-718"><a href="#cb24-718" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb24-719"><a href="#cb24-719" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-720"><a href="#cb24-720" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-721"><a href="#cb24-721" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-722"><a href="#cb24-722" aria-hidden="true" tabindex="-1"></a>When the tasks are available, confusion-matrix-based deep learning models can also be of use.</span>
-<span id="cb24-723"><a href="#cb24-723" aria-hidden="true" tabindex="-1"></a>We thus add to the comparison the trace of the confusion matrices with CrowdLayer and CoNAL on the datasets.</span>
-<span id="cb24-724"><a href="#cb24-724" aria-hidden="true" tabindex="-1"></a>For CoNAL, we only consider the trace of the confusion matrix $\pi^{(j)}$ in the pairwise comparison, and provide the common confusion matrix $\pi^g$ as separate.</span>
-<span id="cb24-725"><a href="#cb24-725" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-726"><a href="#cb24-726" aria-hidden="true" tabindex="-1"></a><span class="fu">### CIFAR-10H</span></span>
+<span id="cb24-722"><a href="#cb24-722" aria-hidden="true" tabindex="-1"></a><span class="fu">## Exploring workers' reliability</span></span>
+<span id="cb24-723"><a href="#cb24-723" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-724"><a href="#cb24-724" aria-hidden="true" tabindex="-1"></a>From the labels, we can explore different worker evaluation scores.</span>
+<span id="cb24-725"><a href="#cb24-725" aria-hidden="true" tabindex="-1"></a>GLAD's strategy estimates a reliability scalar coefficient $\alpha_j$ per worker.</span>
+<span id="cb24-726"><a href="#cb24-726" aria-hidden="true" tabindex="-1"></a>With strategies looking to estimate confusion matrices, we investigate two scoring rules for workers:</span>
 <span id="cb24-727"><a href="#cb24-727" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-728"><a href="#cb24-728" aria-hidden="true" tabindex="-1"></a>The Cifar-10H dataset has few disagreements among workers.</span>
-<span id="cb24-729"><a href="#cb24-729" aria-hidden="true" tabindex="-1"></a>From XXX, we can see that</span>
+<span id="cb24-728"><a href="#cb24-728" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the trace of the confusion matrix: the closer to K the better the worker,</span>
+<span id="cb24-729"><a href="#cb24-729" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the spammer score <span class="co">[</span><span class="ot">@raykar_ranking_2011</span><span class="co">]</span> that is the Frobenius norm between the estimated confusion matrix $\hat\pi^{(j)}$ and the closest rank-$1$ matrix. The further to zero the better the worker.</span>
 <span id="cb24-730"><a href="#cb24-730" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-733"><a href="#cb24-733" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-734"><a href="#cb24-734" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
-<span id="cb24-735"><a href="#cb24-735" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb24-736"><a href="#cb24-736" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot aggregate .<span class="op">/</span>datasets<span class="op">/</span>cifar10H<span class="op">/</span> <span class="op">-</span>s GLAD</span>
-<span id="cb24-737"><a href="#cb24-737" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> method <span class="kw">in</span> [<span class="st">"trace_confusion"</span>, <span class="st">"spam_score"</span>]:</span>
-<span id="cb24-738"><a href="#cb24-738" aria-hidden="true" tabindex="-1"></a>  <span class="op">!</span> peerannot identify .<span class="op">/</span>datasets<span class="op">/</span>cifar10H<span class="op">/</span> <span class="op">--</span>n<span class="op">-</span>classes<span class="op">=</span><span class="dv">10</span> <span class="op">\</span></span>
-<span id="cb24-739"><a href="#cb24-739" aria-hidden="true" tabindex="-1"></a>                       <span class="op">-</span>s {method} <span class="op">--</span>labels .<span class="op">/</span>datasets<span class="op">/</span>cifar10H<span class="op">/</span>answers.json</span>
-<span id="cb24-740"><a href="#cb24-740" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-741"><a href="#cb24-741" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-744"><a href="#cb24-744" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-745"><a href="#cb24-745" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb24-746"><a href="#cb24-746" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-abilities-cifar10H</span></span>
-<span id="cb24-747"><a href="#cb24-747" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Comparison of ability scores by workers for the CIFAR-10H dataset.</span></span>
-<span id="cb24-748"><a href="#cb24-748" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-749"><a href="#cb24-749" aria-hidden="true" tabindex="-1"></a>path_ <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"datasets"</span> <span class="op">/</span> <span class="st">"cifar10H"</span></span>
-<span id="cb24-750"><a href="#cb24-750" aria-hidden="true" tabindex="-1"></a>results_identif <span class="op">=</span> {<span class="st">"trace_confusion"</span>: [], <span class="st">"spam_score"</span>: [], <span class="st">"glad"</span>: []}</span>
-<span id="cb24-751"><a href="#cb24-751" aria-hidden="true" tabindex="-1"></a>results_identif[<span class="st">"trace_confusion"</span>].extend(np.load(path_ <span class="op">/</span> <span class="st">'identification'</span> <span class="op">/</span> <span class="st">"traces_confusion.npy"</span>))</span>
-<span id="cb24-752"><a href="#cb24-752" aria-hidden="true" tabindex="-1"></a>results_identif[<span class="st">"spam_score"</span>].extend(np.load(path_ <span class="op">/</span> <span class="st">'identification'</span> <span class="op">/</span> <span class="st">"spam_score.npy"</span>))</span>
-<span id="cb24-753"><a href="#cb24-753" aria-hidden="true" tabindex="-1"></a>results_identif[<span class="st">"glad"</span>].extend(np.load(path_ <span class="op">/</span> <span class="st">'identification'</span> <span class="op">/</span> <span class="st">"glad"</span> <span class="op">/</span> <span class="st">"abilities.npy"</span>)[:, <span class="dv">1</span>])</span>
-<span id="cb24-754"><a href="#cb24-754" aria-hidden="true" tabindex="-1"></a>results_identif <span class="op">=</span> pd.DataFrame(results_identif)</span>
-<span id="cb24-755"><a href="#cb24-755" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.pairplot(results_identif, corner<span class="op">=</span><span class="va">True</span>, diag_kind<span class="op">=</span><span class="st">"kde"</span>)</span>
-<span id="cb24-756"><a href="#cb24-756" aria-hidden="true" tabindex="-1"></a>g.map_lower(corrfunc)</span>
-<span id="cb24-757"><a href="#cb24-757" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb24-758"><a href="#cb24-758" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-759"><a href="#cb24-759" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-760"><a href="#cb24-760" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-761"><a href="#cb24-761" aria-hidden="true" tabindex="-1"></a><span class="fu">### LabelMe</span></span>
-<span id="cb24-762"><a href="#cb24-762" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-765"><a href="#cb24-765" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-766"><a href="#cb24-766" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
-<span id="cb24-767"><a href="#cb24-767" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb24-768"><a href="#cb24-768" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot aggregate .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span> <span class="op">-</span>s GLAD</span>
-<span id="cb24-769"><a href="#cb24-769" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> method <span class="kw">in</span> [<span class="st">"trace_confusion"</span>, <span class="st">"spam_score"</span>]:</span>
-<span id="cb24-770"><a href="#cb24-770" aria-hidden="true" tabindex="-1"></a>  <span class="op">!</span> peerannot identify .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span> <span class="op">--</span>n<span class="op">-</span>classes<span class="op">=</span><span class="dv">10</span> <span class="op">\</span></span>
-<span id="cb24-771"><a href="#cb24-771" aria-hidden="true" tabindex="-1"></a>                       <span class="op">-</span>s {method} <span class="op">--</span>labels .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span>answers.json</span>
-<span id="cb24-772"><a href="#cb24-772" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-773"><a href="#cb24-773" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-776"><a href="#cb24-776" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb24-777"><a href="#cb24-777" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb24-778"><a href="#cb24-778" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-abilities-labelme</span></span>
-<span id="cb24-779"><a href="#cb24-779" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Comparison of ability scores by workers for the CIFAR-10H dataset.</span></span>
-<span id="cb24-780"><a href="#cb24-780" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-781"><a href="#cb24-781" aria-hidden="true" tabindex="-1"></a>path_ <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"datasets"</span> <span class="op">/</span> <span class="st">"labelme"</span></span>
-<span id="cb24-782"><a href="#cb24-782" aria-hidden="true" tabindex="-1"></a>results_identif <span class="op">=</span> {<span class="st">"trace_confusion"</span>: [], <span class="st">"spam_score"</span>: [], <span class="st">"glad"</span>: []}</span>
-<span id="cb24-783"><a href="#cb24-783" aria-hidden="true" tabindex="-1"></a>results_identif[<span class="st">"trace_confusion"</span>].extend(np.load(path_ <span class="op">/</span> <span class="st">'identification'</span> <span class="op">/</span> <span class="st">"traces_confusion.npy"</span>))</span>
-<span id="cb24-784"><a href="#cb24-784" aria-hidden="true" tabindex="-1"></a>results_identif[<span class="st">"spam_score"</span>].extend(np.load(path_ <span class="op">/</span> <span class="st">'identification'</span> <span class="op">/</span> <span class="st">"spam_score.npy"</span>))</span>
-<span id="cb24-785"><a href="#cb24-785" aria-hidden="true" tabindex="-1"></a>results_identif[<span class="st">"glad"</span>].extend(np.load(path_ <span class="op">/</span> <span class="st">'identification'</span> <span class="op">/</span> <span class="st">"glad"</span> <span class="op">/</span> <span class="st">"abilities.npy"</span>)[:, <span class="dv">1</span>])</span>
-<span id="cb24-786"><a href="#cb24-786" aria-hidden="true" tabindex="-1"></a>results_identif <span class="op">=</span> pd.DataFrame(results_identif)</span>
-<span id="cb24-787"><a href="#cb24-787" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.pairplot(results_identif, corner<span class="op">=</span><span class="va">True</span>, diag_kind<span class="op">=</span><span class="st">"kde"</span>)</span>
-<span id="cb24-788"><a href="#cb24-788" aria-hidden="true" tabindex="-1"></a>g.map_lower(corrfunc)</span>
-<span id="cb24-789"><a href="#cb24-789" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb24-790"><a href="#cb24-790" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb24-791"><a href="#cb24-791" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-792"><a href="#cb24-792" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-793"><a href="#cb24-793" aria-hidden="true" tabindex="-1"></a><span class="fu"># Conclusion</span></span>
-<span id="cb24-794"><a href="#cb24-794" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-795"><a href="#cb24-795" aria-hidden="true" tabindex="-1"></a>We introduced <span class="in">`peerannot`</span>, a library to handle crowdsourced datasets. This library enables both easy label aggregation and direct training strategies with classical state-of-the-art classifiers. The identification module of the library allows exploring the collected data from both the tasks and the workers' point of view for better scorings and data cleaning procedures.</span>
-<span id="cb24-796"><a href="#cb24-796" aria-hidden="true" tabindex="-1"></a>Our library also comes with templated datasets to better share crowdsourced datasets and have strategies more uniform to test on.</span>
-<span id="cb24-797"><a href="#cb24-797" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-798"><a href="#cb24-798" aria-hidden="true" tabindex="-1"></a>We hope that this library helps reproducibility in the crowdsourcing community and also standardizes training from crowdsourced datasets. New strategies can easily be incorporated into the open-source code <span class="co">[</span><span class="ot">available on github</span><span class="co">](https://github.com/peerannot/peerannot)</span>. Finally, as <span class="in">`peerannot`</span> is mostly directed to handle classification datasets, one of our future works would be to consider other <span class="in">`peerannot`</span> modules to handle crowdsourcing for object detection, segmentation and even worker evaluation in other contexts like peer-grading.</span>
+<span id="cb24-731"><a href="#cb24-731" aria-hidden="true" tabindex="-1"></a>When the tasks are available, confusion-matrix-based deep learning models can also be of use.</span>
+<span id="cb24-732"><a href="#cb24-732" aria-hidden="true" tabindex="-1"></a>We thus add to the comparison the trace of the confusion matrices with CrowdLayer and CoNAL on the datasets.</span>
+<span id="cb24-733"><a href="#cb24-733" aria-hidden="true" tabindex="-1"></a>For CoNAL, we only consider the trace of the confusion matrix $\pi^{(j)}$ in the pairwise comparison, and provide the common confusion matrix $\pi^g$ as separate.</span>
+<span id="cb24-734"><a href="#cb24-734" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-735"><a href="#cb24-735" aria-hidden="true" tabindex="-1"></a><span class="fu">### CIFAR-10H</span></span>
+<span id="cb24-736"><a href="#cb24-736" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-737"><a href="#cb24-737" aria-hidden="true" tabindex="-1"></a>The Cifar-10H dataset has few disagreements among workers.</span>
+<span id="cb24-738"><a href="#cb24-738" aria-hidden="true" tabindex="-1"></a>From XXX, we can see that</span>
+<span id="cb24-739"><a href="#cb24-739" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-742"><a href="#cb24-742" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-743"><a href="#cb24-743" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb24-744"><a href="#cb24-744" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb24-745"><a href="#cb24-745" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot aggregate .<span class="op">/</span>datasets<span class="op">/</span>cifar10H<span class="op">/</span> <span class="op">-</span>s GLAD</span>
+<span id="cb24-746"><a href="#cb24-746" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> method <span class="kw">in</span> [<span class="st">"trace_confusion"</span>, <span class="st">"spam_score"</span>]:</span>
+<span id="cb24-747"><a href="#cb24-747" aria-hidden="true" tabindex="-1"></a>  <span class="op">!</span> peerannot identify .<span class="op">/</span>datasets<span class="op">/</span>cifar10H<span class="op">/</span> <span class="op">--</span>n<span class="op">-</span>classes<span class="op">=</span><span class="dv">10</span> <span class="op">\</span></span>
+<span id="cb24-748"><a href="#cb24-748" aria-hidden="true" tabindex="-1"></a>                       <span class="op">-</span>s {method} <span class="op">--</span>labels .<span class="op">/</span>datasets<span class="op">/</span>cifar10H<span class="op">/</span>answers.json</span>
+<span id="cb24-749"><a href="#cb24-749" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-750"><a href="#cb24-750" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-753"><a href="#cb24-753" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-754"><a href="#cb24-754" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb24-755"><a href="#cb24-755" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-abilities-cifar10H</span></span>
+<span id="cb24-756"><a href="#cb24-756" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Comparison of ability scores by workers for the CIFAR-10H dataset.</span></span>
+<span id="cb24-757"><a href="#cb24-757" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-758"><a href="#cb24-758" aria-hidden="true" tabindex="-1"></a>path_ <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"datasets"</span> <span class="op">/</span> <span class="st">"cifar10H"</span></span>
+<span id="cb24-759"><a href="#cb24-759" aria-hidden="true" tabindex="-1"></a>results_identif <span class="op">=</span> {<span class="st">"trace_confusion"</span>: [], <span class="st">"spam_score"</span>: [], <span class="st">"glad"</span>: []}</span>
+<span id="cb24-760"><a href="#cb24-760" aria-hidden="true" tabindex="-1"></a>results_identif[<span class="st">"trace_confusion"</span>].extend(np.load(path_ <span class="op">/</span> <span class="st">'identification'</span> <span class="op">/</span> <span class="st">"traces_confusion.npy"</span>))</span>
+<span id="cb24-761"><a href="#cb24-761" aria-hidden="true" tabindex="-1"></a>results_identif[<span class="st">"spam_score"</span>].extend(np.load(path_ <span class="op">/</span> <span class="st">'identification'</span> <span class="op">/</span> <span class="st">"spam_score.npy"</span>))</span>
+<span id="cb24-762"><a href="#cb24-762" aria-hidden="true" tabindex="-1"></a>results_identif[<span class="st">"glad"</span>].extend(np.load(path_ <span class="op">/</span> <span class="st">'identification'</span> <span class="op">/</span> <span class="st">"glad"</span> <span class="op">/</span> <span class="st">"abilities.npy"</span>)[:, <span class="dv">1</span>])</span>
+<span id="cb24-763"><a href="#cb24-763" aria-hidden="true" tabindex="-1"></a>results_identif <span class="op">=</span> pd.DataFrame(results_identif)</span>
+<span id="cb24-764"><a href="#cb24-764" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.pairplot(results_identif, corner<span class="op">=</span><span class="va">True</span>, diag_kind<span class="op">=</span><span class="st">"kde"</span>)</span>
+<span id="cb24-765"><a href="#cb24-765" aria-hidden="true" tabindex="-1"></a>g.map_lower(corrfunc)</span>
+<span id="cb24-766"><a href="#cb24-766" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb24-767"><a href="#cb24-767" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-768"><a href="#cb24-768" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-769"><a href="#cb24-769" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-770"><a href="#cb24-770" aria-hidden="true" tabindex="-1"></a><span class="fu">### LabelMe</span></span>
+<span id="cb24-771"><a href="#cb24-771" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-774"><a href="#cb24-774" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-775"><a href="#cb24-775" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb24-776"><a href="#cb24-776" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb24-777"><a href="#cb24-777" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot aggregate .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span> <span class="op">-</span>s GLAD</span>
+<span id="cb24-778"><a href="#cb24-778" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> method <span class="kw">in</span> [<span class="st">"trace_confusion"</span>, <span class="st">"spam_score"</span>]:</span>
+<span id="cb24-779"><a href="#cb24-779" aria-hidden="true" tabindex="-1"></a>  <span class="op">!</span> peerannot identify .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span> <span class="op">--</span>n<span class="op">-</span>classes<span class="op">=</span><span class="dv">10</span> <span class="op">\</span></span>
+<span id="cb24-780"><a href="#cb24-780" aria-hidden="true" tabindex="-1"></a>                       <span class="op">-</span>s {method} <span class="op">--</span>labels .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span>answers.json</span>
+<span id="cb24-781"><a href="#cb24-781" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-782"><a href="#cb24-782" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-785"><a href="#cb24-785" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb24-786"><a href="#cb24-786" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb24-787"><a href="#cb24-787" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-abilities-labelme</span></span>
+<span id="cb24-788"><a href="#cb24-788" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Comparison of ability scores by workers for the CIFAR-10H dataset.</span></span>
+<span id="cb24-789"><a href="#cb24-789" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-790"><a href="#cb24-790" aria-hidden="true" tabindex="-1"></a>path_ <span class="op">=</span> Path.cwd() <span class="op">/</span> <span class="st">"datasets"</span> <span class="op">/</span> <span class="st">"labelme"</span></span>
+<span id="cb24-791"><a href="#cb24-791" aria-hidden="true" tabindex="-1"></a>results_identif <span class="op">=</span> {<span class="st">"trace_confusion"</span>: [], <span class="st">"spam_score"</span>: [], <span class="st">"glad"</span>: []}</span>
+<span id="cb24-792"><a href="#cb24-792" aria-hidden="true" tabindex="-1"></a>results_identif[<span class="st">"trace_confusion"</span>].extend(np.load(path_ <span class="op">/</span> <span class="st">'identification'</span> <span class="op">/</span> <span class="st">"traces_confusion.npy"</span>))</span>
+<span id="cb24-793"><a href="#cb24-793" aria-hidden="true" tabindex="-1"></a>results_identif[<span class="st">"spam_score"</span>].extend(np.load(path_ <span class="op">/</span> <span class="st">'identification'</span> <span class="op">/</span> <span class="st">"spam_score.npy"</span>))</span>
+<span id="cb24-794"><a href="#cb24-794" aria-hidden="true" tabindex="-1"></a>results_identif[<span class="st">"glad"</span>].extend(np.load(path_ <span class="op">/</span> <span class="st">'identification'</span> <span class="op">/</span> <span class="st">"glad"</span> <span class="op">/</span> <span class="st">"abilities.npy"</span>)[:, <span class="dv">1</span>])</span>
+<span id="cb24-795"><a href="#cb24-795" aria-hidden="true" tabindex="-1"></a>results_identif <span class="op">=</span> pd.DataFrame(results_identif)</span>
+<span id="cb24-796"><a href="#cb24-796" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.pairplot(results_identif, corner<span class="op">=</span><span class="va">True</span>, diag_kind<span class="op">=</span><span class="st">"kde"</span>)</span>
+<span id="cb24-797"><a href="#cb24-797" aria-hidden="true" tabindex="-1"></a>g.map_lower(corrfunc)</span>
+<span id="cb24-798"><a href="#cb24-798" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb24-799"><a href="#cb24-799" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-800"><a href="#cb24-800" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-801"><a href="#cb24-801" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-802"><a href="#cb24-802" aria-hidden="true" tabindex="-1"></a><span class="fu"># Conclusion</span></span>
+<span id="cb24-803"><a href="#cb24-803" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-804"><a href="#cb24-804" aria-hidden="true" tabindex="-1"></a>We introduced <span class="in">`peerannot`</span>, a library to handle crowdsourced datasets. This library enables both easy label aggregation and direct training strategies with classical state-of-the-art classifiers. The identification module of the library allows exploring the collected data from both the tasks and the workers' point of view for better scorings and data cleaning procedures.</span>
+<span id="cb24-805"><a href="#cb24-805" aria-hidden="true" tabindex="-1"></a>Our library also comes with templated datasets to better share crowdsourced datasets and have strategies more uniform to test on.</span>
+<span id="cb24-806"><a href="#cb24-806" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-807"><a href="#cb24-807" aria-hidden="true" tabindex="-1"></a>We hope that this library helps reproducibility in the crowdsourcing community and also standardizes training from crowdsourced datasets. New strategies can easily be incorporated into the open-source code <span class="co">[</span><span class="ot">available on github</span><span class="co">](https://github.com/peerannot/peerannot)</span>. Finally, as <span class="in">`peerannot`</span> is mostly directed to handle classification datasets, one of our future works would be to consider other <span class="in">`peerannot`</span> modules to handle crowdsourcing for object detection, segmentation and even worker evaluation in other contexts like peer-grading.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
