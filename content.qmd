@@ -205,6 +205,7 @@ The likelihood can then be optimized using an EM algorithm to recover the soft l
 
 All of these aggregation strategies -- and more -- are available in the `peerannot` library from the `peerannot.models` module.
 Each model is a class object in its own `Python` file. It inherits from the `CrowdModel` template class and is defined with at least two methods:
+
 - `run`: includes the optimization procedure to obtain needed weights (*e.g.* the EM algorithm for the DS model),
 - `get_probas`: returns the soft labels output for each task.
 
