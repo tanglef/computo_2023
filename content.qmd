@@ -319,6 +319,9 @@ for strategy in results.keys():
   results[strategy].append(acc)
 results = pd.DataFrame(results, index=['AccTrain'])
 results.columns = map(str.upper, results.columns)
+results = results.style.set_table_styles([dict(selector='th', props=[('text-align', 'center')])])
+results.set_properties(**{'text-align': 'center'})
+results = results.format(precision=3)
 display(results)
 ```
 
@@ -395,6 +398,9 @@ for strategy in results.keys():
   results[strategy].append(acc)
 results = pd.DataFrame(results, index=['AccTrain'])
 results.columns = map(str.upper, results.columns)
+results = results.style.set_table_styles([dict(selector='th', props=[('text-align', 'center')])])
+results.set_properties(**{'text-align': 'center'})
+results = results.format(precision=3)
 display(results)
 ```
 
@@ -404,7 +410,7 @@ display(results)
 For the final simulation setting, we consider the discrete difficulty presented in @whitehill_whose_2009. Contrary to other simulations, we here consider that each worker is either good or bad and each task is either easy or hard. Easy tasks are answered without mistakes by involved workers. However, hard tasks are answered following the worker's confusion matrix. The confusion matrix $\pi^{(j)}$ is diagonally dominant for good workers while each row is drawn uniformly in the simplex $\Delta_K$ for bad workers.
 Each worker then answers independently to the presented tasks.
 
-We simulate $n_{\text{task}}=500$ tasks and $n_{\text{worker}}=100$ with $30\%$ of good workers in the crowd and $50\%$ of easy tasks. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
+We simulate $n_{\text{task}}=500$ tasks and $n_{\text{worker}}=100$ with $35\%$ of good workers in the crowd and $50\%$ of easy tasks. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
 
 ```{python}
 #| output: false
@@ -471,6 +477,9 @@ for strategy in results.keys():
   results[strategy].append(acc)
 results = pd.DataFrame(results, index=['AccTrain'])
 results.columns = map(str.upper, results.columns)
+results = results.style.set_table_styles([dict(selector='th', props=[('text-align', 'center')])])
+results.set_properties(**{'text-align': 'center'})
+results = results.format(precision=3)
 display(results)
 ```
 
