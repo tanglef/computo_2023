@@ -66,19 +66,18 @@ execute:  # to remove at the end
 
 # Introduction: crowdsourcing in image classification
 
-Image datasets widely use crowdsourcing to collect labels.
-This allows workers to annotate images for a small cost and faster than using expert labeling.
-Many classical datasets using machine learning have been created with human intervention to create labels, such as CIFAR-$10$, [@krizhevsky2009learning],
+Image datasets widely use crowdsourcing to collect labels, involving many workers that can annotate images for a small cost (or even freely for instance in citizen science) and faster than using expert labeling.
+Many classical datasets considered in machine learning have been created with human intervention to create labels, such as CIFAR-$10$, [@krizhevsky2009learning],
 ImageNet [@imagenet_cvpr09] or [@Garcin_Joly_Bonnet_Affouard_Lombardo_Chouet_Servajean_Lorieul_Salmon2021] in image classification, but also COCO [@cocodataset], solar photovoltaic arrays [@kasmi2023crowdsourced] or even macro litter [@chagneux2023] in image segmentation and object counting.
 
-Crowdsourced datasets induce at least three entangled problems to which we contribute with `peerannot`:
+Crowdsourced datasets induce at least three major challenges to which we contribute with `peerannot`:
 
-  - *How to aggregate multiple labels into a single label from crowdsourced tasks?* This problem occurs for example when dealing with a single dataset that has been labeled by multiple workers where there are disagreements. But it is also encountered with polls, reviewing, *etc.* This is treated with the `aggregate` command.
-  - *How to learn a classifier from crowdsourced datasets?* Where the first question is bound by aggregating multiple labels into a single one, this considers the case where we don't need a label to train on, but we need to train a classifier with the crowdsourced data that performs well on a testing set. This end-to-end vision, is the most common case in machine learning, however, this means that we need the actual tasks to train on -- and in crowdsourced datasets, they are not always available. This is treated with the `aggregate-deep` command.
-  - *How to score workers in a crowdsourcing experiment?* Beyond learning a classifier or inferring the true label, one could wish to find a ranking between workers. For example, it is relevant for the gamification of crowdsourcing experiments [@plantgame2016]This is treated with the `identify` command.
+  - *How to aggregate multiple labels into a single label from crowdsourced tasks?* This occurs for example when dealing with a single dataset that has been labeled by multiple workers with disagreements. This is also encountered with other scoring issues such as polls, reviews, peer-grading, *etc.* In our framework this is treated with the `aggregate` command.
+  - *How to learn a classifier from crowdsourced datasets?* Where the first question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision, is common in machine learning, however, it requires the actual tasks XXX to train on -- and in crowdsourced datasets, they are not always available. This is treated with the `aggregate-deep` command.
+  - *How to score workers in a crowdsourcing experiment?* Beyond learning a classifier or inferring the true label, one might want to find a scoring or ranking between workers. For example, it is relevant for the gamification of crowdsourcing experiments [@plantgame2016]. This is treated with the `identify` command.
 
 The library `peerannot` addresses these practical questions within a reproducible setting. Indeed, the complexity of experiments often leads to a lack of transparency and reproducible results for simulations and real datasets.
-We propose standard simulation settings with explicit parameter implementations that can be shared.
+We propose standard simulation settings with explicit implementation parameters that can be shared.
 For real datasets, `peerannot` is compatible with standard neural networks architectures from the `Torchvision` [@torchvision] library and `Pytorch` [@pytorch], allowing a flexible framework with easy-to-share scripts to reproduce experiments.
 
 ![From crowdsourced labels to training a classifier neural network, the full pipeline using the `peerannot` library.](./figures/strategiesbis.png)
@@ -87,15 +86,17 @@ For real datasets, `peerannot` is compatible with standard neural networks archi
 
 ## Crowdsourcing notation
 
-Let us consider the classical supervised learning classification framework. A training set $\mathcal{D}=\{(x_i, y_i^\star)\}_{i=1}^{n_{\text{task}}}$ is composed of $n_{\text{task}}$ tasks $x_i\in\mathcal{X}$ with ground truth label $y_i^\star \in\mathcal [K]={1,\dots,K}$ one of the $K$ possible classes.
+Let us consider the classical supervised learning classification framework. A training set $\mathcal{D}=\{(x_i, y_i^\star)\}_{i=1}^{n_{\text{task}}}$ is composed of $n_{\text{task}}$ tasks $x_i\in\mathcal{X}$ (the feature space) with ground truth label $y_i^\star \in\mathcal [K]={1,\dots,K}$ one of the $K$ possible classes.
 In the following, the tasks considered are generally RGB images. We use the notation $\sigma$ for the softmax function.
 
-What differs from the classical setting with crowdsourced data, is that the ground truth $y_i^\star$ is unknown.
-However, instead for a given task $x_i$, a worker $w_j$ proposes their label denoted $y_i^{(j)}$.
-The set of workers answering the task $x_i$ is denoted $\mathcal{A}(x_i)=\{j\in[n_\text{worker}]: w_j \text{ answered }x_i\}$. The cardinal $\vert \mathcal{A}(x_i)\vert$ is called the feedback effort on the task $x_i$.
-The feedback effort can not exceed the total number of workers $n_{\text{worker}}$.
-Mirroring the point of view by considering the workers and not the tasks: the set of tasks answered by a worker $w_j$ is denoted $\mathcal{T}(w_j)=\{i\in[n_\text{task}]: w_j \text{ answered } x_i\}$. The cardinal $\vert \mathcal{T}(w_j)\vert$ is called the workerload of $w_j$.
-The final dataset is:
+With crowdsourced data the ground truth $y_i^\star$ is unknown, and there is no single label that can be trusted as in standard supervised learning (even on the train set!).
+Instead, for a given task $x_i$, a worker $w_j$ proposes a label $y_i^{(j)}$.
+The set of workers answering the task $x_i$ is denoted by $\mathcal{A}(x_i)=\{j\in[n_\text{worker}]: w_j \text{ answered }x_i\}$.
+The cardinal $\vert \mathcal{A}(x_i)\vert$ is called the feedback effort on the task $x_i$.
+Note that the feedback effort can not exceed the total number of workers $n_{\text{worker}}$.
+Similarly, one can adopt a worker point of view: the set of tasks answered by a worker $w_j$ is denoted $\mathcal{T}(w_j)=\{i\in[n_\text{task}]: w_j \text{ answered } x_i\}$.
+The cardinal $\vert \mathcal{T}(w_j)\vert$ is called the workerload of $w_j$.
+The final dataset can then be decomposed as:
 $$
 \mathcal{D}_{\text{train}} := \bigcup_{i\in[n_\text{task}]} \{(x_i, (y_i^{(j)}) \text{ for }j\in\mathcal{A}(x_i))\} = \bigcup_{j\in[n_\text{worker}]} \{(x_i, (y_i^{(j)})) \text{ for }i \in\mathcal{T}(w_j)\} \enspace.
 $$
@@ -104,7 +105,7 @@ In this article, we do not address the setting where workers report their self-c
 
 ## Storing crowdsourced datasets in `peerannot`
 
-To store crowdsourcing datasets efficiently and in a standardized fashion, `peerannot` proposes the following structure:
+To store crowdsourcing datasets efficiently and in a standardized way, `peerannot` proposes the following structure, where each dataset equals a folder:
 
 ```{bash}
 datasetname
@@ -123,13 +124,15 @@ datasetname
       └── answers.json
 ```
 
-Each dataset is its folder.
 If the tasks (images) are available, they must be stored as it is usual to store `ImageFolder` datasets with `pytorch` into a `train`, `val` and `test` folder.
 Each image can have its name followed by its index in the `answers.json` file.
 
-The `answers.json` file stores the different votes for each task as described in @fig-answers. Finally, a `metadata.json` file include all relevant information related to the crowdsourcing experiment such as the number of workers, number of tasks, *etc.*
+The `answers.json` file stores the different votes for each task as described in @fig-answers.
+Finally, a `metadata.json` file includes all relevant information related to the crowdsourcing experiment such as the number of workers, the number of tasks, *etc.*
+XXX (may be give an example for one iconic dataset)
 
-![From collected labels to data storage in the `answers.json` file for a binary classification task on recognising smiling faces.](./figures/json_answers.png){#fig-answers fig-align="center"}
+![From collected labels to data storage in the `answers.json` file for a binary classification task on recognizing smiling faces.](./figures/json_answers.png){#fig-answers fig-align="center"}
+(XXX put the number in the svg file to make it more readable with the left part)
 
 In this example, there are three tasks, $n_{worker}=4$ workers and $K=2$ classes.
 For the first task, the feedback effort is $\vert\mathcal{A}(x_1)\vert=4$.
