@@ -37,17 +37,12 @@ author:
 date: last-modified
 date-modified: last-modified
 description: |
-  Crowdsourcing is a fast and easy way to collect labels for large datasets.
+  Crowdsourcing is a quick and easy way to collect labels for large datasets, involving many workers.
   However, it is common for workers to disagree with each other.
-  The sources of errors might come from the workers' abilities, but also from the task's intrinsic difficulty.
-  We introduce peerannot: a Python library to handle crowdsourced labels and learn from them.
+  Sources of error can arise from the workers' skills, but also from the intrinsic difficulty of the task.
+  We introduce peerannot, a Python library for managing and learning from crowdsourced labels.
 abstract: >+
-  Crowdsourcing is a fast and easy way to collect labels for large datasets.
-  However, it is common for workers to disagree with each other.
-  The sources of errors might come from the workers' abilities, but also from the task's intrinsic difficulty.
-  We introduce `peerannot`: a `Python` library to handle crowdsourced labels and learn from them.
-  Our library allows users to aggregate labels from common noise models or train a deep-learning based classifier directly from crowdsourced labels.
-  Moreover, we provide an identification module to explore both the datasets' tasks difficulty and workers abilities easily.
+  Crowdsourcing is a quick and easy way to collect labels for large datasets, involving many workers. However, workers often disagree with each other. Sources of error can arise from the workers' skills, but also from the intrinsic difficulty of the task. We present `peerannot`: a `Python` library for managing and learning from crowdsourced labels. Our library allows users to aggregate labels from common noise models or train a deep learning-based classifier directly from crowdsourced labels. In addition, we provide an identification module to easily explore the task difficulty of datasets and worker capabilities.
 keywords: [crowdsourcing, label noise, task difficulty, worker ability]
 citation:
   type: article-journal
