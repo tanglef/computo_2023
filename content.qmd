@@ -61,26 +61,30 @@ format:
   computo-pdf: default
 jupyter: python3
 execute:  # to remove at the end
-  cache: true
+  cache: false
 ---
 
 # Introduction: crowdsourcing in image classification
 
-Image datasets widely use crowdsourcing to collect labels, involving many workers that can annotate images for a small cost (or even freely for instance in citizen science) and faster than using expert labeling.
+Image datasets widely use crowdsourcing to collect labels, involving many workers that can annotate images for a small cost (or even free for instance in citizen science) and faster than using expert labeling.
 Many classical datasets considered in machine learning have been created with human intervention to create labels, such as CIFAR-$10$, [@krizhevsky2009learning],
 ImageNet [@imagenet_cvpr09] or [@Garcin_Joly_Bonnet_Affouard_Lombardo_Chouet_Servajean_Lorieul_Salmon2021] in image classification, but also COCO [@cocodataset], solar photovoltaic arrays [@kasmi2023crowdsourced] or even macro litter [@chagneux2023] in image segmentation and object counting.
 
 Crowdsourced datasets induce at least three major challenges to which we contribute with `peerannot`:
 
-  - *How to aggregate multiple labels into a single label from crowdsourced tasks?* This occurs for example when dealing with a single dataset that has been labeled by multiple workers with disagreements. This is also encountered with other scoring issues such as polls, reviews, peer-grading, *etc.* In our framework this is treated with the `aggregate` command.
+  - *How to identify good workers in the crowd?* When multiple answers are given to a single task, looking for who to trust for which type of task becomes necessary to estimate the ground truth or later train a model with as few noise sources as possible. The module `identify` uses different scoring metrics to create a worker and/or task evaluation.
+  This is particularly relevant considering the gamification of crowdsourcing experiments [@plantgame2016]
+
+  - *How to aggregate multiple labels into a single label from crowdsourced tasks?* This occurs for example when dealing with a single dataset that has been labeled by multiple workers with disagreements. This is also encountered with other scoring issues such as polls, reviews, peer-grading, *etc.* In our framework this is treated with the `aggregate` command, that given multiple labels, infers a ground truth label.
+
   - *How to learn a classifier from crowdsourced datasets?* Where the first question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision, is common in machine learning, however, it requires the actual tasks (the images, texts, videos, *etc.*) to train on -- and in crowdsourced datasets publicly available, they are not always available. This is treated with the `aggregate-deep` command.
-  - *How to score workers in a crowdsourcing experiment?* Beyond learning a classifier or inferring the true label, one might want to find a scoring or ranking between workers. For example, it is relevant for the gamification of crowdsourcing experiments [@plantgame2016]. This is treated with the `identify` command.
 
 The library `peerannot` addresses these practical questions within a reproducible setting. Indeed, the complexity of experiments often leads to a lack of transparency and reproducible results for simulations and real datasets.
 We propose standard simulation settings with explicit implementation parameters that can be shared.
 For real datasets, `peerannot` is compatible with standard neural networks architectures from the `Torchvision` [@torchvision] library and `Pytorch` [@pytorch], allowing a flexible framework with easy-to-share scripts to reproduce experiments.
 
-![From crowdsourced labels to training a classifier neural network, the full pipeline using the `peerannot` library.](./figures/strategiesbis.png)
+![From crowdsourced labels to training a classifier neural network, the learning pipeline using the `peerannot` library.](./figures/strategiesbis.png)
+
 
 # Notation and package structure
 
@@ -128,11 +132,8 @@ If the tasks (images) are available, they must be stored as it is usual to store
 Each image can have its name followed by its index in the `answers.json` file.
 
 The `answers.json` file stores the different votes for each task as described in @fig-answers.
-Finally, a `metadata.json` file includes all relevant information related to the crowdsourcing experiment such as the number of workers, the number of tasks, *etc.*
-XXX (may be give an example for one iconic dataset)
 
-![From collected labels to data storage in the `answers.json` file for a binary classification task on recognizing smiling faces.](./figures/json_answers.png){#fig-answers fig-align="center"}
-(XXX put the number in the svg file to make it more readable with the left part)
+![From collected labels to data storage in the `answers.json` file for a binary classification task on recognizing smiling faces. (left: data stored in `peerannot`, right: table of data collected)](./figures/json_answers.png){#fig-answers fig-align="center"}
 
 In this example, there are three tasks, $n_{worker}=4$ workers and $K=2$ classes.
 For the first task, the feedback effort is $\vert\mathcal{A}(x_1)\vert=4$.
@@ -149,6 +150,8 @@ For example, a minimal `metadata.json` file for the toy dataset presented in @fi
     "n_tasks": 3,
 }
 ```
+
+
 
 # Aggregation strategies in crowdsourcing
 
