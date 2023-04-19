@@ -464,7 +464,7 @@ With the obtained answers, we can look at the aforementioned aggregation strateg
 for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=2]", "DSWC[L=5]"]:
   ! peerannot aggregate ./simus/discrete_difficulty/ -s {strat}
 ```
-```{python}
+<!-- ```{python}
 #| label: tbl-simu-discrete-diff
 #| tbl-cap: AccTrain metric on simulated mistakes when tasks are associated a difficulty level considering classical feature-blind label aggregation strategies
 #| code-fold: true
@@ -489,7 +489,7 @@ results = results.style.set_table_styles([dict(selector='th', props=[('text-alig
 results.set_properties(**{'text-align': 'center'})
 results = results.format(precision=3)
 display(results)
-```
+``` -->
 
 Finally, in this setting involving task diffulty coefficients, the only strategy that involves a latent variable for the task difficulty, knowing GLAD, outperforms the other other strategies (see @tbl-simu-discrete-diff). Note that in this case, creating clusters of answers leads to worse decisions than a MV aggregation.
 
@@ -653,7 +653,7 @@ plt.show()
 ```{python}
 #| code-fold: true
 #| label: fig-difficulty-c10H
-#| fig-cap: Comparison of metrics scoring the task's intrinsic difficulty.
+#| fig-cap: Comparison of metrics scoring the task's intrinsic difficulty in CIFAR-10H dataset.
 
 from scipy.stats import pearsonr
 def corrfunc(x, y, ax=None, **kws):
@@ -678,6 +678,41 @@ plt.show()
 
 ### LabelMe dataset
 
+As for the LabelMe dataset, one difficulty in evaluating tasks' intrinsic difficulty is that there are up to three votes given per task.
+Hence, the entropy in the distribution of the votes is no longer a reliable metric, and we need to rely on other models.
+
+```{python}
+#| code-fold: true
+#| fig-cap: Example of images to label from the LabelMe dataset with label `coast`, `forest`, `highway`, `insidecity `and `mountain` (top to bottom) by row.
+import torch
+import matplotlib.pyplot as plt
+from PIL import Image
+from pathlib import Path
+nrow = 5
+ncol = 5
+fig, axs = plt.subplots(
+        nrow,
+        ncol,
+        sharey="row",
+        sharex="col",
+        figsize=(12,8)
+    )
+match_ = {0: "coast", 1: "forest", 2: "highway", 3: "insidecity", 4: "mountain", 5: "opencountry", 6: "street", 7: "tallbuilding"}
+path = Path.cwd() / "datasets" / "labelme" / "train"
+for i in range(nrow):
+  img_folder = path / f"{match_[i]}"
+  all_imgs = list(img_folder.glob("*"))[:ncol]
+  for j in range(ncol):
+    image = np.asarray(Image.open(path / all_imgs[j]))
+    axs[i,j].imshow(image, aspect="equal")
+    axs[i,j].axis("off")
+    axs[i,j].set_yticklabels([])
+plt.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95, wspace=0.05, hspace=0.05)
+plt.show()
+```
+
+Now, let us compare the tasks's difficulty distribution depending on the strategy considered using `peerannot`.
+
 ```{python}
 #| output: false
 #| eval: false
@@ -685,6 +720,10 @@ plt.show()
 ! peerannot identify ./datasets/labelme/ -s entropy -K 10 --labels ./datasets/labelme/answers.json
 ! peerannot aggregate ./datasets/labelme/ -s GLAD
 ```
+
+We can see in @fig-difficulty-labelme that because the number of labels given per task is in $\{1,2,3\}$, the entropy only takes four values and thus does not help to dissociate the tasks.
+In particular, tasks with only one label all have a null entropy, so not just consensual tasks.
+
 ```{python}
 #| code-fold: true
 #| label: fig-difficulty-labelme
@@ -694,7 +733,7 @@ from scipy.stats import pearsonr
 def corrfunc(x, y, ax=None, **kws):
     r, _ = pearsonr(x, y)
     ax = ax or plt.gca()
-    ax.annotate(rf'$\rho$ = {r:.2f}', xy=(.1, .9), xycoords=ax.transAxes)
+    ax.annotate(rf'$\rho$ = {r:.2f}', xy=(.1, .1), xycoords=ax.transAxes)
 results = {'glad': [], "entropy": []}
 path = Path.cwd() / "datasets" / "labelme" / "identification"
 results["entropy"] = np.load(path / 'entropies.npy')
@@ -722,7 +761,8 @@ For CoNAL, we only consider the trace of the confusion matrix $\pi^{(j)}$ in the
 ### CIFAR-10H
 
 The Cifar-10H dataset has few disagreements among workers.
-From @fig-abilities-cifar10H, we can see that
+From @fig-abilities-cifar10H, we can see that in this dataset, different methods easily separate the worse workers from the rest of the crowd (workers in the tail of the distribution).
+However, these strategies disagree on the ranking of good against best workers as they do not measure the same properties.
 
 ```{python}
 #| output: false
@@ -752,6 +792,9 @@ plt.show()
 
 ### LabelMe
 
+Finally, let us evaluate workers for the LabelMe dataset.
+Because of the lack of data,
+
 ```{python}
 #| output: false
 #| eval: false
@@ -764,7 +807,7 @@ for method in ["trace_confusion", "spam_score"]:
 ```{python}
 #| code-fold: true
 #| label: fig-abilities-labelme
-#| fig-cap: Comparison of ability scores by workers for the CIFAR-10H dataset.
+#| fig-cap: Comparison of ability scores by workers for the labelme dataset.
 
 path_ = Path.cwd() / "datasets" / "labelme"
 results_identif = {"trace_confusion": [], "spam_score": [], "glad": []}
