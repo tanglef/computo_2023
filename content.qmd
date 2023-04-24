@@ -72,18 +72,35 @@ ImageNet [@imagenet_cvpr09] or [@Garcin_Joly_Bonnet_Affouard_Lombardo_Chouet_Ser
 
 Crowdsourced datasets induce at least three major challenges to which we contribute with `peerannot`:
 
-  - *How to identify good workers in the crowd?* When multiple answers are given to a single task, looking for who to trust for which type of task becomes necessary to estimate the ground truth or later train a model with as few noise sources as possible. The module `identify` uses different scoring metrics to create a worker and/or task evaluation.
+  1) *How to identify good workers in the crowd?* When multiple answers are given to a single task, looking for who to trust for which type of task becomes necessary to estimate the ground truth or later train a model with as few noise sources as possible. The module `identify` uses different scoring metrics to create a worker and/or task evaluation.
   This is particularly relevant considering the gamification of crowdsourcing experiments [@plantgame2016]
-
-  - *How to aggregate multiple labels into a single label from crowdsourced tasks?* This occurs for example when dealing with a single dataset that has been labeled by multiple workers with disagreements. This is also encountered with other scoring issues such as polls, reviews, peer-grading, *etc.* In our framework this is treated with the `aggregate` command, that given multiple labels, infers a ground truth label.
-
-  - *How to learn a classifier from crowdsourced datasets?* Where the first question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision, is common in machine learning, however, it requires the actual tasks (the images, texts, videos, *etc.*) to train on -- and in crowdsourced datasets publicly available, they are not always available. This is treated with the `aggregate-deep` command.
+  1) *How to aggregate multiple labels into a single label from crowdsourced tasks?* This occurs for example when dealing with a single dataset that has been labeled by multiple workers with disagreements. This is also encountered with other scoring issues such as polls, reviews, peer-grading, *etc.* In our framework this is treated with the `aggregate` command, that given multiple labels, infers a ground truth label. From aggregated labels, a classifier can then be trained using the `train` command.
+  1) *How to learn a classifier from crowdsourced datasets?* Where the first question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision, is common in machine learning, however, it requires the actual tasks (the images, texts, videos, *etc.*) to train on -- and in crowdsourced datasets publicly available, they are not always available. This is treated with the `aggregate-deep` command.
 
 The library `peerannot` addresses these practical questions within a reproducible setting. Indeed, the complexity of experiments often leads to a lack of transparency and reproducible results for simulations and real datasets.
 We propose standard simulation settings with explicit implementation parameters that can be shared.
 For real datasets, `peerannot` is compatible with standard neural networks architectures from the `Torchvision` [@torchvision] library and `Pytorch` [@pytorch], allowing a flexible framework with easy-to-share scripts to reproduce experiments.
 
-![From crowdsourced labels to training a classifier neural network, the learning pipeline using the `peerannot` library.](./figures/strategiesbis.png)
+![From crowdsourced labels to training a classifier neural network, the learning pipeline using the `peerannot` library. An optional preprocessing step using the `identify` command allows us to remove worse performing workers or images that can not be classified correctly (very bad quality for example). Then, from the cleaned dataset, if we want labels we use the `aggregate` command that follows the chosen strategy. From the aggregated labels we can train a neural network classifier with the `train` command. Otherwise, we can directly train a neural network classifier that takes into account the crowdsourcing setting in its architecture using `aggregate-deep`.](./figures/strategiesbis.png){width=500}
+
+<!--
+- orgiginal dataset
+- screened dataset and labels
+- bigger keywords
+- dégager le filtre et les logos en général qui ne servent à rien
+- ajouter dans la légende aggregate-deep
+- train classifier + model noise
+- enlever réseau et remplacer par classifier (en haut)
+- mettre les database en perspective
+- NN classifier (NN confusion model [autre réseau / confusion] dans une box + example in the caption de CoNAL / CrowdLayer + aggreagtion MV / DS et donner un exemple de réseau)
+- Caption: dire qu'on a un preprocessing avec identify et deux choix possibles une fois qu'on a preprocess notre dataset et possibilité d'entraîner un classifier
+- 1,2,3 avec les itemize (et les remettre dans le schéma)
+- mettre des lettres
+- mettre en texttt le code et other en other (réserver le texttt au code) et remplacer l'élément de gauche en json code le metadata
+- Worker wj -> donner le j
+- indice les taches et j indice les workers
+- faire dans la phrase de différence maths / info avec l'indexation
+ -->
 
 
 # Notation and package structure
@@ -92,9 +109,11 @@ For real datasets, `peerannot` is compatible with standard neural networks archi
 
 Let us consider the classical supervised learning classification framework. A training set $\mathcal{D}=\{(x_i, y_i^\star)\}_{i=1}^{n_{\text{task}}}$ is composed of $n_{\text{task}}$ tasks $x_i\in\mathcal{X}$ (the feature space) with ground truth label $y_i^\star \in\mathcal [K]={1,\dots,K}$ one of the $K$ possible classes.
 In the following, the tasks considered are generally RGB images. We use the notation $\sigma$ for the softmax function.
+We use the $i$ index notation to denote the tasks dimension and the $j$ index notation for the workers in the crowdsourcing experiment.
+Note that indices start at position $1$ in the equation to follow mathematical standard notation such as $[K]=1,\dots,K$ but it should be addressed that, as this is a `Python` library, in the code indices start at the $0$ position.
 
-With crowdsourced data the ground truth $y_i^\star$ is unknown, and there is no single label that can be trusted as in standard supervised learning (even on the train set!).
-Instead, for a given task $x_i$, a worker $w_j$ proposes a label $y_i^{(j)}$.
+With crowdsourced data the ground truth of a task $x_i$, denoted $y_i^\star$ is unknown, and there is no single label that can be trusted as in standard supervised learning (even on the train set!).
+Instead, there is a crowd of $n_{\text{worker}}$ workers from which multiple workers $(w_j)_j$ propose a label $(y_i^{(j)})_j$.
 The set of workers answering the task $x_i$ is denoted by $\mathcal{A}(x_i)=\{j\in[n_\text{worker}]: w_j \text{ answered }x_i\}$.
 The cardinal $\vert \mathcal{A}(x_i)\vert$ is called the feedback effort on the task $x_i$.
 Note that the feedback effort can not exceed the total number of workers $n_{\text{worker}}$.
@@ -105,6 +124,7 @@ $$
 \mathcal{D}_{\text{train}} := \bigcup_{i\in[n_\text{task}]} \{(x_i, (y_i^{(j)}) \text{ for }j\in\mathcal{A}(x_i))\} = \bigcup_{j\in[n_\text{worker}]} \{(x_i, (y_i^{(j)})) \text{ for }i \in\mathcal{T}(w_j)\} \enspace.
 $$
 
+
 In this article, we do not address the setting where workers report their self-confidence [@YasminRomena2022ICIC], nor settings where workers are presented a trapping set -- *i.e* a subset of tasks where the ground truth is known to evaluate them with known labels [@khattak_toward_2017].
 
 ## Storing crowdsourced datasets in `peerannot`
@@ -114,12 +134,10 @@ To store crowdsourcing datasets efficiently and in a standardized way, `peeranno
 ```{bash}
 datasetname
       ├── train
-      │     ├── class0
-      │     │     ├─ task0-<vote_index_0>.png
-      │     │     ├─ task1-<vote_index_1>.png
-      │     │     ├─ ...
-      │     │     └─ taskn0-<vote_index_n0>.png
       │     ├── class1
+      │     │     ├─ imagename-<key>.png
+      │     │     ├─ ...
+      │     │     └─ imagename-<key>.png
       │     ├── ...
       │     └── classK
       ├── val
@@ -128,16 +146,19 @@ datasetname
       └── answers.json
 ```
 
+The `answers.json` file stores the different votes for each task as described in @fig-answers.
+Thus, for example for an image named `smiley_face-1`, the associated labels are stored in the `answers.json` at the key number `1`.
+This key identification system allows us to track directly from the filename the crowdsourced labels without having to rely on multiple indexing files as can be traditionally proposed.
+Furthermore, storing labels in a dictionary is more memory-friendly than having an array of size `(n_task,n_worker)` and writing `-1` when the worker $w_j$ did not see the task $x_i$ and $y_i^{(j)}$ otherwise (used in recent works such as @rodrigues2017learning).
+
+![From collected labels to data storage in the `answers.json` file for a binary classification ($K=2$) on recognizing smiling faces. (left: how data is stored in `peerannot`, right: data collected)](./figures/json_answers.png){#fig-answers fig-align="center"}
+
+
+In @fig-answers, there are three tasks, $n_{\text{worker}}=4$ workers and $K=2$ classes.
 If the tasks (images) are available, they must be stored as it is usual to store `ImageFolder` datasets with `pytorch` into a `train`, `val` and `test` folder.
 Each image can have its name followed by its index in the `answers.json` file.
-
-The `answers.json` file stores the different votes for each task as described in @fig-answers.
-
-![From collected labels to data storage in the `answers.json` file for a binary classification task on recognizing smiling faces. (left: data stored in `peerannot`, right: table of data collected)](./figures/json_answers.png){#fig-answers fig-align="center"}
-
-In this example, there are three tasks, $n_{worker}=4$ workers and $K=2$ classes.
-For the first task, the feedback effort is $\vert\mathcal{A}(x_1)\vert=4$.
-The workerload of $w_2$ is $\vert\mathcal{T}(w_2)\vert=2$.
+<!-- For the first task, the feedback effort is $\vert\mathcal{A}(x_0)\vert=4$.
+The workerload of $w_2$ is $\vert\mathcal{T}(w_2)\vert=2$. -->
 
 Finally, a `metadata.json` file includes relevant information related to the crowdsourcing experiment such as the number of workers, the number of tasks, *etc.*
 For example, a minimal `metadata.json` file for the toy dataset presented in @fig-answers is:
@@ -156,7 +177,7 @@ For example, a minimal `metadata.json` file for the toy dataset presented in @fi
 # Aggregation strategies in crowdsourcing
 
 The first question we address with `peerannot` is: *How to aggregate multiple labels into a single label from crowdsourced tasks?*
-The aggregation step can lead to two types of learnable labels $\hat y_i\in\Delta_{K}$ defined on the simplex of dimension $K-1$ depending on the use case:
+The aggregation step can lead to two types of learnable labels $\hat y_i\in\Delta_{K}$ defined on the simplex of dimension $K-1$ depending on the use case for each task $x_i$, $i=1,\dots,n_{\text{task}}$:
 
 - a **hard** label: $\hat y_i$ is a Dirac distribution, this can be encoded as a classical label in $[K]$,
 - a **soft** label: $\hat y_i\in\Delta_{K}$ can be a probability distribution other than Dirac distribution, in that case, each coefficient in $\hat y_i$ represents the probability to belong to the given class.
@@ -185,7 +206,7 @@ With the NS label, we keep the ambiguity, but all workers and all tasks are put 
 Going further into the aggregation, researchers began creating a noise model to take into account the workers' abilities in the aggregation.
 These types of models are most often EM-based and one of the most studied [@gao2013minimax] and applied [@servajean2017crowdsourcing;@rodrigues2018deep] is the Dawid and Skene's (DS) model [@dawid_maximum_1979].
 Assuming the workers are answering tasks independently, this model boils down to model pairwise confusions between each possible class.
-Each worker $w_j$ is assigned a confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ such that $\pi^{(j)}_{k\ell} = \mathbb{P}(y_i^{(j)}=\ell\vert y_i^\star=k)$.
+Each worker $w_j$ is assigned a confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ such that $\pi^{(j)}_{k,\ell} = \mathbb{P}(y_i^{(j)}=\ell\vert y_i^\star=k)$.
 The model assumes that the probability for a task $x_i$ to have true label $y_i^\star=k$ follows a multinomial distribution with probabilities $\pi^{(j)}_{k,\bullet}$ for each worker.
 Each class has a prevalence $\rho_k=\mathbb{P}(y_i^\star=k)$ to appear in the dataset.
 Using the independence between workers, we obtain the following likelihood to maximize (using the EM algorithm):
