@@ -302,10 +302,10 @@ ISSN 2824-7795</p>
 <li><em>How to learn a classifier from crowdsourced datasets?</em> Where the first question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision, is common in machine learning, however, it requires the actual tasks (the images, texts, videos, <em>etc.</em>) to train on – and in crowdsourced datasets publicly available, they are not always available. This is treated with the <code>aggregate-deep</code> command.</li>
 </ol>
 <p>The library <code>peerannot</code> addresses these practical questions within a reproducible setting. Indeed, the complexity of experiments often leads to a lack of transparency and reproducible results for simulations and real datasets. We propose standard simulation settings with explicit implementation parameters that can be shared. For real datasets, <code>peerannot</code> is compatible with standard neural networks architectures from the <code>Torchvision</code> <span class="citation" data-cites="torchvision">(<a href="#ref-torchvision" role="doc-biblioref">Marcel and Rodriguez 2010</a>)</span> library and <code>Pytorch</code> <span class="citation" data-cites="pytorch">(<a href="#ref-pytorch" role="doc-biblioref">Paszke et al. 2019</a>)</span>, allowing a flexible framework with easy-to-share scripts to reproduce experiments.</p>
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-schema" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="./figures/strategiesbis.png" class="img-fluid figure-img" width="500"></p>
-<figcaption class="figure-caption">From crowdsourced labels to training a classifier neural network, the learning pipeline using the <code>peerannot</code> library. An optional preprocessing step using the <code>identify</code> command allows us to remove worse performing workers or images that can not be classified correctly (very bad quality for example). Then, from the cleaned dataset, if we want labels we use the <code>aggregate</code> command that follows the chosen strategy. From the aggregated labels we can train a neural network classifier with the <code>train</code> command. Otherwise, we can directly train a neural network classifier that takes into account the crowdsourcing setting in its architecture using <code>aggregate-deep</code>.</figcaption>
+<p><img src="./figures/strategiesbis.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: From crowdsourced labels to training a classifier neural network, the learning pipeline using the <code>peerannot</code> library. An optional preprocessing step using the <code>identify</code> command allows us to remove worse performing workers or images that can not be classified correctly (very bad quality for example). Then, from the cleaned dataset, if we want labels we use the <code>aggregate</code> command that follows the chosen strategy. From the aggregated labels we can train a neural network classifier with the <code>train</code> command. Otherwise, we can directly train a neural network classifier that takes into account the crowdsourcing setting in its architecture using <code>aggregate-deep</code>.</figcaption>
 </figure>
 </div>
 <!--
@@ -331,7 +331,7 @@ ISSN 2824-7795</p>
 <h1 data-number="2"><span class="header-section-number">2</span> Notation and package structure</h1>
 <section id="crowdsourcing-notation" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="crowdsourcing-notation"><span class="header-section-number">2.1</span> Crowdsourcing notation</h2>
-<p>Let us consider the classical supervised learning classification framework. A training set <span class="math inline">\mathcal{D}=\{(x_i, y_i^\star)\}_{i=1}^{n_{\text{task}}}</span> is composed of <span class="math inline">n_{\text{task}}</span> tasks <span class="math inline">x_i\in\mathcal{X}</span> (the feature space) with ground truth label <span class="math inline">y_i^\star \in\mathcal [K]={1,\dots,K}</span> one of the <span class="math inline">K</span> possible classes. In the following, the tasks considered are generally RGB images. We use the notation <span class="math inline">\sigma</span> for the softmax function. We use the <span class="math inline">i</span> index notation to denote the tasks dimension and the <span class="math inline">j</span> index notation for the workers in the crowdsourcing experiment. Note that indices start at position <span class="math inline">1</span> in the equation to follow mathematical standard notation such as <span class="math inline">[K]=1,\dots,K</span> but it should be addressed that, as this is a <code>Python</code> library, in the code indices start at the <span class="math inline">0</span> position.</p>
+<p>Let us consider the classical supervised learning classification framework. A training set <span class="math inline">\mathcal{D}=\{(x_i, y_i^\star)\}_{i=1}^{n_{\text{task}}}</span> is composed of <span class="math inline">n_{\text{task}}</span> tasks <span class="math inline">x_i\in\mathcal{X}</span> (the feature space) with ground truth label <span class="math inline">y_i^\star \in [K]={1,\dots,K}</span> one of the <span class="math inline">K</span> possible classes. In the following, the tasks considered are generally RGB images. We use the notation <span class="math inline">\sigma</span> for the softmax function. We use the <span class="math inline">i</span> index notation to denote the tasks dimension and the <span class="math inline">j</span> index notation for the workers in the crowdsourcing experiment. Note that indices start at position <span class="math inline">1</span> in the equation to follow mathematical standard notation such as <span class="math inline">[K]=1,\dots,K</span> but it should be addressed that, as this is a <code>Python</code> library, in the code indices start at the <span class="math inline">0</span> position.</p>
 <p>With crowdsourced data the ground truth of a task <span class="math inline">x_i</span>, denoted <span class="math inline">y_i^\star</span> is unknown, and there is no single label that can be trusted as in standard supervised learning (even on the train set!). Instead, there is a crowd of <span class="math inline">n_{\text{worker}}</span> workers from which multiple workers <span class="math inline">(w_j)_j</span> propose a label <span class="math inline">(y_i^{(j)})_j</span>. The set of workers answering the task <span class="math inline">x_i</span> is denoted by <span class="math inline">\mathcal{A}(x_i)=\{j\in[n_\text{worker}]: w_j \text{ answered }x_i\}</span>. The cardinal <span class="math inline">\vert \mathcal{A}(x_i)\vert</span> is called the feedback effort on the task <span class="math inline">x_i</span>. Note that the feedback effort can not exceed the total number of workers <span class="math inline">n_{\text{worker}}</span>. Similarly, one can adopt a worker point of view: the set of tasks answered by a worker <span class="math inline">w_j</span> is denoted <span class="math inline">\mathcal{T}(w_j)=\{i\in[n_\text{task}]: w_j \text{ answered } x_i\}</span>. The cardinal <span class="math inline">\vert \mathcal{T}(w_j)\vert</span> is called the workerload of <span class="math inline">w_j</span>. The final dataset can then be decomposed as: <span class="math display">
 \mathcal{D}_{\text{train}} := \bigcup_{i\in[n_\text{task}]} \{(x_i, (y_i^{(j)}) \text{ for }j\in\mathcal{A}(x_i))\} = \bigcup_{j\in[n_\text{worker}]} \{(x_i, (y_i^{(j)})) \text{ for }i \in\mathcal{T}(w_j)\} \enspace.
 </span></p>
@@ -352,23 +352,23 @@ ISSN 2824-7795</p>
       ├── test
       ├── metadata.json
       └── answers.json</code></pre>
-<p>The <code>answers.json</code> file stores the different votes for each task as described in <a href="#fig-answers">Figure&nbsp;1</a>. Thus, for example for an image named <code>smiley_face-1</code>, the associated labels are stored in the <code>answers.json</code> at the key number <code>1</code>. This key identification system allows us to track directly from the filename the crowdsourced labels without having to rely on multiple indexing files as can be traditionally proposed. Furthermore, storing labels in a dictionary is more memory-friendly than having an array of size <code>(n_task,n_worker)</code> and writing <code>-1</code> when the worker <span class="math inline">w_j</span> did not see the task <span class="math inline">x_i</span> and <span class="math inline">y_i^{(j)}</span> otherwise (used in recent works such as <span class="citation" data-cites="rodrigues2017learning">Rodrigues et al. (<a href="#ref-rodrigues2017learning" role="doc-biblioref">2017</a>)</span>).</p>
+<p>The <code>answers.json</code> file stores the different votes for each task as described in <a href="#fig-answers">Figure&nbsp;2</a>. Thus, for example for an image named <code>smiley_face-1</code>, the associated labels are stored in the <code>answers.json</code> at the key number <code>1</code>. This key identification system allows us to track directly from the filename the crowdsourced labels without having to rely on multiple indexing files as can be traditionally proposed. Furthermore, storing labels in a dictionary is more memory-friendly than having an array of size <code>(n_task,n_worker)</code> and writing <code>-1</code> when the worker <span class="math inline">w_j</span> did not see the task <span class="math inline">x_i</span> and <span class="math inline">y_i^{(j)}</span> otherwise (used in recent works such as <span class="citation" data-cites="rodrigues2017learning">Rodrigues et al. (<a href="#ref-rodrigues2017learning" role="doc-biblioref">2017</a>)</span>).</p>
 <div id="fig-answers" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="./figures/json_answers.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;1: From collected labels to data storage in the <code>answers.json</code> file for a binary classification (<span class="math inline">K=2</span>) on recognizing smiling faces. (left: how data is stored in <code>peerannot</code>, right: data collected)</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;2: From collected labels to data storage in the <code>answers.json</code> file for a binary classification (<span class="math inline">K=2</span>) on recognizing smiling faces. (left: how data is stored in <code>peerannot</code>, right: data collected)</figcaption>
 </figure>
 </div>
-<p>In <a href="#fig-answers">Figure&nbsp;1</a>, there are three tasks, <span class="math inline">n_{\text{worker}}=4</span> workers and <span class="math inline">K=2</span> classes. If the tasks (images) are available, they must be stored as it is usual to store <code>ImageFolder</code> datasets with <code>pytorch</code> into a <code>train</code>, <code>val</code> and <code>test</code> folder. Each image can have its name followed by its index in the <code>answers.json</code> file. <!-- For the first task, the feedback effort is $\vert\mathcal{A}(x_0)\vert=4$.
+<p>In <a href="#fig-answers">Figure&nbsp;2</a>, there are three tasks, <span class="math inline">n_{\text{worker}}=4</span> workers and <span class="math inline">K=2</span> classes. If the tasks (images) are available, they must be stored as it is usual to store <code>ImageFolder</code> datasets with <code>pytorch</code> into a <code>train</code>, <code>val</code> and <code>test</code> folder. Each image can have its name followed by its index in the <code>answers.json</code> file. <!-- For the first task, the feedback effort is $\vert\mathcal{A}(x_0)\vert=4$.
 The workerload of $w_2$ is $\vert\mathcal{T}(w_2)\vert=2$. --></p>
-<p>Finally, a <code>metadata.json</code> file includes relevant information related to the crowdsourcing experiment such as the number of workers, the number of tasks, <em>etc.</em> For example, a minimal <code>metadata.json</code> file for the toy dataset presented in <a href="#fig-answers">Figure&nbsp;1</a> is:</p>
+<p>Finally, a <code>metadata.json</code> file includes relevant information related to the crowdsourcing experiment such as the number of workers, the number of tasks, <em>etc.</em> For example, a minimal <code>metadata.json</code> file for the toy dataset presented in <a href="#fig-answers">Figure&nbsp;2</a> is:</p>
 <pre class="{json}"><code>{
     "name": "toy-data",
     "n_classes": 2,
     "n_workers": 4,
     "n_tasks": 3
 }</code></pre>
-<p>The <code>toy-data</code> example dataset is available as example <a href="https://github.com/peerannot/peerannot/tree/main/datasets/toy-data">in the <code>peerannot</code> repository</a>.</p>
+<p>The <code>toy-data</code> example dataset is available for testing <a href="https://github.com/peerannot/peerannot/tree/main/datasets/toy-data">in the <code>peerannot</code> repository</a>.</p>
 </section>
 </section>
 <section id="aggregation-strategies-in-crowdsourcing" class="level1" data-number="3">
@@ -523,37 +523,37 @@ The workerload of $w_2$ is $\vert\mathcal{T}(w_2)\vert=2$. --></p>
 </details>
 <div class="cell-output cell-output-display">
 <style type="text/css">
-#T_9def5 th {
+#T_246ba th {
   text-align: center;
 }
-#T_9def5_row0_col0, #T_9def5_row0_col1, #T_9def5_row0_col2, #T_9def5_row0_col3, #T_9def5_row0_col4, #T_9def5_row0_col5 {
+#T_246ba_row0_col0, #T_246ba_row0_col1, #T_246ba_row0_col2, #T_246ba_row0_col3, #T_246ba_row0_col4, #T_246ba_row0_col5 {
   text-align: center;
 }
 </style>
 
 <div id="tbl-simu-independent" class="anchored">
-<table id="T_9def5" data-quarto-postprocess="true" class="table table-sm table-striped small">
+<table id="T_246ba" data-quarto-postprocess="true" class="table table-sm table-striped small">
 <caption>Table&nbsp;1: AccTrain metric on simulated independent mistakes considering classical feature-blind label aggregation strategies</caption>
 <thead>
 <tr class="header">
 <th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
-<th id="T_9def5_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">MV</th>
-<th id="T_9def5_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">NAIVESOFT</th>
-<th id="T_9def5_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">GLAD</th>
-<th id="T_9def5_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">DS</th>
-<th id="T_9def5_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">DSWC[L=5]</th>
-<th id="T_9def5_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">DSWC[L=10]</th>
+<th id="T_246ba_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">MV</th>
+<th id="T_246ba_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">NAIVESOFT</th>
+<th id="T_246ba_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">GLAD</th>
+<th id="T_246ba_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">DS</th>
+<th id="T_246ba_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">DSWC[L=5]</th>
+<th id="T_246ba_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">DSWC[L=10]</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_9def5_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">AccTrain</td>
-<td id="T_9def5_row0_col0" class="data row0 col0">0.750</td>
-<td id="T_9def5_row0_col1" class="data row0 col1">0.760</td>
-<td id="T_9def5_row0_col2" class="data row0 col2">0.780</td>
-<td id="T_9def5_row0_col3" class="data row0 col3">0.890</td>
-<td id="T_9def5_row0_col4" class="data row0 col4">0.775</td>
-<td id="T_9def5_row0_col5" class="data row0 col5">0.770</td>
+<td id="T_246ba_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">AccTrain</td>
+<td id="T_246ba_row0_col0" class="data row0 col0">0.790</td>
+<td id="T_246ba_row0_col1" class="data row0 col1">0.760</td>
+<td id="T_246ba_row0_col2" class="data row0 col2">0.780</td>
+<td id="T_246ba_row0_col3" class="data row0 col3">0.890</td>
+<td id="T_246ba_row0_col4" class="data row0 col4">0.775</td>
+<td id="T_246ba_row0_col5" class="data row0 col5">0.770</td>
 </tr>
 </tbody>
 </table>
@@ -642,37 +642,37 @@ The workerload of $w_2$ is $\vert\mathcal{T}(w_2)\vert=2$. --></p>
 </details>
 <div class="cell-output cell-output-display">
 <style type="text/css">
-#T_476dd th {
+#T_76527 th {
   text-align: center;
 }
-#T_476dd_row0_col0, #T_476dd_row0_col1, #T_476dd_row0_col2, #T_476dd_row0_col3, #T_476dd_row0_col4, #T_476dd_row0_col5 {
+#T_76527_row0_col0, #T_76527_row0_col1, #T_76527_row0_col2, #T_76527_row0_col3, #T_76527_row0_col4, #T_76527_row0_col5 {
   text-align: center;
 }
 </style>
 
 <div id="tbl-simu-corr" class="anchored">
-<table id="T_476dd" data-quarto-postprocess="true" class="table table-sm table-striped small">
+<table id="T_76527" data-quarto-postprocess="true" class="table table-sm table-striped small">
 <caption>Table&nbsp;2: AccTrain metric on simulated correlated mistakes considering classical feature-blind label aggregation strategies</caption>
 <thead>
 <tr class="header">
 <th class="blank level0" data-quarto-table-cell-role="th">&nbsp;</th>
-<th id="T_476dd_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">MV</th>
-<th id="T_476dd_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">NAIVESOFT</th>
-<th id="T_476dd_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">GLAD</th>
-<th id="T_476dd_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">DS</th>
-<th id="T_476dd_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">DSWC[L=5]</th>
-<th id="T_476dd_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">DSWC[L=10]</th>
+<th id="T_76527_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">MV</th>
+<th id="T_76527_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">NAIVESOFT</th>
+<th id="T_76527_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">GLAD</th>
+<th id="T_76527_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">DS</th>
+<th id="T_76527_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">DSWC[L=5]</th>
+<th id="T_76527_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">DSWC[L=10]</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_476dd_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">AccTrain</td>
-<td id="T_476dd_row0_col0" class="data row0 col0">0.725</td>
-<td id="T_476dd_row0_col1" class="data row0 col1">0.690</td>
-<td id="T_476dd_row0_col2" class="data row0 col2">0.645</td>
-<td id="T_476dd_row0_col3" class="data row0 col3">0.755</td>
-<td id="T_476dd_row0_col4" class="data row0 col4">0.795</td>
-<td id="T_476dd_row0_col5" class="data row0 col5">0.815</td>
+<td id="T_76527_level0_row0" class="row_heading level0 row0" data-quarto-table-cell-role="th">AccTrain</td>
+<td id="T_76527_row0_col0" class="data row0 col0">0.705</td>
+<td id="T_76527_row0_col1" class="data row0 col1">0.690</td>
+<td id="T_76527_row0_col2" class="data row0 col2">0.645</td>
+<td id="T_76527_row0_col3" class="data row0 col3">0.755</td>
+<td id="T_76527_row0_col4" class="data row0 col4">0.795</td>
+<td id="T_76527_row0_col5" class="data row0 col5">0.815</td>
 </tr>
 </tbody>
 </table>
@@ -778,7 +778,7 @@ display(results)
 <div id="fig-conal" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="./figures/schema_bayesien_conal.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;2: Bayesian <a href="https://en.wikipedia.org/wiki/Plate_notation">plate notation</a> for CoNAL model. Each worker is assigned a confusion matrix <span class="math inline">\pi^{(j)}</span>. A global confusion matrix <span class="math inline">\pi^g</span> is shared between workers. A tradeoff between the global confusion and the local one is applied.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3: Bayesian <a href="https://en.wikipedia.org/wiki/Plate_notation">plate notation</a> for CoNAL model. Each worker is assigned a confusion matrix <span class="math inline">\pi^{(j)}</span>. A global confusion matrix <span class="math inline">\pi^g</span> is shared between workers. A tradeoff between the global confusion and the local one is applied.</figcaption>
 </figure>
 </div>
 <p>Given the output <span class="math inline">z_i=\mathcal{C}(x_i)\in\mathbb{R}^K</span> of a given classifier and task, CoNAL interpolates between the local confusion <span class="math inline">\pi^{(j)}\sigma(z_i)</span> and the global one <span class="math inline">\pi^g\sigma(z_i)</span>. The loss function is computed as follows: <span class="math display">
@@ -914,7 +914,7 @@ display(results)
 <div id="fig-difficulty-c10h" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="content_files/figure-html/fig-difficulty-c10h-output-1.svg" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;3: Comparison of metrics scoring the task’s intrinsic difficulty in CIFAR-10H dataset.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;4: Comparison of metrics scoring the task’s intrinsic difficulty in CIFAR-10H dataset.</figcaption>
 </figure>
 </div>
 </div>
@@ -969,7 +969,7 @@ display(results)
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span> peerannot aggregate .<span class="op">/</span>datasets<span class="op">/</span>labelme<span class="op">/</span> <span class="op">-</span>s GLAD</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>We can see in <a href="#fig-difficulty-labelme">Figure&nbsp;4</a> that because the number of labels given per task is in <span class="math inline">\{1,2,3\}</span>, the entropy only takes four values and thus does not help to dissociate the tasks. In particular, tasks with only one label all have a null entropy, so not just consensual tasks.</p>
+<p>We can see in <a href="#fig-difficulty-labelme">Figure&nbsp;5</a> that because the number of labels given per task is in <span class="math inline">\{1,2,3\}</span>, the entropy only takes four values and thus does not help to dissociate the tasks. In particular, tasks with only one label all have a null entropy, so not just consensual tasks.</p>
 <div class="cell" data-execution_count="18">
 <details>
 <summary>Hide/Show the code</summary>
@@ -991,7 +991,7 @@ display(results)
 <div id="fig-difficulty-labelme" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="content_files/figure-html/fig-difficulty-labelme-output-1.svg" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;4: Comparison of metrics scoring the task’s intrinsic difficulty.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;5: Comparison of metrics scoring the task’s intrinsic difficulty.</figcaption>
 </figure>
 </div>
 </div>
@@ -1035,7 +1035,7 @@ display(results)
 <div id="fig-abilities-cifar10h" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="content_files/figure-html/fig-abilities-cifar10h-output-1.svg" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;5: Comparison of ability scores by workers for the CIFAR-10H dataset.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;6: Comparison of ability scores by workers for the CIFAR-10H dataset.</figcaption>
 </figure>
 </div>
 </div>
@@ -1070,7 +1070,7 @@ display(results)
 <div id="fig-abilities-labelme" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="content_files/figure-html/fig-abilities-labelme-output-1.svg" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;6: Comparison of ability scores by workers for the labelme dataset.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;7: Comparison of ability scores by workers for the labelme dataset.</figcaption>
 </figure>
 </div>
 </div>
@@ -1597,7 +1597,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb25-81"><a href="#cb25-81" aria-hidden="true" tabindex="-1"></a>We propose standard simulation settings with explicit implementation parameters that can be shared.</span>
 <span id="cb25-82"><a href="#cb25-82" aria-hidden="true" tabindex="-1"></a>For real datasets, <span class="in">`peerannot`</span> is compatible with standard neural networks architectures from the <span class="in">`Torchvision`</span> <span class="co">[</span><span class="ot">@torchvision</span><span class="co">]</span> library and <span class="in">`Pytorch`</span> <span class="co">[</span><span class="ot">@pytorch</span><span class="co">]</span>, allowing a flexible framework with easy-to-share scripts to reproduce experiments.</span>
 <span id="cb25-83"><a href="#cb25-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-84"><a href="#cb25-84" aria-hidden="true" tabindex="-1"></a><span class="al">![From crowdsourced labels to training a classifier neural network, the learning pipeline using the `peerannot` library. An optional preprocessing step using the `identify` command allows us to remove worse performing workers or images that can not be classified correctly (very bad quality for example). Then, from the cleaned dataset, if we want labels we use the `aggregate` command that follows the chosen strategy. From the aggregated labels we can train a neural network classifier with the `train` command. Otherwise, we can directly train a neural network classifier that takes into account the crowdsourcing setting in its architecture using `aggregate-deep`.](./figures/strategiesbis.png)</span>{width=500}</span>
+<span id="cb25-84"><a href="#cb25-84" aria-hidden="true" tabindex="-1"></a><span class="al">![From crowdsourced labels to training a classifier neural network, the learning pipeline using the `peerannot` library. An optional preprocessing step using the `identify` command allows us to remove worse performing workers or images that can not be classified correctly (very bad quality for example). Then, from the cleaned dataset, if we want labels we use the `aggregate` command that follows the chosen strategy. From the aggregated labels we can train a neural network classifier with the `train` command. Otherwise, we can directly train a neural network classifier that takes into account the crowdsourcing setting in its architecture using `aggregate-deep`.](./figures/strategiesbis.png)</span>{#fig-schema fig-align="center"}</span>
 <span id="cb25-85"><a href="#cb25-85" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-86"><a href="#cb25-86" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!--</span></span>
 <span id="cb25-87"><a href="#cb25-87" aria-hidden="true" tabindex="-1"></a><span class="co">- orgiginal dataset</span></span>
@@ -1623,7 +1623,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb25-107"><a href="#cb25-107" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-108"><a href="#cb25-108" aria-hidden="true" tabindex="-1"></a><span class="fu">## Crowdsourcing notation</span></span>
 <span id="cb25-109"><a href="#cb25-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-110"><a href="#cb25-110" aria-hidden="true" tabindex="-1"></a>Let us consider the classical supervised learning classification framework. A training set $\mathcal{D}=<span class="sc">\{</span>(x_i, y_i^\star)<span class="sc">\}</span>_{i=1}^{n_{\text{task}}}$ is composed of $n_{\text{task}}$ tasks $x_i\in\mathcal{X}$ (the feature space) with ground truth label $y_i^\star \in\mathcal <span class="co">[</span><span class="ot">K</span><span class="co">]</span>={1,\dots,K}$ one of the $K$ possible classes.</span>
+<span id="cb25-110"><a href="#cb25-110" aria-hidden="true" tabindex="-1"></a>Let us consider the classical supervised learning classification framework. A training set $\mathcal{D}=<span class="sc">\{</span>(x_i, y_i^\star)<span class="sc">\}</span>_{i=1}^{n_{\text{task}}}$ is composed of $n_{\text{task}}$ tasks $x_i\in\mathcal{X}$ (the feature space) with ground truth label $y_i^\star \in <span class="co">[</span><span class="ot">K</span><span class="co">]</span>={1,\dots,K}$ one of the $K$ possible classes.</span>
 <span id="cb25-111"><a href="#cb25-111" aria-hidden="true" tabindex="-1"></a>In the following, the tasks considered are generally RGB images. We use the notation $\sigma$ for the softmax function.</span>
 <span id="cb25-112"><a href="#cb25-112" aria-hidden="true" tabindex="-1"></a>We use the $i$ index notation to denote the tasks dimension and the $j$ index notation for the workers in the crowdsourcing experiment.</span>
 <span id="cb25-113"><a href="#cb25-113" aria-hidden="true" tabindex="-1"></a>Note that indices start at position $1$ in the equation to follow mathematical standard notation such as $<span class="co">[</span><span class="ot">K</span><span class="co">]</span>=1,\dots,K$ but it should be addressed that, as this is a <span class="in">`Python`</span> library, in the code indices start at the $0$ position.</span>
@@ -1688,7 +1688,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb25-176"><a href="#cb25-176" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb25-177"><a href="#cb25-177" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb25-178"><a href="#cb25-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-179"><a href="#cb25-179" aria-hidden="true" tabindex="-1"></a>The <span class="in">`toy-data`</span> example dataset is available as example <span class="co">[</span><span class="ot">in the `peerannot` repository</span><span class="co">](https://github.com/peerannot/peerannot/tree/main/datasets/toy-data)</span>.</span>
+<span id="cb25-179"><a href="#cb25-179" aria-hidden="true" tabindex="-1"></a>The <span class="in">`toy-data`</span> example dataset is available for testing <span class="co">[</span><span class="ot">in the `peerannot` repository</span><span class="co">](https://github.com/peerannot/peerannot/tree/main/datasets/toy-data)</span>.</span>
 <span id="cb25-180"><a href="#cb25-180" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-181"><a href="#cb25-181" aria-hidden="true" tabindex="-1"></a><span class="fu"># Aggregation strategies in crowdsourcing</span></span>
 <span id="cb25-182"><a href="#cb25-182" aria-hidden="true" tabindex="-1"></a></span>
