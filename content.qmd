@@ -168,11 +168,11 @@ For example, a minimal `metadata.json` file for the toy dataset presented in @fi
     "name": "toy-data",
     "n_classes": 2,
     "n_workers": 4,
-    "n_tasks": 3,
+    "n_tasks": 3
 }
 ```
 
-
+The `toy-data` example dataset is available as example [in the `peerannot` repository](https://github.com/peerannot/peerannot/tree/main/datasets/toy-data).
 
 # Aggregation strategies in crowdsourcing
 
