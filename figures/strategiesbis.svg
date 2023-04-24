@@ -24,9 +24,9 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="pt"
      showgrid="false"
-     inkscape:zoom="0.59623175"
-     inkscape:cx="436.07205"
-     inkscape:cy="616.37107"
+     inkscape:zoom="0.63299232"
+     inkscape:cx="706.9596"
+     inkscape:cy="654.82627"
      inkscape:window-width="1846"
      inkscape:window-height="1136"
      inkscape:window-x="74"
@@ -49,8 +49,8 @@
    refY="0"
    orient="auto-start-reverse"
    inkscape:stockid="Arrow1L"
-   markerWidth="8.75"
-   markerHeight="5"
+   markerWidth="22"
+   markerHeight="4.125"
    viewBox="0 0 8.75 5"
    inkscape:isstock="true"
    inkscape:collect="always"
@@ -1448,10 +1448,10 @@
      style="stroke:#646669;stroke-width:2;stroke-dasharray:8,2;stroke-dashoffset:0;stroke-opacity:1" /><rect
      style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0.26;stroke-opacity:1;stop-color:#000000"
      id="rect5525"
-     width="256.79517"
-     height="182.87109"
-     x="208.52666"
-     y="285.67938"
+     width="282.21951"
+     height="191.46329"
+     x="196.46115"
+     y="277.08719"
      rx="44.418976"
      ry="45.096478" /><g
      ns14:version="1.3.1"
@@ -1462,7 +1462,7 @@
      ns14:scale="3.2740930381699576"
      ns14:alignment="middle center"
      ns14:inkscapeversion="1.2.2"
-     transform="matrix(3.27409,0,0,3.27409,246.60601,423.56121)"
+     transform="matrix(3.27409,0,0,3.27409,250.41586,423.56121)"
      ns14:jacobian_sqrt="3.27409"
      id="g6180"><defs
        id="id-edd2b686-3144-4329-b741-5665f6c9dc2f"><g
@@ -2460,8 +2460,8 @@
    id="id-18ef1da3-d50d-4944-9990-35b92add377c" />
       </g></g>
 </g><path
-     style="fill:none;stroke:#000000;stroke-width:0.75px;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:0.75, 2.25;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#Arrow1L)"
-     d="m 368.80769,233.57581 v 64.6628"
+     style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:3, 9;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#Arrow1L)"
+     d="m 368.80769,233.57581 v 54.00848"
      id="path42945"
      sodipodi:nodetypes="cc" /><g
      ns14:version="1.3.1"
@@ -2915,8 +2915,8 @@
        d="m 938.55045,259.56996 c 0,12.4 -28.2,22.4 -63,22.4 -34.8,0 -63,-10 -63,-22.4 0,-12.4 28.2,-22.4 63,-22.4 34.8,0 63,10 63,22.4 z"
        id="path6222"
        style="fill:#aba9a6;fill-opacity:1;stroke:#fffdff;stroke-width:4;stroke-miterlimit:10;stroke-opacity:1" /></g><path
-     style="fill:none;stroke:#000000;stroke-width:0.75px;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:0.75, 2.25;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#Arrow1L)"
-     d="m 142.06841,331.83961 h 77.78408"
+     style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:3, 9;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#Arrow1L)"
+     d="m 142.06841,331.83961 h 66.93656"
      id="path7145"
      sodipodi:nodetypes="cc" /><g
      ns14:version="1.8.2"
@@ -2928,7 +2928,7 @@
      ns14:alignment="middle center"
      ns14:stroke-to-path="0"
      ns14:inkscapeversion="1.2.2"
-     transform="matrix(3.27409,0,0,3.27409,220.38245,379.623)"
+     transform="matrix(3.27409,0,0,3.27409,221.02947,379.623)"
      ns14:jacobian_sqrt="3.27409"
      id="g15527"><defs
    id="id-cb3ac73d-d77d-4a0e-afd2-d04ccf2a3224">
