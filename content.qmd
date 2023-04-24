@@ -81,7 +81,7 @@ The library `peerannot` addresses these practical questions within a reproducibl
 We propose standard simulation settings with explicit implementation parameters that can be shared.
 For real datasets, `peerannot` is compatible with standard neural networks architectures from the `Torchvision` [@torchvision] library and `Pytorch` [@pytorch], allowing a flexible framework with easy-to-share scripts to reproduce experiments.
 
-![From crowdsourced labels to training a classifier neural network, the learning pipeline using the `peerannot` library. An optional preprocessing step using the `identify` command allows us to remove worse performing workers or images that can not be classified correctly (very bad quality for example). Then, from the cleaned dataset, if we want labels we use the `aggregate` command that follows the chosen strategy. From the aggregated labels we can train a neural network classifier with the `train` command. Otherwise, we can directly train a neural network classifier that takes into account the crowdsourcing setting in its architecture using `aggregate-deep`.](./figures/strategiesbis.png){width=500}
+![From crowdsourced labels to training a classifier neural network, the learning pipeline using the `peerannot` library. An optional preprocessing step using the `identify` command allows us to remove worse performing workers or images that can not be classified correctly (very bad quality for example). Then, from the cleaned dataset, if we want labels we use the `aggregate` command that follows the chosen strategy. From the aggregated labels we can train a neural network classifier with the `train` command. Otherwise, we can directly train a neural network classifier that takes into account the crowdsourcing setting in its architecture using `aggregate-deep`.](./figures/strategiesbis.png){#fig-schema fig-align="center"}
 
 <!--
 - orgiginal dataset
@@ -107,7 +107,7 @@ For real datasets, `peerannot` is compatible with standard neural networks archi
 
 ## Crowdsourcing notation
 
-Let us consider the classical supervised learning classification framework. A training set $\mathcal{D}=\{(x_i, y_i^\star)\}_{i=1}^{n_{\text{task}}}$ is composed of $n_{\text{task}}$ tasks $x_i\in\mathcal{X}$ (the feature space) with ground truth label $y_i^\star \in\mathcal [K]={1,\dots,K}$ one of the $K$ possible classes.
+Let us consider the classical supervised learning classification framework. A training set $\mathcal{D}=\{(x_i, y_i^\star)\}_{i=1}^{n_{\text{task}}}$ is composed of $n_{\text{task}}$ tasks $x_i\in\mathcal{X}$ (the feature space) with ground truth label $y_i^\star \in [K]={1,\dots,K}$ one of the $K$ possible classes.
 In the following, the tasks considered are generally RGB images. We use the notation $\sigma$ for the softmax function.
 We use the $i$ index notation to denote the tasks dimension and the $j$ index notation for the workers in the crowdsourcing experiment.
 Note that indices start at position $1$ in the equation to follow mathematical standard notation such as $[K]=1,\dots,K$ but it should be addressed that, as this is a `Python` library, in the code indices start at the $0$ position.
@@ -172,7 +172,7 @@ For example, a minimal `metadata.json` file for the toy dataset presented in @fi
 }
 ```
 
-The `toy-data` example dataset is available as example [in the `peerannot` repository](https://github.com/peerannot/peerannot/tree/main/datasets/toy-data).
+The `toy-data` example dataset is available for testing [in the `peerannot` repository](https://github.com/peerannot/peerannot/tree/main/datasets/toy-data).
 
 # Aggregation strategies in crowdsourcing
 
