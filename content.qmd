@@ -346,14 +346,14 @@ display(results)
 
 As expected by the simulation framework, @tbl-simu-independent fits the DS model, thus leading to better accuracy to retrieve the simulated labels for the DS model. The MV aggregation does not consider any worker-ability scoring or the task's difficulty and performs the worse.
 
-Note that `peerannot` can also simulate datasets with an imbalanced number of votes (*i.e.* $|\mathcal{A}(x_i)|\in [\texttt{feedback}]$ chosen uniformly at random). For example:
+Note that `peerannot` can also simulate datasets with an imbalanced number of votes chosen uniformly at random between $1$ and the number of workers available). For example:
 
 ```{python}
 #| output: false
 ! peerannot simulate --n-worker=30 --n-task=200  --n-classes=5 \
                      --strategy independent-confusion \
                      --imbalance-votes \
-                     --feedback=10 --seed 0 \
+                    --seed 0 \
                      --folder ./simus/independent-imbalanced/
 ```
 
