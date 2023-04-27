@@ -60,6 +60,7 @@ format:
   computo-html: default
   computo-pdf: default
 jupyter: python3
+number-sections: true
 execute:  # to remove at the end
   cache: false
 ---
@@ -81,27 +82,7 @@ The library `peerannot` addresses these practical questions within a reproducibl
 We propose standard simulation settings with explicit implementation parameters that can be shared.
 For real datasets, `peerannot` is compatible with standard neural networks architectures from the `Torchvision` [@torchvision] library and `Pytorch` [@pytorch], allowing a flexible framework with easy-to-share scripts to reproduce experiments.
 
-![From crowdsourced labels to training a classifier neural network, the learning pipeline using the `peerannot` library. An optional preprocessing step using the `identify` command allows us to remove worse performing workers or images that can not be classified correctly (very bad quality for example). Then, from the cleaned dataset, if we want labels we use the `aggregate` command that follows the chosen strategy. From the aggregated labels we can train a neural network classifier with the `train` command. Otherwise, we can directly train a neural network classifier that takes into account the crowdsourcing setting in its architecture using `aggregate-deep`.](./figures/strategiesbis.png){#fig-schema fig-align="center"}
-
-<!--
-- orgiginal dataset
-- screened dataset and labels
-- bigger keywords
-- dégager le filtre et les logos en général qui ne servent à rien
-- ajouter dans la légende aggregate-deep
-- train classifier + model noise
-- enlever réseau et remplacer par classifier (en haut)
-- mettre les database en perspective
-- NN classifier (NN confusion model [autre réseau / confusion] dans une box + example in the caption de CoNAL / CrowdLayer + aggreagtion MV / DS et donner un exemple de réseau)
-- Caption: dire qu'on a un preprocessing avec identify et deux choix possibles une fois qu'on a preprocess notre dataset et possibilité d'entraîner un classifier
-- 1,2,3 avec les itemize (et les remettre dans le schéma)
-- mettre des lettres
-- mettre en texttt le code et other en other (réserver le texttt au code) et remplacer l'élément de gauche en json code le metadata
-- Worker wj -> donner le j
-- indice les taches et j indice les workers
-- faire dans la phrase de différence maths / info avec l'indexation
- -->
-
+![From crowdsourced labels to training a classifier neural network, the learning pipeline using the `peerannot` library. An optional preprocessing step using the `identify` command allows us to remove worse performing workers or images that can not be classified correctly (very bad quality for example). Then, from the cleaned dataset, if we want labels we use the `aggregate` command that follows the chosen strategy. From the aggregated labels we can train a neural network classifier with the `train` command. Otherwise, we can directly train a neural network classifier that takes into account the crowdsourcing setting in its architecture using `aggregate-deep`.](./figures/strategiesbis.png){#fig-pipeline width=500}
 
 # Notation and package structure
 
@@ -129,7 +110,9 @@ In this article, we do not address the setting where workers report their self-c
 
 ## Storing crowdsourced datasets in `peerannot`
 
+Crowdsourced datasets come in various
 To store crowdsourcing datasets efficiently and in a standardized way, `peerannot` proposes the following structure, where each dataset equals a folder:
+
 
 ```{bash}
 datasetname
@@ -137,7 +120,7 @@ datasetname
       │     ├── class1
       │     │     ├─ imagename-<key>.png
       │     │     ├─ ...
-      │     │     └─ imagename-<key>.png
+      │     │     └─ anotherimagename-<anotherkey>.png
       │     ├── ...
       │     └── classK
       ├── val
@@ -147,18 +130,15 @@ datasetname
 ```
 
 The `answers.json` file stores the different votes for each task as described in @fig-answers.
-Thus, for example for an image named `smiley_face-1`, the associated labels are stored in the `answers.json` at the key number `1`.
+Thus, for example for an image named `smiley_face-1`, the associated labels are stored in the `answers.json` at the key numbered `1`.
 This key identification system allows us to track directly from the filename the crowdsourced labels without having to rely on multiple indexing files as can be traditionally proposed.
 Furthermore, storing labels in a dictionary is more memory-friendly than having an array of size `(n_task,n_worker)` and writing `-1` when the worker $w_j$ did not see the task $x_i$ and $y_i^{(j)}$ otherwise (used in recent works such as @rodrigues2017learning).
 
 ![From collected labels to data storage in the `answers.json` file for a binary classification ($K=2$) on recognizing smiling faces. (left: how data is stored in `peerannot`, right: data collected)](./figures/json_answers.png){#fig-answers fig-align="center"}
 
-
 In @fig-answers, there are three tasks, $n_{\text{worker}}=4$ workers and $K=2$ classes.
 If the tasks (images) are available, they must be stored as it is usual to store `ImageFolder` datasets with `pytorch` into a `train`, `val` and `test` folder.
 Each image can have its name followed by its index in the `answers.json` file.
-<!-- For the first task, the feedback effort is $\vert\mathcal{A}(x_0)\vert=4$.
-The workerload of $w_2$ is $\vert\mathcal{T}(w_2)\vert=2$. -->
 
 Finally, a `metadata.json` file includes relevant information related to the crowdsourcing experiment such as the number of workers, the number of tasks, *etc.*
 For example, a minimal `metadata.json` file for the toy dataset presented in @fig-answers is:
@@ -172,7 +152,8 @@ For example, a minimal `metadata.json` file for the toy dataset presented in @fi
 }
 ```
 
-The `toy-data` example dataset is available for testing [in the `peerannot` repository](https://github.com/peerannot/peerannot/tree/main/datasets/toy-data).
+The `toy-data` example dataset is available as example [in the `peerannot` repository](https://github.com/peerannot/peerannot/tree/main/datasets/toy-data).
+Classical datasets in crowdsourcing such as CIFAR-10H and LabelMe can be installed directly using `peerannot` (an example is provided in @sec-real-datasets)
 
 # Aggregation strategies in crowdsourcing
 
@@ -190,10 +171,10 @@ With `peerannot`, both soft and hard labels can be produced.
 Note that when a strategy produces a soft label, a hard label can be induced by taking the mode, i.e., the class achieving the maximum probability.
 
 ## Classical models
-
 We list below the most classical aggregation strategies used in crowdsourcing.
 
 ### Majority vote (MV)
+
 While the most intuitive way to create a label from multiple answers for any type of crowdsourced task would be to take the majority vote (MV), this strategy has many shortcomings [@james1998majority] -- there is no noise model, no worker reliability estimated, no task difficulty involved and especially no way to remove poorly performing workers. This baseline aggregation can be expressed as:
 
 $$
@@ -201,6 +182,7 @@ $$
 $$
 
 ### Naive soft (NS)
+
 One pitfall with the MV is that the label produced is hard, hence the ambiguity is discarded by construction. To remedy this, the Naive Soft (NS) labeling consists in using the empirical frequency distribution as the task label:
 
 $$
@@ -209,6 +191,7 @@ $$
 With the NS label, we keep the ambiguity, but all workers and all tasks are put on the same level. In practice, it is known that each worker comes with their abilities, thus modeling this knowledge can produce better results.
 
 ### Dawid and Skene (DS)
+
 Going further into the aggregation, researchers began creating a noise model to take into account the workers' abilities in the aggregation.
 These types of models are most often EM-based and one of the most studied [@gao2013minimax] and applied [@servajean2017crowdsourcing;@rodrigues2018deep] is the Dawid and Skene's (DS) model [@dawid_maximum_1979].
 Assuming the workers are answering tasks independently, this model boils down to model pairwise confusions between each possible class.
@@ -230,6 +213,7 @@ with $T_{i,k}=1_{\{y_i^{\star}=k \}}$. The final aggregated soft label is $\hat 
 Many variants of the DS model have been proposed in the literature, using Dirichlet priors on the confusion matrices [@passonneau-carpenter-2014-benefits], using $L$ clusters of workers [@imamura2018analysis] with $1\leq L\leq n_{\text{worker}}$ (DSWC) or even faster implementation that produces only hard labels [@sinha2018fast].
 
 ### Generative model of Labels, Abilities, and Difficulties (GLAD)
+
 Finally, we present the GLAD model [@whitehill_whose_2009] that not only takes into account the worker's ability, but also the task difficulty in the noise model.
 Denoting $\alpha_j\in\mathbb{R}$ the worker ability (the higher the better) and $\beta_i\in\mathbb{R}^+_\star$ the task's difficulty (the higher the easier), the model noise is:
 
@@ -274,7 +258,7 @@ The independent mistakes consider that each worker $w_j$ answers following a mul
 Answers are independent of one another as each matrix is generated independently and each worker answers independently of other workers.
 In this setting, the DS model is expected to perform the best with enough data as we are simulating data from its assumed noise model.
 
-We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=30$ workers with $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
+We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=30$ workers with $K=5$ possible classes. Each task $x_i$ receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
 
 ```{python}
 #| output: false
@@ -309,6 +293,8 @@ sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
 ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
 ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
 ax[1].xaxis.set_major_locator(plt.MaxNLocator(3))
+ax[1].set_xlim(8, 12)
+ax[1].xaxis.set_major_locator(MaxNLocator(integer=True))
 for i in range(2):
   ax[i].xaxis.set_major_locator(MaxNLocator(3))
   ax[i].xaxis.label.set_size(15)
@@ -360,6 +346,87 @@ display(results)
 
 As expected by the simulation framework, @tbl-simu-independent fits the DS model, thus leading to better accuracy to retrieve the simulated labels for the DS model. The MV aggregation does not consider any worker-ability scoring or the task's difficulty and performs the worse.
 
+Note that `peerannot` can also simulate datasets with an imbalanced number of votes (*i.e.* $|\mathcal{A}(x_i)|\in [\texttt{feedback}]$ chosen uniformly at random). For example:
+
+```{python}
+#| output: false
+! peerannot simulate --n-worker=30 --n-task=200  --n-classes=5 \
+                     --strategy independent-confusion \
+                     --imbalance-votes \
+                     --feedback=10 --seed 0 \
+                     --folder ./simus/independent-imbalanced/
+```
+
+
+```{python}
+#| code-fold: true
+sns.set_style("whitegrid")
+
+votes_path = Path.cwd() / "simus" / "independent-imbalanced" / "answers.json"
+metadata_path = Path.cwd() / "simus" / "independent-imbalanced" / "metadata.json"
+efforts = feedback_effort(votes_path)
+workerload = working_load(votes_path, metadata_path)
+feedback = feedback_effort(votes_path)
+nbins = 17
+fig, ax = plt.subplots(1, 2, figsize=(9, 4))
+sns.histplot(workerload, stat="percent", bins=nbins, shrink=1, ax=ax[0])
+ax[0].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
+ax[0].set_xlabel(r"$\vert\mathcal{T}(w_j)\vert$")
+sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
+ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
+ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
+ax[1].xaxis.set_major_locator(plt.MaxNLocator(3))
+ax[1].xaxis.set_major_locator(MaxNLocator(integer=True))
+for i in range(2):
+  ax[i].xaxis.set_major_locator(MaxNLocator(3))
+  ax[i].xaxis.label.set_size(15)
+  ax[i].yaxis.label.set_size(15)
+  ax[i].xaxis.set_tick_params(labelsize=13)
+  ax[i].yaxis.set_tick_params(labelsize=13)
+  ax[i].title.set_size(18)
+plt.tight_layout()
+plt.show()
+```
+
+With the obtained answers, we can look at the aforementioned aggregation strategies performance:
+
+```{python}
+#| output: false
+for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=5]", "DSWC[L=10]"]:
+  ! peerannot aggregate ./simus/independent-imbalanced/ -s {strat}
+```
+
+```{python}
+#| label: tbl-simu-independent-imb
+#| tbl-cap: AccTrain metric on simulated independent mistakes with an imbalanced number of votes per task considering classical feature-blind label aggregation strategies
+#| code-fold: true
+import pandas as pd
+import numpy as np
+from IPython.display import display
+simu_indep = Path.cwd() / 'simus' / "independent-imbalanced"
+results = {"mv": [], "naivesoft": [], "glad": [], "ds": [], "dswc[l=5]": [], "dswc[l=10]": []}
+for strategy in results.keys():
+  path_labels = simu_indep / "labels" / f"labels_independent-confusion_{strategy}.npy"
+  ground_truth = np.load(simu_indep / "ground_truth.npy")
+  labels = np.load(path_labels)
+  acc = (
+          np.mean(labels == ground_truth)
+          if labels.ndim == 1
+          else np.mean(
+              np.argmax(labels, axis=1)
+              == ground_truth
+          )
+        )
+  results[strategy].append(acc)
+results = pd.DataFrame(results, index=['AccTrain'])
+results.columns = map(str.upper, results.columns)
+results = results.style.set_table_styles([dict(selector='th', props=[('text-align', 'center')])])
+results.set_properties(**{'text-align': 'center'})
+results = results.format(precision=3)
+display(results)
+```
+
+While more realistic, working with an imbalanced number of votes per task leads to disrupting orders of performance for most strategies.
 ### Simulated correlated mistakes
 
 The correlated mistakes are also known as the student-teacher setting. Consider that the crowd of workers is divided into two categories: teachers and students such that $n_{\text{teacher}} + n_{\text{student}}=n_{\text{worker}}$. Each student is randomly assigned to one teacher at the beginning of the experiment. We generate the (diagonally dominant) confusion matrices of each teacher and the students are associated with their's teacher confusion matrix. Then, they all answer independently, following a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$.
@@ -393,6 +460,8 @@ sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
 ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
 ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
 ax[1].xaxis.set_major_locator(plt.MaxNLocator(3))
+ax[1].set_xlim(8, 12)
+ax[1].xaxis.set_major_locator(MaxNLocator(integer=True))
 for i in range(2):
   ax[i].xaxis.set_major_locator(MaxNLocator(3))
   ax[i].xaxis.label.set_size(15)
@@ -444,7 +513,17 @@ And the best-performing method here estimates only $10$ confusion matrices (inst
 
 ### Simulated mistakes with discrete difficulty levels on tasks
 
-For the final simulation setting, we consider the discrete difficulty presented in @whitehill_whose_2009. Contrary to other simulations, we here consider that each worker is either good or bad and each task is either easy or hard. Easy tasks are answered without mistakes by involved workers. However, hard tasks are answered following the worker's confusion matrix. The confusion matrix $\pi^{(j)}$ is diagonally dominant for good workers while each row is drawn uniformly in the simplex $\Delta_K$ for bad workers.
+For the final simulation setting, we consider the discrete difficulty presented in @whitehill_whose_2009.
+Contrary to other simulations, we here consider that workers belong to two levels of abilities: \texttt{good} or \texttt{bad}, and tasks have two levels of difficulty: \texttt{easy} or \texttt{hard}.
+The keyword `ratio-diff` indicates the prevalence of each level of difficulty, it is defined as the ratio of \texttt{easy} tasks over \texttt{hard} tasks:
+
+$$
+\texttt{ratio-diff} = \frac{\mathbb{P}(\texttt{easy})}{\mathbb{P}(\texttt{hard})} \text{ with } \mathbb{P}(\texttt{easy}) +\mathbb{P}(\texttt{hard}) = 1 \enspace.
+$$
+
+Difficulties are then drawn [following at random](https://peerannot.github.io/datasets/simulate_discrete_difficulty/).
+Tasks that are \texttt{easy} are answered correctly by every worker.
+Tasks that are \texttt{hard} are answered following the confusion matrix assigned to each worker.
 Each worker then answers independently to the presented tasks.
 
 We simulate $n_{\text{task}}=500$ tasks and $n_{\text{worker}}=100$ with $35\%$ of good workers in the crowd and $50\%$ of easy tasks. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
@@ -475,6 +554,8 @@ ax[0].set_xlabel(r"$\vert\mathcal{T}(w_j)\vert$")
 sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
 ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
 ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
+ax[1].set_xlim(8, 12)
+ax[1].xaxis.set_major_locator(MaxNLocator(integer=True))
 for i in range(2):
   ax[i].xaxis.set_major_locator(MaxNLocator(3))
   ax[i].xaxis.label.set_size(15)
@@ -493,7 +574,7 @@ With the obtained answers, we can look at the aforementioned aggregation strateg
 for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=2]", "DSWC[L=5]"]:
   ! peerannot aggregate ./simus/discrete_difficulty/ -s {strat}
 ```
-<!-- ```{python}
+```{python}
 #| label: tbl-simu-discrete-diff
 #| tbl-cap: AccTrain metric on simulated mistakes when tasks are associated a difficulty level considering classical feature-blind label aggregation strategies
 #| code-fold: true
@@ -518,7 +599,7 @@ results = results.style.set_table_styles([dict(selector='th', props=[('text-alig
 results.set_properties(**{'text-align': 'center'})
 results = results.format(precision=3)
 display(results)
-``` -->
+```
 
 Finally, in this setting involving task difficulty coefficients, the only strategy that involves a latent variable for the task difficulty, knowing GLAD, outperforms the other strategies (see @tbl-simu-discrete-diff). Note that in this case, creating clusters of answers leads to worse decisions than an MV aggregation.
 
@@ -539,22 +620,23 @@ In recent years, directly learning a classifier from noisy labels was introduced
 Two of the most used models: CrowdLayer [@rodrigues2018deep] and CoNAL [@chu2021learning], are directly available in `peerannot`.
 These two learning strategies directly incorporate a DS-based noise model in the neural network's architecture.
 
-CrowdLayer trains a classifier with noisy labels as follows.
+[CrowdLayer](https://github.com/peerannot/peerannot/blob/main/peerannot/models/agg_deep/Crowdlayer.py) trains a classifier with noisy labels as follows.
 Let the scores (logits) output of a given classifier neural network $\mathcal{C}$ be $z_i=\mathcal{C}(x_i)$.
-Then CrowdLayer adds a new layer $\pi\in\mathbb{R}^{n_{\text{worker}}\times K\times K}$, the tensor of all $\pi^{(j)}$s such that the crossentropy loss $(\mathrm{CE})$ is adapted to the crowdsourcing setting into $\mathcal{L}_{CE}^{\text{CrowdLayer}}$ and computed as:
+Then CrowdLayer adds as a last layer $\pi\in\mathbb{R}^{n_{\text{worker}}\times K\times K}$, the tensor of all $\pi^{(j)}$s such that the crossentropy loss $(\mathrm{CE})$ is adapted to the crowdsourcing setting into $\mathcal{L}_{CE}^{\text{CrowdLayer}}$ and computed as:
 $$
-\mathcal{L}_{CE}^{\text{CrowdLayer}}(x_i) = \sum_{j\in\mathcal{A}(x_i)} \mathrm{CE}(\sigma\left(\pi^{(j)}\sigma\big(z_i\big)\right), y_i^{(j)}) \enspace.
+\mathcal{L}_{CE}^{\text{CrowdLayer}}(x_i) = \sum_{j\in\mathcal{A}(x_i)} \mathrm{CE}(\sigma\left(\pi^{(j)}\sigma\big(z_i\big)\right), y_i^{(j)}) \enspace,
 $$
+where the classical crossentropy loss for two distribution $u,v \in\Delta_{K}$ is defined as $\mathrm{CE}(u, v) = \sum_{k\in[K]} u_k\log(v_k)$.
 
 The confusion matrices are incorporated as is into the network architecture as a new layer to transform the output probabilities to match each worker's answer.
 However, for some datasets, it was noticed that global confusion occurs between the proposed classes.
 It is the case for example in the LabelMe dataset [@rodrigues2017learning] where classes overlap.
 In this case, @chu2021learning proposed to extend the CrowdLayer model by not only modeling the worker confusion matrices; but also a global confusion matrix $\pi^g\in\mathbb{R}^{K\times K}$.
 
-![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for CoNAL model. Each worker is assigned a confusion matrix $\pi^{(j)}$. A global confusion matrix $\pi^g$ is shared between workers. A tradeoff between the global confusion and the local one is applied.](./figures/schema_bayesien_conal.png){#fig-conal fig-align="center"}
+<!-- ![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for CoNAL model. Each worker is assigned a confusion matrix $\pi^{(j)}$. A global confusion matrix $\pi^g$ is shared between workers. A tradeoff between the global confusion and the local one is applied.](./figures/schema_bayesien_conal.png){#fig-conal fig-align="center"} -->
 
-Given the output $z_i=\mathcal{C}(x_i)\in\mathbb{R}^K$ of a given classifier and task, CoNAL
-interpolates between the local confusion $\pi^{(j)}\sigma(z_i)$ and the global one $\pi^g\sigma(z_i)$.
+Given the output $z_i=\mathcal{C}(x_i)\in\mathbb{R}^K$ of a given classifier and task, [CoNAL](https://github.com/peerannot/peerannot/blob/main/peerannot/models/agg_deep/CoNAL.py)
+interpolates between the local confusion $\pi^{(j)}z_i$ and the global one $\pi^gz_i$.
 The loss function is computed as follows:
 $$
 \begin{aligned}
@@ -563,8 +645,10 @@ $$
 \end{aligned} \
 $$
 
-The interpolation weight is defined as $s_i^{(j)}\sim\mathcal{B}(w_i^{(j)})$ and is unobservable in practice.
-So, to compute $h_i^{(j)}$, the weight is obtained through an auxiliary network that projects the task $x_i$ onto $v_i$ and the worker $w_j$ onto $u_j$, two vectors in an embedding space of dimension $d\geq 1$. Finally, $w_i^{(j)}=(1+\exp(- u_j^\top v_i))^{-1}$.
+The interpolation weight $\omega_i^{(j)}$ is unobservable in practice.
+So, to compute $h_i^{(j)}$, the weight is obtained through an auxiliary network.
+This network takes in input the image and worker information and outputs a task-related vector $v_i$ and a worker-related vector $u_j$ of the same dimension.
+Finally, $w_i^{(j)}=(1+\exp(- u_j^\top v_i))^{-1}$.
 
 Both CrowdLayer and CoNAL model worker confusions directly in the classifier's weights to learn from the noisy collected labels and are available in `peerannot` as we will see in the following.
 
@@ -588,7 +672,8 @@ Note that the ECE error estimator is known to be biased [@gruber2022better].
 Smaller training sets are known to have a higher ECE estimation error.
 And in the crowdsourcing setting, openly available datasets are often quite small.
 
-## Use case with `peerannot` on real datasets
+## Use case with `peerannot` on real datasets {#sec-real-datasets}
+
 
 Few real crowdsourcing experiments have been released publicly.
 Among the available ones, CIFAR-10H [@peterson_human_2019] is one of the largest with $10 000$ tasks labeled by workers (the testing set of CIFAR-10).
@@ -596,6 +681,7 @@ The main limitation of CIFAR-10H is that there are few disagreements between wor
 Hence, comparing the impact of aggregation and end-to-end strategies might not be relevant [@peterson_human_2019;@aitchison2020statistical], it is however a good benchmark for task difficulty identification and worker evaluation scoring
 
 The LabelMe dataset was extracted from crowdsourcing segmentation experiments and a subset of $K=8$ classes was released in @rodrigues2017learning.
+
 
 To install these datasets, we run the `install` command from `peerannot`:
 ```{python}
