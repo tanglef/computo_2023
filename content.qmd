@@ -757,6 +757,12 @@ for strat in ["MV", "NaiveSoft", "DS", "GLAD"]:
   ! peerannot train ./labelme -o labelme_${strat} -K 8 --labels=./labelme/labels/labels_labelme_${strat}.npy --model modellabelme --n-epochs 500 -m 50 -m 150 -m 250 --scheduler=multistep --lr=0.01 --num-workers=8 --pretrained --data-augmentation --optimizer=adam --batch-size=32 --img-size=224 --seed=1
 for strat in ["CrowdLayer", "CoNAL[scale=0]", "CoNAL[scale=1e-4]"]:
   ! peerannot aggregate-deep ./ -o labelme_${strat} --answers ./labelme/answers.json -s ${strat} --model modellabelme --img-size=224 --pretrained --n-classes=8 --n-epochs=500 --lr=0.001 -m 300 -m 400 --scheduler=multistep --batch-size=228 --optimizer=adam --num-workers=8 --data-augmentation --seed=1
+
+
+# command to save separately a specific part of conal model (memory intensive otherwise)
+path_ = Path.cwd() / "datasets" / "labelme"
+best_conal = torch.load(path_ / "best_models" / "labelme_conal[scale=1e-4].pth", map_location="cpu")
+torch.save(best_conal["noise_adaptation"]["local_confusion_matrices"], path_ / "best_models"/ "labelme_conal[scale=1e-4]_local_confusion.pth")
 ```
 
 ```{python}
