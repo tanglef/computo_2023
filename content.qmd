@@ -1123,8 +1123,8 @@ for method in ["trace_confusion", "spam_score"]:
 path_ = Path.cwd() / "datasets" / "labelme"
 results_identif = {"Trace DS": [], "Spam score": [], "glad": [], "Trace CrowdLayer": [], "Trace CoNAL[scale=1e-4]": []}
 best_cl = torch.load(path_ / "best_models" / "labelme_crowdlayer.pth", map_location="cpu")
-best_conal = torch.load(path_ / "best_models" / "labelme_conal[scale=1e-4].pth", map_location="cpu")
-pi_conal = best_conal["noise_adaptation"]["local_confusion_matrices"]
+best_conal = torch.load(path_ / "best_models" / "labelme_conal[scale=1e-4]_local_confusion.pth", map_location="cpu")
+pi_conal = best_conal
 results_identif["Trace CoNAL[scale=1e-4]"].extend([torch.trace(pi_conal[i]).item() for i in range(pi_conal.shape[0])])
 results_identif["Trace CrowdLayer"].extend([torch.trace(best_cl["confusion"][i]).item() for i in range(best_cl["confusion"].shape[0])])
 results_identif["Trace DS"].extend(np.load(path_ / 'identification' / "traces_confusion.npy"))
