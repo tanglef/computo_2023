@@ -155,8 +155,6 @@ To install them, we run the `install` command from `peerannot`:
 ! peerannot install ./datasets/cifar10H/cifar10h.py
 ```
 
-Examples of CIFAR-10H images are available in @fig-cifarH, and LabelMe examples in @fig-labelme here below.
-
 ```{python}
 #| code-fold: true
 #| label: fig-cifarH
@@ -188,6 +186,7 @@ for i in range(nrow):
 plt.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95, wspace=0.05, hspace=0.05)
 plt.show()
 ```
+Examples of CIFAR-10H images are available in @fig-cifarH, and LabelMe examples in @fig-labelme here below.
 
 
 ```{python}
@@ -1013,6 +1012,49 @@ generate_plot(n_classes, all_images)
 ```
 
 The entropy, GLAD's difficulty, and WAUM's difficulty each show different images. We highlight that for the `cat` label, each strategy retrieves images that are mislabeled in the ground truth labeling -- the frog, dog and fox images are labeled as `cat` in $\texttt{CIFAR-10}$ -- and while the entropy and GLAD output similar tasks, in this case the WAUM often differs. We can also observe an ambiguity induced by the labels in the `truck` category, with the presence of a trailer that is technically a mixup between a `car` and a `truck`.
+
+### LabelMe dataset
+
+As for the LabelMe dataset, one difficulty in evaluating tasks' intrinsic difficulty is that there are up to three votes given per task.
+Hence, the entropy in the distribution of the votes is no longer a reliable metric, and we need to rely on other models.
+
+Now, let us compare the tasks' difficulty distribution depending on the strategy considered using `peerannot`.
+
+```{python}
+#| output: false
+#| eval: false
+
+! peerannot identify ./datasets/labelme -s entropy -K 8 --labels ./datasets/labelme/answers.json
+! peerannot aggregate ./datasets/labelme/ -s GLAD
+! peerannot identify ./datasets/labelme/ -K 8 --method WAUM --labels ./datasets/labelme/answers.json --model modellabelme --lr=0.01 --n-epochs 100 --maxiter-DS=100 --alpha=0.01 --pretrained --optimizer=sgd
+
+```
+
+```{python}
+#| code-fold: true
+#| label: fig-difficulty-labelme
+#| fig-cap: Most difficult tasks identified depending on the strategy used (entropy, GLAD or WAUM) using a VGG-16 with two dense layers.
+classes = {
+    0: "coast",
+    1: "forest",
+    2: "highway",
+    3: "insidecity",
+    4: "mountain",
+    5: "opencountry",
+    6: "street",
+    7: "tallbuilding",
+}
+classes = list(classes.values())
+n_classes = len(classes)
+all_images = load_data("labelme", n_classes, classes)
+generate_plot(n_classes, all_images) # create interactive plot
+```
+
+Note that in @fig-difficulty-labelme, because the number of labels given per task is in $\{1,2,3\}$, the entropy only takes four values.
+In particular, tasks with only one label all have a null entropy, so not just consensual tasks.
+
+The underlying difficulty of these tasks mainly comes from the overlap in possible labels. For example, `tallbuildings` are most often found `insidecities`, and so are `streets`. In the `opencountry` we find `forests`, river-`coasts` and `mountains`.
+
 ## Exploring workers' reliability
 
 From the labels, we can explore different worker evaluation scores.
