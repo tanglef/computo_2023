@@ -902,7 +902,7 @@ def load_data(dataset, n_classes, classes):
                     if dataset.startswith("cifar"):
                       im = im.resize((32,32))
                     else:
-                      im = im.resize((138, 138))
+                      im = im.resize((64, 64))  # memory saving
                     imgs[k].append(np.array(im))
                     flag += 1
                 if flag == 12:
