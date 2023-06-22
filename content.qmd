@@ -802,9 +802,6 @@ As we can see, CoNAL strategy performs best.
 In this case, it is expected behavior as CoNAL was created for the LabelMe dataset.
 However, using `peerannot` we can look into **why modeling common confusion returns better results with this dataset**.
 To do so, we can explore the datasets from two points of view: worker-wise or task-wise.
-From the labels, we can explore different worker evaluation scores.
-GLAD's strategy estimates a reliability scalar coefficient $\alpha_j$ per worker.
-With strategies looking to estimate confusion matrices, we investigate two scoring rules for workers:
 
 # Exploring crowdsourced datasets
 
@@ -819,7 +816,203 @@ This is the purpose of the identification module in `peerannot`.
 Our test cases are both the CIFAR-10H dataset and the LabelMe dataset to compare the worker and task evaluation depending on the number of votes collected.
 Indeed, the LabelMe dataset has only up to three votes per task whereas CIFAR-10H accounts for nearly fifty votes per task.
 
+## Exploring tasks' difficulty
 
+To explore the tasks' intrinsic difficulty, we propose to compare three scoring metrics:
+
+  - the entropy of the NS distribution: reliable with a big enough and not adversarial crowd, the entropy measures the inherent uncertainty of the distribution to the possible outcomes.
+  - GLAD's scoring: by construction, @whitehill_whose_2009 introduced a scalar coefficient to score the difficulty of a task.
+  - the WAUM: introduced in [@lefort2022improve], this weighted area under the margins indicates how difficult it is for a classifier $\mathcal{C}$ in $T>0$ epochs the task given the crowdsourced labels and the trust we have in each worker denoted $s^{(j)}(x_i)>0$.
+
+The $\mathrm{WAUM}$ of a given task $x_i\in\mathcal{X}$ and a set of crowdsourced labels $\{y_i^{(j)}\}_j \in [K]^{|\mathcal{A}(x_i)|}$ is defined as:
+$$\mathrm{WAUM}(x_i) := \frac{1}{|\mathcal{A}(x_i)|}\sum_{j\in\mathcal{A}(x_i)} s^{(j)}(x_i)\left\{\frac{1}{T}\sum_{t=1}^T  \sigma(\mathcal{C}(x_i))_{y_i^{(j)}} - \sigma(\mathcal{C}(x_i))_{[2]}\right\} \enspace.
+$$
+
+Note that each of these statistics is useful in its context. The entropy can not be used in a setting with small $|\mathcal{A}(x_i)|$ (few labels per task), in particular for the LabelMe dataset it is uninformative.
+The WAUM can handle any number of labels, but the larger the better. However, as it uses a deep learning classifier, the WAUM needs the tasks $(x_i)_i$ in addition to the proposed labels while the other strategies are feature-blind.
+
+### CIFAR-1OH dataset
+
+First, let us consider a dataset with a large number of tasks, annotations and workers: the CIFAR-10H dataset by @peterson_human_2019.
+
+```{python}
+#| output: false
+#| eval: false
+! peerannot identify ./datasets/cifar10H -s entropy -K 10 --labels ./datasets/cifar10H/answers.json
+! peerannot aggregate ./datasets/cifar10H/ -s GLAD
+! peerannot identify ./datasets/cifar10H/ -K 10 --method WAUM \
+            --labels ./datasets/cifar10H/answers.json --model resnet34 \
+            --n-epochs 100 --lr=0.01 --img-size=32 --maxiter-DS=50 \
+            --pretrained
+```
+```{python}
+#| code-fold: true
+#| label: fig-difficulty-c10H
+#| fig-cap: Most difficult tasks identified depending on the strategy used (entropy, GLAD or WAUM) using a Resnet34.
+
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from PIL import Image
+import itertools
+
+classes = (
+    "plane",
+    "car",
+    "bird",
+    "cat",
+    "deer",
+    "dog",
+    "frog",
+    "horse",
+    "ship",
+    "truck",
+)
+
+
+def load_data(dataset, n_classes, classes):
+
+    entrop = np.load(f"./datasets/{dataset}/identification/entropies.npy")
+    path_train = Path(f"./datasets/{dataset}/train")
+    glad = 1 / np.exp(
+        np.load(f"./datasets/{dataset}/identification/glad/difficulties.npy")[
+            :, 1
+        ]
+    )
+    dfwaum = pd.read_csv(
+        f"./datasets/{dataset}/identification/resnet34/waum_0.01_yang/waum.csv"
+    ) if dataset.startswith("cifar") else pd.read_csv(
+      f"./datasets/{dataset}/identification/modellabelme/waum_0.01_yang/waum.csv"
+    )
+    tasks = dfwaum.sort_values(by="waum")["task"].values
+    img_ns, img_glad, img_waum = [], [], []
+    idxs_ns = np.argsort(entrop)[::-1]
+    idxs_glad = np.argsort(glad)[::-1]
+    idxs_waum = [Path(task).stem.split("-")[1] for task in tasks]
+    for idxs, im_store in zip(
+        [idxs_ns, idxs_glad, idxs_waum], [img_ns, img_glad, img_waum]
+    ):
+        imgs = []
+        for k in range(n_classes):
+            imgs.append([])
+            flag = 0
+            for (id_, file) in list(
+                itertools.product(idxs, path_train.glob(f"{classes[k]}/*"))
+            ):
+                if file.stem.endswith(f"-{id_}"):
+                    im = Image.open(file)
+                    if dataset.startswith("cifar"):
+                      im = im.resize((32,32))
+                    else:
+                      im = im.resize((138, 138))
+                    imgs[k].append(np.array(im))
+                    flag += 1
+                if flag == 12:
+                    break
+            image_k_row1 = np.hstack(imgs[k][:6])
+            image_k_row2 = np.hstack(imgs[k][6:])
+            image_k = np.vstack((image_k_row1, image_k_row2))
+            im_store.append(image_k)
+    all_images = [img_ns, img_glad, img_waum]
+    return all_images
+
+
+def get_visible_strat(strategy):
+    ll = [False] * (n_classes * 3)
+    for k in range(n_classes * strategy, n_classes * (strategy + 1)):
+        ll[k] = True
+    return ll
+
+
+def get_layer_strat(strategy):
+    ll_layer = ["below"] * (n_classes * 3)
+    for k in range(n_classes * strategy, n_classes * (strategy + 1)):
+        ll_layer[k] = "above"
+    return ll_layer
+
+
+def get_visible_class(lab):
+    ll = [False] * (n_classes * 3)
+    for k in range(3):
+        ll[n_classes * k + lab] = True
+    return ll
+
+
+def generate_plot(n_classes, all_images):
+    fig = make_subplots(
+        rows=3, cols=1, subplot_titles=("Entropy", "GLAD difficulty", "WAUM"), vertical_spacing=0.1
+    )
+    button_classes = [
+        dict(
+            args=[{"visible": get_visible_class(k)}],
+            label=f"{classes[k]}",
+            method="update",
+        )
+        for k in range(n_classes)
+    ]
+    buttons_method = [
+        dict(
+            args=[
+                {"visible": get_visible_strat(0), "layer": get_layer_strat(0)}
+            ],
+            label="entropy",
+            method="update",
+        ),
+        dict(
+            args=[
+                {"visible": get_visible_strat(1), "layer": get_layer_strat(1)}
+            ],
+            label="glad",
+            method="update",
+        ),
+        dict(
+            args=[
+                {"visible": get_visible_strat(2), "layer": get_layer_strat(1)}
+            ],
+            label="waum",
+            method="update",
+        ),
+    ]
+    layout = go.Layout(
+        updatemenus=[
+            {
+                "type": "buttons",
+                "buttons": button_classes,
+                "active": 3,
+                "showactive": True,
+                "direction": "down",  # Display buttons horizontally
+                "x": 0.1,  # X-position of the buttons (0.5 centers them)
+                "y": 1.,  # Y-position   of the buttons
+            },
+        ]
+    )
+    data = [
+        go.Image(
+            z=all_images[method][k],
+            visible=True if k == 3 else False,
+            name=f"{classes[k]} - {method}",
+        )
+        for method in range(len(all_images))
+        for k in range(n_classes)
+    ]
+
+    for k in range(n_classes * len(all_images)):
+        fig.add_trace(
+            data[k],
+            row=1 + k // n_classes,
+            col=1,
+        )
+    fig.update_layout(layout)
+    fig.update_layout(width=800, height=700, margin=dict(l=0, r=0, t=30, b=0, autoexpand=True))
+    fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
+    fig.show()
+
+
+n_classes = 10
+all_images = load_data("cifar10H", n_classes, classes)
+generate_plot(n_classes, all_images)
+```
+
+The entropy, GLAD's difficulty, and WAUM's difficulty each show different images. We highlight that for the `cat` label, each strategy retrieves images that are mislabeled in the ground truth labeling -- the frog, dog and fox images are labeled as `cat` in $\texttt{CIFAR-10}$ -- and while the entropy and GLAD output similar tasks, in this case the WAUM often differs. We can also observe an ambiguity induced by the labels in the `truck` category, with the presence of a trailer that is technically a mixup between a `car` and a `truck`.
 ## Exploring workers' reliability
 
 From the labels, we can explore different worker evaluation scores.
@@ -836,8 +1029,7 @@ Moreover, for CrowdLayer and CoNAL we show the weights learned without the softm
 
 ### CIFAR-10H
 
-The Cifar-10H dataset has few disagreements among workers.
-From @fig-abilities-cifarH, we can see that in this dataset, different methods easily separate the worse workers from the rest of the crowd (workers in the tail of the distribution).
+The CIFAR-10H dataset has few disagreements among workers.
 However, these strategies disagree on the ranking of good against best workers as they do not measure the same properties.
 
 ```{python}
@@ -851,7 +1043,7 @@ for method in ["trace_confusion", "spam_score"]:
 
 ```{python}
 #| code-fold: true
-#| label: fig-abilities-cifarH
+#| label: fig-abilitiescifarH
 #| fig-cap: Comparison of ability scores by workers for the CIFAR-10H dataset.
 
 path_ = Path.cwd() / "datasets" / "cifar10H"
@@ -864,6 +1056,7 @@ g = sns.pairplot(results_identif, corner=True, diag_kind="kde", plot_kws={'alpha
 plt.show()
 ```
 
+From @fig-abilitiescifarH, we can see that in this dataset, different methods easily separate the worse workers from the rest of the crowd (workers in the tail of the distribution).
 
 ### LabelMe
 
