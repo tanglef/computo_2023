@@ -157,7 +157,7 @@ To install them, we run the `install` command from `peerannot`:
 
 ```{python}
 #| code-fold: true
-#| label: fig-cifarH
+#| label: fig-cifarh
 #| fig-cap: Example of images to label from the CIFAR-10H dataset with label `bird`, `car`, `cat`, `deer `and `dog` (top to bottom) by row.
 import torch
 import matplotlib.pyplot as plt
@@ -186,7 +186,7 @@ for i in range(nrow):
 plt.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95, wspace=0.05, hspace=0.05)
 plt.show()
 ```
-Examples of CIFAR-10H images are available in @fig-cifarH, and LabelMe examples in @fig-labelme here below.
+Examples of CIFAR-10H images are available in @fig-cifarh, and LabelMe examples in @fig-labelme here below.
 
 
 ```{python}
@@ -1085,7 +1085,7 @@ for method in ["trace_confusion", "spam_score"]:
 
 ```{python}
 #| code-fold: true
-#| label: fig-abilitiescifarH
+#| label: fig-abilitiescifarh
 #| fig-cap: Comparison of ability scores by workers for the CIFAR-10H dataset.
 
 path_ = Path.cwd() / "datasets" / "cifar10H"
@@ -1098,7 +1098,7 @@ g = sns.pairplot(results_identif, corner=True, diag_kind="kde", plot_kws={'alpha
 plt.show()
 ```
 
-From @fig-abilitiescifarH, we can see that in this dataset, different methods easily separate the worse workers from the rest of the crowd (workers in the tail of the distribution).
+From @fig-abilitiescifarh, we can see that in this dataset, different methods easily separate the worse workers from the rest of the crowd (workers in the tail of the distribution).
 
 ### LabelMe
 
