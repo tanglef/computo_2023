@@ -802,6 +802,9 @@ As we can see, CoNAL strategy performs best.
 In this case, it is expected behavior as CoNAL was created for the LabelMe dataset.
 However, using `peerannot` we can look into **why modeling common confusion returns better results with this dataset**.
 To do so, we can explore the datasets from two points of view: worker-wise or task-wise.
+From the labels, we can explore different worker evaluation scores.
+GLAD's strategy estimates a reliability scalar coefficient $\alpha_j$ per worker.
+With strategies looking to estimate confusion matrices, we investigate two scoring rules for workers:
 
 # Exploring crowdsourced datasets
 
@@ -816,8 +819,90 @@ This is the purpose of the identification module in `peerannot`.
 Our test cases are both the CIFAR-10H dataset and the LabelMe dataset to compare the worker and task evaluation depending on the number of votes collected.
 Indeed, the LabelMe dataset has only up to three votes per task whereas CIFAR-10H accounts for nearly fifty votes per task.
 
-## Exploring tasks' difficulty
 
+## Exploring workers' reliability
+
+From the labels, we can explore different worker evaluation scores.
+GLAD's strategy estimates a reliability scalar coefficient $\alpha_j$ per worker.
+With strategies looking to estimate confusion matrices, we investigate two scoring rules for workers:
+
+- the trace of the confusion matrix: the closer to K the better the worker,
+- the spammer score [@raykar_ranking_2011] that is the Frobenius norm between the estimated confusion matrix $\hat\pi^{(j)}$ and the closest rank-$1$ matrix. The further to zero the better the worker.
+
+When the tasks are available, confusion-matrix-based deep learning models can also be of use.
+We thus add to the comparison the trace of the confusion matrices with CrowdLayer and CoNAL on the LabelMe datasets.
+For CoNAL, we only consider the trace of the confusion matrix $\pi^{(j)}$ in the pairwise comparison, and provide the common confusion matrix $\pi^g$ as separate.
+Moreover, for CrowdLayer and CoNAL we show the weights learned without the softmax operation by row to keep the comparison as simple as possible with the actual outputs of the model.
+
+### CIFAR-10H
+
+The Cifar-10H dataset has few disagreements among workers.
+From @fig-abilities-cifarH, we can see that in this dataset, different methods easily separate the worse workers from the rest of the crowd (workers in the tail of the distribution).
+However, these strategies disagree on the ranking of good against best workers as they do not measure the same properties.
+
+```{python}
+#| output: false
+#| eval: false
+! peerannot aggregate ./datasets/cifar10H/ -s GLAD
+for method in ["trace_confusion", "spam_score"]:
+  ! peerannot identify ./datasets/cifar10H/ --n-classes=10 \
+                       -s {method} --labels ./datasets/cifar10H/answers.json
+```
+
+```{python}
+#| code-fold: true
+#| label: fig-abilities-cifarH
+#| fig-cap: Comparison of ability scores by workers for the CIFAR-10H dataset.
+
+path_ = Path.cwd() / "datasets" / "cifar10H"
+results_identif = {"Trace DS": [], "spam_score": [], "glad": []}
+results_identif["Trace DS"].extend(np.load(path_ / 'identification' / "traces_confusion.npy"))
+results_identif["spam_score"].extend(np.load(path_ / 'identification' / "spam_score.npy"))
+results_identif["glad"].extend(np.load(path_ / 'identification' / "glad" / "abilities.npy")[:, 1])
+results_identif = pd.DataFrame(results_identif)
+g = sns.pairplot(results_identif, corner=True, diag_kind="kde", plot_kws={'alpha':0.2})
+plt.show()
+```
+
+
+### LabelMe
+
+Finally, let us evaluate workers for the LabelMe dataset.
+Because of the lack of data (up to 3 labels per task), ranking workers is more difficult than in the CIFAR-10H dataset.
+
+```{python}
+#| output: false
+#| eval: true
+! peerannot aggregate ./datasets/labelme/ -s GLAD
+for method in ["trace_confusion", "spam_score"]:
+  ! peerannot identify ./datasets/labelme/ --n-classes=8 \
+                       -s {method} --labels ./datasets/labelme/answers.json
+# CoNAL and CrowdLayer were run in section 4
+```
+
+```{python}
+#| code-fold: true
+#| label: fig-abilities-labelme
+#| fig-cap: Comparison of ability scores by workers for the labelme dataset.
+path_ = Path.cwd() / "datasets" / "labelme"
+results_identif = {"Trace DS": [], "Spam score": [], "glad": [], "Trace CrowdLayer": [], "Trace CoNAL[scale=1e-4]": []}
+best_cl = torch.load(path_ / "best_models" / "labelme_crowdlayer.pth", map_location="cpu")
+best_conal = torch.load(path_ / "best_models" / "labelme_conal[scale=1e-4]_local_confusion.pth", map_location="cpu")
+pi_conal = best_conal
+results_identif["Trace CoNAL[scale=1e-4]"].extend([torch.trace(pi_conal[i]).item() for i in range(pi_conal.shape[0])])
+results_identif["Trace CrowdLayer"].extend([torch.trace(best_cl["confusion"][i]).item() for i in range(best_cl["confusion"].shape[0])])
+results_identif["Trace DS"].extend(np.load(path_ / 'identification' / "traces_confusion.npy"))
+results_identif["Spam score"].extend(np.load(path_ / 'identification' / "spam_score.npy"))
+results_identif["glad"].extend(np.load(path_ / 'identification' / "glad" / "abilities.npy")[:, 1])
+results_identif = pd.DataFrame(results_identif)
+g = sns.pairplot(results_identif, corner=True, diag_kind="kde", plot_kws={'alpha':0.2})
+plt.show()
+```
+
+We can see in Figure @fig-abilities-labelme that the number of labels available by task highly impacts the worker evaluation scores.
+The spam score, DS model and CoNAL all show similar results in the distribution shape (bimodal distribution) whereas GLAD and CrowdLayer are more concentrated.
+This difference in worker evaluation scores also further highlights the importance of using test metrics to compare model's prediction performance in crowdsourcing.
+We have seen that the library `peerannot` allows users to explore the datasets, both in terms of tasks and workers, and easily compare predictive performance in this setting.
 
 # Conclusion
 
