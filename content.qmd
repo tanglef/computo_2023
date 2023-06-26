@@ -146,7 +146,7 @@ For example, a minimal `metadata.json` file for the toy dataset presented in @fi
 ```
 
 The `toy-data` example dataset is available as an example [in the `peerannot` repository](https://github.com/peerannot/peerannot/tree/main/datasets/toy-data).
-Classical datasets in crowdsourcing such as CIFAR-10H [@peterson_human_2019] and LabelMe [@rodrigues2014gaussian] can be installed directly using `peerannot`.
+Classical datasets in crowdsourcing such as $\texttt{CIFAR-10H}$ [@peterson_human_2019] and $\texttt{LabelMe}$ [@rodrigues2014gaussian] can be installed directly using `peerannot`.
 To install them, we run the `install` command from `peerannot`:
 ```{python}
 #| output: false
@@ -186,7 +186,7 @@ for i in range(nrow):
 plt.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95, wspace=0.05, hspace=0.05)
 plt.show()
 ```
-Examples of CIFAR-10H images are available in @fig-cifarh, and LabelMe examples in @fig-labelme here below.
+Examples of $\texttt{CIFAR-10H}$ images are available in @fig-cifarh, and $\texttt{LabelMe}$ examples in @fig-labelme here below.
 
 
 ```{python}
@@ -692,7 +692,7 @@ where the classical crossentropy loss for two distribution $u,v \in\Delta_{K}$ i
 
 The confusion matrices are incorporated as is into the network architecture as a new layer to transform the output probabilities to match each worker's answer.
 However, for some datasets, it was noticed that global confusion occurs between the proposed classes.
-It is the case for example in the LabelMe dataset [@rodrigues2017learning] where classes overlap.
+It is the case for example in the $\texttt{LabelMe}$ dataset [@rodrigues2017learning] where classes overlap.
 In this case, @chu2021learning proposed to extend the CrowdLayer model by not only modeling the worker confusion matrices; but also a global confusion matrix $\pi^g\in\mathbb{R}^{K\times K}$.
 
 <!-- ![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for CoNAL model. Each worker is assigned a confusion matrix $\pi^{(j)}$. A global confusion matrix $\pi^g$ is shared between workers. A tradeoff between the global confusion and the local one is applied.](./figures/schema_bayesien_conal.png){#fig-conal fig-align="center"} -->
@@ -738,13 +738,13 @@ And in the crowdsourcing setting, openly available datasets are often quite smal
 
 
 Few real crowdsourcing experiments have been released publicly.
-Among the available ones, CIFAR-10H [@peterson_human_2019] is one of the largest with $10 000$ tasks labeled by workers (the testing set of CIFAR-10).
-The main limitation of CIFAR-10H is that there are few disagreements between workers and a simple majority voting already leads to a near-perfect $\mathrm{AccTrain}$ error.
+Among the available ones, $\texttt{CIFAR-10H}$ [@peterson_human_2019] is one of the largest with $10 000$ tasks labeled by workers (the testing set of CIFAR-10).
+The main limitation of $\texttt{CIFAR-10H}$ is that there are few disagreements between workers and a simple majority voting already leads to a near-perfect $\mathrm{AccTrain}$ error.
 Hence, comparing the impact of aggregation and end-to-end strategies might not be relevant [@peterson_human_2019;@aitchison2020statistical], it is however a good benchmark for task difficulty identification and worker evaluation scoring
 
-The LabelMe dataset was extracted from crowdsourcing segmentation experiments and a subset of $K=8$ classes was released in @rodrigues2017learning.
+The $\texttt{LabelMe}$ dataset was extracted from crowdsourcing segmentation experiments and a subset of $K=8$ classes was released in @rodrigues2017learning.
 
-Let us use `peerannot` to train a VGG-16 with two dense layers on the LabelMe dataset.
+Let us use `peerannot` to train a VGG-16 with two dense layers on the $\texttt{LabelMe}$ dataset.
 Note that this modification was introduced to reach state-of-the-art performance in [@chu2021learning].
 Other models from the `torchvision` library can be used, such as Resnets, Alexnet *etc.*
 
@@ -798,7 +798,7 @@ display(results)
 ```
 
 As we can see, CoNAL strategy performs best.
-In this case, it is expected behavior as CoNAL was created for the LabelMe dataset.
+In this case, it is expected behavior as CoNAL was created for the $\texttt{LabelMe}$ dataset.
 However, using `peerannot` we can look into **why modeling common confusion returns better results with this dataset**.
 To do so, we can explore the datasets from two points of view: worker-wise or task-wise.
 
@@ -812,8 +812,8 @@ Sometimes involuntarily (*e.g.* because the task is too hard or the worker is un
 Underlying all the learning models and aggregation strategies, the cornerstone of crowdsourcing is evaluating the trust we put in each worker depending on the presented task. And with the gamification of crowdsourcing [@plantgame2016;@tinati2017investigation], it has become essential to find scoring metrics both for workers and tasks to keep citizens in the loop so to speak.
 This is the purpose of the identification module in `peerannot`.
 
-Our test cases are both the CIFAR-10H dataset and the LabelMe dataset to compare the worker and task evaluation depending on the number of votes collected.
-Indeed, the LabelMe dataset has only up to three votes per task whereas CIFAR-10H accounts for nearly fifty votes per task.
+Our test cases are both the $\texttt{CIFAR-10H}$ dataset and the $\texttt{LabelMe}$ dataset to compare the worker and task evaluation depending on the number of votes collected.
+Indeed, the $\texttt{LabelMe}$ dataset has only up to three votes per task whereas $\texttt{CIFAR-10H}$ accounts for nearly fifty votes per task.
 
 ## Exploring tasks' difficulty
 
@@ -827,12 +827,12 @@ The $\mathrm{WAUM}$ of a given task $x_i\in\mathcal{X}$ and a set of crowdsource
 $$\mathrm{WAUM}(x_i) := \frac{1}{|\mathcal{A}(x_i)|}\sum_{j\in\mathcal{A}(x_i)} s^{(j)}(x_i)\left\{\frac{1}{T}\sum_{t=1}^T  \sigma(\mathcal{C}(x_i))_{y_i^{(j)}} - \sigma(\mathcal{C}(x_i))_{[2]}\right\} \enspace.
 $$
 
-Note that each of these statistics is useful in its context. The entropy can not be used in a setting with small $|\mathcal{A}(x_i)|$ (few labels per task), in particular for the LabelMe dataset it is uninformative.
+Note that each of these statistics is useful in its context. The entropy can not be used in a setting with small $|\mathcal{A}(x_i)|$ (few labels per task), in particular for the $\texttt{LabelMe}$ dataset it is uninformative.
 The WAUM can handle any number of labels, but the larger the better. However, as it uses a deep learning classifier, the WAUM needs the tasks $(x_i)_i$ in addition to the proposed labels while the other strategies are feature-blind.
 
 ### CIFAR-1OH dataset
 
-First, let us consider a dataset with a large number of tasks, annotations and workers: the CIFAR-10H dataset by @peterson_human_2019.
+First, let us consider a dataset with a large number of tasks, annotations and workers: the $\texttt{CIFAR-10H}$ dataset by @peterson_human_2019.
 
 ```{python}
 #| output: false
@@ -1015,7 +1015,7 @@ The entropy, GLAD's difficulty, and WAUM's difficulty each show different images
 
 ### LabelMe dataset
 
-As for the LabelMe dataset, one difficulty in evaluating tasks' intrinsic difficulty is that there are up to three votes given per task.
+As for the $\texttt{LabelMe}$ dataset, one difficulty in evaluating tasks' intrinsic difficulty is that there are up to three votes given per task.
 Hence, the entropy in the distribution of the votes is no longer a reliable metric, and we need to rely on other models.
 
 Now, let us compare the tasks' difficulty distribution depending on the strategy considered using `peerannot`.
@@ -1065,13 +1065,13 @@ With strategies looking to estimate confusion matrices, we investigate two scori
 - the spammer score [@raykar_ranking_2011] that is the Frobenius norm between the estimated confusion matrix $\hat\pi^{(j)}$ and the closest rank-$1$ matrix. The further to zero the better the worker.
 
 When the tasks are available, confusion-matrix-based deep learning models can also be of use.
-We thus add to the comparison the trace of the confusion matrices with CrowdLayer and CoNAL on the LabelMe datasets.
+We thus add to the comparison the trace of the confusion matrices with CrowdLayer and CoNAL on the $\texttt{LabelMe}$ datasets.
 For CoNAL, we only consider the trace of the confusion matrix $\pi^{(j)}$ in the pairwise comparison, and provide the common confusion matrix $\pi^g$ as separate.
 Moreover, for CrowdLayer and CoNAL we show the weights learned without the softmax operation by row to keep the comparison as simple as possible with the actual outputs of the model.
 
 ### CIFAR-10H
 
-The CIFAR-10H dataset has few disagreements among workers.
+The $\texttt{CIFAR-10H}$ dataset has few disagreements among workers.
 However, these strategies disagree on the ranking of good against best workers as they do not measure the same properties.
 
 ```{python}
@@ -1102,8 +1102,8 @@ From @fig-abilitiescifarh, we can see that in this dataset, different methods ea
 
 ### LabelMe
 
-Finally, let us evaluate workers for the LabelMe dataset.
-Because of the lack of data (up to 3 labels per task), ranking workers is more difficult than in the CIFAR-10H dataset.
+Finally, let us evaluate workers for the $\texttt{LabelMe}$ dataset.
+Because of the lack of data (up to 3 labels per task), ranking workers is more difficult than in the $\texttt{CIFAR-10H}$ dataset.
 
 ```{python}
 #| output: false
