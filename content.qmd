@@ -87,10 +87,15 @@ Note that indices start at position $1$ in the equation to follow mathematical s
 
 With crowdsourced data the ground truth of a task $x_i$, denoted $y_i^\star$ is unknown, and there is no single label that can be trusted as in standard supervised learning (even on the train set!).
 Instead, there is a crowd of $n_{\text{worker}}$ workers from which multiple workers $(w_j)_j$ propose a label $(y_i^{(j)})_j$.
-The set of workers answering the task $x_i$ is denoted by $\mathcal{A}(x_i)=\{j\in[n_\text{worker}]: w_j \text{ answered }x_i\}$.
+The set of workers answering the task $x_i$ is denoted by
+$$
+\mathcal{A}(x_i)=\{j\in[n_\text{worker}]: w_j \text{ answered }x_i\} \enspace.
+$${#eq-workerset}
 The cardinal $\vert \mathcal{A}(x_i)\vert$ is called the feedback effort on the task $x_i$.
 Note that the feedback effort can not exceed the total number of workers $n_{\text{worker}}$.
-Similarly, one can adopt a worker point of view: the set of tasks answered by a worker $w_j$ is denoted $\mathcal{T}(w_j)=\{i\in[n_\text{task}]: w_j \text{ answered } x_i\}$.
+Similarly, one can adopt a worker point of view: the set of tasks answered by a worker $w_j$ is denoted
+$$\mathcal{T}(w_j)=\{i\in[n_\text{task}]: w_j \text{ answered } x_i\}\enspace.
+$${#eq-taskset}
 The cardinal $\vert \mathcal{T}(w_j)\vert$ is called the workerload of $w_j$.
 The final dataset can then be decomposed as:
 $$
@@ -155,10 +160,14 @@ To install them, we run the `install` command from `peerannot`:
 ! peerannot install ./datasets/cifar10H/cifar10h.py
 ```
 
+For both $\texttt{CIFAR-10H}$ and $\texttt{LabelMe}$, the dataset was originally released in classical supervised learning form (without crowdsourcing).
+These labels are used as ground truth in evaluations and visualizations.
+However, we emphasize that crowdsourcing strategies do not rely on the ground truth (only on the workers' answers).
+
 ```{python}
 #| code-fold: true
 #| label: fig-cifarh
-#| fig-cap: Example of images from CIFAR-10H. We display images rowise according to the label given in the test set of CIFAR10.
+#| fig-cap: Example of images from CIFAR-10H. We display images rowise according to the ground truth label.
 
 import torch
 import matplotlib.pyplot as plt
@@ -184,7 +193,7 @@ for i in range(nrow):
     axs[i,j].imshow(image, aspect="equal")
     axs[i,j].axis("off")
     axs[i,j].set_yticklabels([])
-plt.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95, wspace=0.05, hspace=0.05)
+plt.subplots_adjust(wspace=-0.8, hspace=0.25)
 plt.show()
 ```
 Examples of $\texttt{CIFAR-10H}$ images are available in @fig-cifarh, and $\texttt{LabelMe}$ examples in @fig-labelme here below.
@@ -193,7 +202,7 @@ Examples of $\texttt{CIFAR-10H}$ images are available in @fig-cifarh, and $\text
 ```{python}
 #| code-fold: true
 #| label: fig-labelme
-#| fig-cap: Example of images from LabelMe. We display images rowise according to the label given in the train set of LabelMe.
+#| fig-cap: Example of images from LabelMe. We display images rowise according to the ground truth label.
 
 nrow = 5
 ncol = 5
@@ -214,7 +223,7 @@ for i in range(nrow):
     axs[i,j].imshow(image, aspect="equal")
     axs[i,j].axis("off")
     axs[i,j].set_yticklabels([])
-plt.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95, wspace=0.05, hspace=0.05)
+plt.subplots_adjust(wspace=-0.8, hspace=0.25)
 plt.show()
 ```
 
@@ -272,11 +281,22 @@ with $T_{i,k}=\mathbf{1}_{\{y_i^{\star}=k \}}$. The final aggregated soft label 
 
 ![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the DS model](./figures/bayesien_plaque_ds.png){fig-align="center"}
 
+### Variations around the DS model
+
 Many variants of the DS model have been proposed in the literature, using Dirichlet priors on the confusion matrices [@passonneau-carpenter-2014-benefits], using $1\leq L\leq n_{\text{worker}}$ clusters of workers [@imamura2018analysis] (DSWC) or even faster implementation that produces only hard labels [@sinha2018fast].
+
+In particular, the DSWC strategy (Dawid and Skene with Worker Clustering) highly reduces the dimension of the parameters in the DS model.
+In the original model, there are $K^2\times n_{\text{worker}}$ parameters to be estimated for the confusion matrices only.
+The DSWC model reduces them to $K^2\times L + L$ parameters.
+Indeed, there are $L$ confusion matrices $\{\Lambda_1,\dots,\Lambda_L\}$ and the confusion matrix of a cluster is assumed drawn from a multinomial distribution with weights $(\tau_1,\dots,\tau_L)$, such that $\mathbb{P}(\pi^{(j)}=\Lambda_\ell)=\tau_\ell$.
 
 ### Generative model of Labels, Abilities, and Difficulties (GLAD)
 
 Finally, we present the GLAD model [@whitehill_whose_2009] that not only takes into account the worker's ability, but also the task difficulty in the noise model.
+The likelihood is optimized using an EM algorithm to recover the soft label $\hat y_i^{\text{GLAD}}$.
+
+![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the GLAD model](./figures/schema_bayesien_glad.png){fig-align="center"}
+
 Denoting $\alpha_j\in\mathbb{R}$ the worker ability (the higher the better) and $\beta_i\in\mathbb{R}^+_\star$ the task's difficulty (the higher the easier), the model noise is:
 
 $$
@@ -286,9 +306,8 @@ GLAD's model also assumes that the errors are uniform across wrong labels, thus:
 $$
 \forall k \in [K],\ \mathbb{P}(y_i^{(j)}=k\vert y_i^\star\neq k,\alpha_j,\beta_i) = \frac{1}{K-1}\left(1-\frac{1}{1+\exp(-\alpha_j\beta_i)}\right)\enspace.
 $$
-The likelihood can then be optimized using an EM algorithm to recover the soft label $\hat y_i^{\text{GLAD}}$.
 
-![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the GLAD model](./figures/schema_bayesien_glad.png){fig-align="center"}
+### Aggregation strategies in `peerannot`
 
 All of these aggregation strategies -- and more -- are available in the `peerannot` library from the `peerannot.models` module.
 Each model is a class object in its own `Python` file. It inherits from the `CrowdModel` template class and is defined with at least two methods:
@@ -310,18 +329,20 @@ In the following, we write $\operatornamewithlimits{AccTrain}$ for $\operatornam
 While this metric is useful, in practice there are a few arguable issues:
 
 - the $\operatornamewithlimits{AccTrain}$ does not consider the ambiguity of the soft label, only the most probable class, whereas in some contexts ambiguity can be informative,
-- in supervised learning one objective is to identify difficult or mislabeled tasks [@pleiss_identifying_2020;@lefort2022improve], pruning those tasks can easily artificially improve the $\operatornamewithlimits{AccTrain}$, but there is no guarantee over the predictive performance of a model based on the newly pruned dataset.
+- in supervised learning one objective is to identify difficult or mislabeled tasks [@pleiss_identifying_2020;@lefort2022improve], pruning those tasks can easily artificially improve the $\operatornamewithlimits{AccTrain}$, but there is no guarantee over the predictive performance of a model based on the newly pruned dataset,
+- in practice, ground truth labels are unknown, thus this metric would not be computable.
 
 We first consider classical simulation settings in the literature that can easily be created and reproduced using `peerannot`.
+For each dataset, we present the distribution of the number of workers per task $(|\mathcal{A}(x_i)|)_i$ @@eq-workerset on the right and the distribution of the number of tasks per worker $(|\mathcal{T}(w_j)|)_j$ @@eq-taskset on the left.
 
-### Simulated independent mistakes
+### Simulated independent mistakes simu-independent {#sec-simu-independent}
 
-The independent mistakes consider that each worker $w_j$ answers following a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$. Each confusion matrix is generated diagonally dominant.
+The independent mistakes consider that each worker $w_j$ answers follows a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$. Each confusion row in the confusion matrix is generated uniformly in the simplex. Then, we make the matrix diagonally dominant (to represent non-adversarial workers) by switching the diagonal term with the maximum value by row.
 Answers are independent of one another as each matrix is generated independently and each worker answers independently of other workers.
 In this setting, the DS model is expected to perform the best with enough data as we are simulating data from its assumed noise model.
 
 We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=30$ workers with $K=5$ possible classes. Each task $x_i$ receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
-
+With $200$ tasks and $30$ workers, asking for $10$ leads to around $\frac{200\times 10}{30}\simeq 67$ tasks per worker (with variations due to randomness in the affectations).
 ```{python}
 #| output: false
 ! peerannot simulate --n-worker=30 --n-task=200  --n-classes=5 \
@@ -329,8 +350,6 @@ We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=30$ workers with 
                      --feedback=10 --seed 0 \
                      --folder ./simus/independent
 ```
-
-
 ```{python}
 #| code-fold: true
 from peerannot.helpers.helpers_visu import feedback_effort, working_load
@@ -408,7 +427,7 @@ display(results)
 
 As expected by the simulation framework, @tbl-simu-independent fits the DS model, thus leading to better accuracy to retrieve the simulated labels for the DS model. The MV aggregation does not consider any worker-ability scoring or the task's difficulty and performs the worse.
 
-Note that `peerannot` can also simulate datasets with an imbalanced number of votes chosen uniformly at random between $1$ and the number of workers available). For example:
+**Remark.** `peerannot` can also simulate datasets with an imbalanced number of votes chosen uniformly at random between $1$ and the number of workers available). For example:
 
 ```{python}
 #| output: false
@@ -488,11 +507,11 @@ results = results.format(precision=3)
 display(results)
 ```
 
-While more realistic, working with an imbalanced number of votes per task leads to disrupting orders of performance for most strategies.
+While more realistic, working with an imbalanced number of votes per task can lead to disrupting orders of performance for some strategies (here GLAD is downgraded).
 
 ### Simulated correlated mistakes
 
-The correlated mistakes are also known as the student-teacher setting. Consider that the crowd of workers is divided into two categories: teachers and students such that $n_{\text{teacher}} + n_{\text{student}}=n_{\text{worker}}$. Each student is randomly assigned to one teacher at the beginning of the experiment. We generate the (diagonally dominant) confusion matrices of each teacher and the students are associated with their's teacher confusion matrix. Then, they all answer independently, following a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$.
+The correlated mistakes are also known as the student-teacher setting. Consider that the crowd of workers is divided into two categories: teachers and students (with $n_{\text{teacher}} + n_{\text{student}}=n_{\text{worker}}$). Each student is randomly assigned to one teacher at the beginning of the experiment. We generate the (diagonally dominant as in @sec-simu-independent) confusion matrices of each teacher and the the student share the same confusion matrix as their associated teacher. Hence, clustering strategies are expected to perform best in this context. Then, they all answer independently, following a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$.
 
 We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=30$ with $80\%$ of students in the crowd. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
 
@@ -675,26 +694,34 @@ However, one might not want to generate a label, simply learn a classifier to pr
 
 Most often, tasks are crowdsourced to create a large training set as modern machine learning models require more and more data.
 The aggregation step then simply becomes the first step in the complete learning pipeline.
-However, instead of aggregating labels, modern neural networks let us directly train a classifier from multiple noisy labels.
+However, instead of aggregating labels, modern neural networks are directly trained end-to-end from multiple noisy labels.
 
-## Classical models
+## Popular models
 
 In recent years, directly learning a classifier from noisy labels was introduced.
 Two of the most used models: CrowdLayer [@rodrigues2018deep] and CoNAL [@chu2021learning], are directly available in `peerannot`.
 These two learning strategies directly incorporate a DS-based noise model in the neural network's architecture.
 
+### CrowdLayer
+
 [CrowdLayer](https://github.com/peerannot/peerannot/blob/main/peerannot/models/agg_deep/Crowdlayer.py) trains a classifier with noisy labels as follows.
-Let the scores (logits) output of a given classifier neural network $\mathcal{C}$ be $z_i=\mathcal{C}(x_i)$.
-Then CrowdLayer adds as a last layer $\pi\in\mathbb{R}^{n_{\text{worker}}\times K\times K}$, the tensor of all $\pi^{(j)}$s such that the crossentropy loss $(\mathrm{CE})$ is adapted to the crowdsourcing setting into $\mathcal{L}_{CE}^{\text{CrowdLayer}}$ and computed as:
+Let the scores (logits) output by a given classifier neural network $\mathcal{C}$ be $z_i=\mathcal{C}(x_i)$.
+Then CrowdLayer adds as a last layer $\pi\in\mathbb{R}^{n_{\text{worker}}\times K\times K}$, the tensor of all $\pi^{(j)}$'s such that the crossentropy loss $(\mathrm{CE})$ is adapted to the crowdsourcing setting into $\mathcal{L}_{CE}^{\text{CrowdLayer}}$ and computed as:
+
 $$
 \mathcal{L}_{CE}^{\text{CrowdLayer}}(x_i) = \sum_{j\in\mathcal{A}(x_i)} \mathrm{CE}(\sigma\left(\pi^{(j)}\sigma\big(z_i\big)\right), y_i^{(j)}) \enspace,
 $$
-where the classical crossentropy loss for two distribution $u,v \in\Delta_{K}$ is defined as $\mathrm{CE}(u, v) = \sum_{k\in[K]} u_k\log(v_k)$.
 
-The confusion matrices are incorporated as is into the network architecture as a new layer to transform the output probabilities to match each worker's answer.
-However, for some datasets, it was noticed that global confusion occurs between the proposed classes.
+where the crossentropy loss for two distribution $u,v \in\Delta_{K}$ is defined as $\mathrm{CE}(u, v) = \sum_{k\in[K]} u_k\log(v_k)$.
+
+The confusion matrices are taken into the network architecture as a new layer to transform the output probabilities.
+The backbone classifier predicts a distribution that is then corrupted through the added layer to learn the worker-specific confusion.
+
+### CoNAL
+
+For some datasets, it was noticed that global confusion occurs between the proposed classes.
 It is the case for example in the $\texttt{LabelMe}$ dataset [@rodrigues2017learning] where classes overlap.
-In this case, @chu2021learning proposed to extend the CrowdLayer model by not only modeling the worker confusion matrices; but also a global confusion matrix $\pi^g\in\mathbb{R}^{K\times K}$.
+In this case, @chu2021learning proposed to extend the CrowdLayer model by adding global confusion matrix $\pi^g\in\mathbb{R}^{K\times K}$ to the model on top of each worker's confusion.
 
 <!-- ![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for CoNAL model. Each worker is assigned a confusion matrix $\pi^{(j)}$. A global confusion matrix $\pi^g$ is shared between workers. A tradeoff between the global confusion and the local one is applied.](./figures/schema_bayesien_conal.png){#fig-conal fig-align="center"} -->
 
