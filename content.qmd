@@ -89,13 +89,16 @@ With crowdsourced data the ground truth of a task $x_i$, denoted $y_i^\star$ is 
 Instead, there is a crowd of $n_{\text{worker}}$ workers from which multiple workers $(w_j)_j$ propose a label $(y_i^{(j)})_j$.
 The set of workers answering the task $x_i$ is denoted by
 $$
-\mathcal{A}(x_i)=\{j\in[n_\text{worker}]: w_j \text{ answered }x_i\} \enspace.
+\mathcal{A}(x_i)=\{j\in[n_\text{worker}]: w_j \text{ answered }x_i\}.
 $${#eq-workerset}
+
 The cardinal $\vert \mathcal{A}(x_i)\vert$ is called the feedback effort on the task $x_i$.
 Note that the feedback effort can not exceed the total number of workers $n_{\text{worker}}$.
 Similarly, one can adopt a worker point of view: the set of tasks answered by a worker $w_j$ is denoted
-$$\mathcal{T}(w_j)=\{i\in[n_\text{task}]: w_j \text{ answered } x_i\}\enspace.
+$$
+\mathcal{T}(w_j)=\{i\in[n_\text{task}]: w_j \text{ answered } x_i\}.
 $${#eq-taskset}
+
 The cardinal $\vert \mathcal{T}(w_j)\vert$ is called the workerload of $w_j$.
 The final dataset can then be decomposed as:
 $$
