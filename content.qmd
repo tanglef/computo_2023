@@ -300,9 +300,12 @@ for i, name in enumerate(names):
         ax=axs[1, i],
     )
     axs[1, i].set_xticklabels(match_.values(), rotation=90)
-    if i > 1:
-        axs[1, i].set_yticklabels([])
-        axs[1, i].set_ylabel("")
+    if i > 0:
+      axs[1, i].set_yticklabels([])
+      axs[1, i].set_ylim([0, 100])
+      axs[1, i].set_ylabel("")
+    else:
+      axs[1, i].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
 cols = [rf"$y^\star=${match_[i]}" for i in range(5)]
 for ax, col in zip(axs[0], cols):
     ax.set_title(col)
