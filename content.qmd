@@ -1149,7 +1149,6 @@ Now, let us compare the tasks' difficulty distribution depending on the strategy
 
 ```{python}
 #| code-fold: true
-#| output: false
 #| fig-cap: Most difficult tasks identified depending on the strategy used (entropy, GLAD or WAUM) using a VGG-16 with two dense layers.
 classes = {
     0: "coast",
