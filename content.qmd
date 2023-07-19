@@ -179,6 +179,7 @@ from PIL import Image
 import numpy as np
 from pathlib import Path
 import json
+import matplotlib.ticker as mtick
 import pandas as pd
 sns.set_style("whitegrid")
 
@@ -531,7 +532,6 @@ from peerannot.helpers.helpers_visu import feedback_effort, working_load
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 from pathlib import Path
-import matplotlib.ticker as mtick
 
 votes_path = Path.cwd() / "simus" / "independent" / "answers.json"
 metadata_path = Path.cwd() / "simus" / "independent" / "metadata.json"
