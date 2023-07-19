@@ -963,8 +963,7 @@ First, let us consider a dataset with a large number of tasks, annotations and w
 ```
 ```{python}
 #| code-fold: true
-#| output: false
-#| label: fig-difficulty-c10H
+#| output: true
 #| fig-cap: Most difficult tasks identified depending on the strategy used (entropy, GLAD or WAUM) using a Resnet34.
 
 import plotly.graph_objects as go
@@ -1151,7 +1150,6 @@ Now, let us compare the tasks' difficulty distribution depending on the strategy
 ```{python}
 #| code-fold: true
 #| output: false
-#| label: fig-difficulty-labelme
 #| fig-cap: Most difficult tasks identified depending on the strategy used (entropy, GLAD or WAUM) using a VGG-16 with two dense layers.
 classes = {
     0: "coast",
@@ -1169,7 +1167,7 @@ all_images = load_data("labelme", n_classes, classes)
 generate_plot(n_classes, all_images) # create interactive plot
 ```
 
-Note that in @fig-difficulty-labelme, because the number of labels given per task is in $\{1,2,3\}$, the entropy only takes four values.
+Note that in this experiment, because the number of labels given per task is in $\{1,2,3\}$, the entropy only takes four values.
 In particular, tasks with only one label all have a null entropy, so not just consensual tasks.
 
 The underlying difficulty of these tasks mainly comes from the overlap in possible labels. For example, `tallbuildings` are most often found `insidecities`, and so are `streets`. In the `opencountry` we find `forests`, river-`coasts` and `mountains`.
