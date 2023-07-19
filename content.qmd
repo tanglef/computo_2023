@@ -112,11 +112,11 @@ In this article, we do not address the setting where workers report their self-c
 ## Storing crowdsourced datasets in `peerannot`
 
 Crowdsourced datasets come in various forms.
-To store crowdsourcing datasets efficiently and in a standardized way, `peerannot` proposes the following structure, where each dataset corresponds to a folder.
+To store [crowdsourcing datasets](https://peerannot.github.io/datasets/) efficiently and in a standardized way, `peerannot` proposes the following structure, where each dataset corresponds to a folder.
 Let us set up a toy dataset example to understand the data structure and how to store it.
 
 
-```{#lst-datasetconvention bash lst-cap="Dataset storage template"}
+```{#lst-datasetconvention .bash lst-cap="Dataset storage tree structure."}
 datasetname
       ├── train
       │     ├── class1
@@ -173,10 +173,15 @@ However, we emphasize that crowdsourcing strategies do not rely on the ground tr
 #| fig-cap: Example of images from CIFAR-10H. We display images rowise according to the ground truth label.
 
 import torch
+import seaborn as sns
 import matplotlib.pyplot as plt
 from PIL import Image
 import numpy as np
 from pathlib import Path
+import json
+import pandas as pd
+sns.set_style("whitegrid")
+
 nrow = 5
 ncol = 5
 fig, axs = plt.subplots(
@@ -200,7 +205,6 @@ plt.subplots_adjust(wspace=-0.8, hspace=0.25)
 plt.show()
 ```
 Examples of $\texttt{CIFAR-10H}$ images are available in @fig-cifarh, and $\texttt{LabelMe}$ examples in @fig-labelme here below.
-
 
 ```{python}
 #| code-fold: true
@@ -230,12 +234,90 @@ plt.subplots_adjust(wspace=-0.8, hspace=0.25)
 plt.show()
 ```
 
+Each of these tasks has been assigned a ground truth label by the dataset's authors. Crowdsourcing votes however bring additional information.
+
+```{python}
+#| code-fold: true
+#| label: fig-cifarexamplevotes
+#| fig-cap: Example of crowdsourced images from CIFAR-10H. Each task has been labelled by multiple workers. We display the associated voting distribution over the possible classes. In addition, a ground truth label is provided using the original CIFAR-10 dataset. This ground truth is only used for performance evaluation.
+
+nrow = 2
+ncol = 5
+fig, axs = plt.subplots(nrow, ncol, sharey="row", figsize=(15, 8))
+match_ = {
+    0: "bird",
+    1: "car",
+    2: "cat",
+    3: "deer",
+    4: "dog",
+    5: "frog",
+    6: "horse",
+    7: "plane",
+    8: "ship",
+    9: "truck",
+}
+inv_match_ = {v: k for k, v in match_.items()}
+real_class_to_idx = {
+    "plane": 0,
+    "car": 1,
+    "bird": 2,
+    "cat": 3,
+    "deer": 4,
+    "dog": 5,
+    "frog": 6,
+    "horse": 7,
+    "ship": 8,
+    "truck": 9,
+}
+inv_real_class_to_idx = {v: k for k, v in real_class_to_idx.items()}
+path = Path.cwd() / "datasets" / "cifar10H" / "train"
+list_numbers = [231, 26, 766, 4, 34]
+names = []
+for j in range(ncol):
+    img_folder = path / f"{match_[j]}"
+    all_imgs = list(img_folder.glob("*"))
+    i = 0
+    id_ = list_numbers[j]
+    image = np.asarray(Image.open(path / all_imgs[id_]))
+    names.append((path / all_imgs[id_]).stem)
+    axs[i, j].imshow(image)
+    axs[i, j].axis("off")
+    # axs[i, j].set_yticklabels([])
+with open(path / ".." / "answers.json", "r") as f:
+    votes = json.load(f)
+for i, name in enumerate(names):
+    taskid = str(name).split("-")[-1]
+    worker_votes = votes[taskid]
+    distrib = np.zeros(len(match_))
+    for worker, vote in worker_votes.items():
+        distrib[inv_match_[inv_real_class_to_idx[vote]]] += 1
+    sns.barplot(
+        data=pd.DataFrame(
+            {"label": match_.values(), "voting distribution": distrib},
+        ),
+        x="label",
+        y="voting distribution",
+        ax=axs[1, i],
+    )
+    axs[1, i].set_xticklabels(match_.values(), rotation=90)
+    if i > 1:
+        axs[1, i].set_yticklabels([])
+        axs[1, i].set_ylabel("")
+cols = [rf"$y^\star=${match_[i]}" for i in range(5)]
+for ax, col in zip(axs[0], cols):
+    ax.set_title(col)
+for ax in axs.flatten():
+  ax.xaxis.label.set_size(15)
+  ax.yaxis.label.set_size(15)
+  ax.xaxis.set_tick_params(labelsize=13)
+  ax.yaxis.set_tick_params(labelsize=13)
+plt.show()
+```
+
 # Aggregation strategies in crowdsourcing {#sec-introaggregation}
 
 The first question we address with `peerannot` is: *How to aggregate multiple labels into a single label from crowdsourced tasks?*
-The aggregation step can lead to two types of learnable labels $\hat y_i\in\Delta_{K}$ (where $\Delta_{K}$ is the simplex of dimension $K-1$ : $\Delta_{K}=\{p     # cmap = cm.get_cmap("Blues")
-
-\in [K]: \sum_{k=1}^K p_k = 1, p_k \geq 0 \}$ ) depending on the use case for each task $x_i$, $i=1,\dots,n_{\text{task}}$:
+The aggregation step can lead to two types of learnable labels $\hat y_i\in\Delta_{K}$ (where $\Delta_{K}$ is the simplex of dimension $K-1$ : $\Delta_{K}=\{p\in [K]: \sum_{k=1}^K p_k = 1, p_k \geq 0 \}$ ) depending on the use case for each task $x_i$, $i=1,\dots,n_{\text{task}}$:
 
 - a **hard** label: $\hat y_i$ is a Dirac distribution, this can be encoded as a classical label in $[K]$,
 - a **soft** label: $\hat y_i\in\Delta_{K}$ can represent any probability distribution on $[K]$. In that case, each coordinate of the $K-$ dimensional vector $\hat y_i$ represents the probability to belong to the given class.
@@ -321,7 +403,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-In @fig-confusionmatrix, we illustrat multiple profiles of workers.
+In @fig-confusionmatrix, we illustrate multiple profiles of workers.
 In particular, one type of worker that can hurt data quality is the spammer.
 @raykar_ranking_2011 defined a spammer as a worker that answers randomly as:
 $$
@@ -336,7 +418,7 @@ Expert workers have a confusion matrix near the identity matrix.
 We list below the most classical aggregation strategies used in crowdsourcing.
 
 ### Majority vote (MV)
-The most intuitive way to create a label from multiple answers for any type of crowdsourced task is to take the majority vote (MV). Yet, this strategy has many shortcomings [@james1998majority] -- there is no noise model, no worker reliability estimated, no task difficulty involved and especially no way to remove poorly performing workers. This standard choice can be expressed as:
+The most intuitive way to create a label from multiple answers for any type of crowdsourced task is to take the [majority vote](https://peerannot.github.io/models/MV/) (MV). Yet, this strategy has many shortcomings [@james1998majority] -- there is no noise model, no worker reliability estimated, no task difficulty involved and especially no way to remove poorly performing workers. This standard choice can be expressed as:
 
 $$
 \hat y_i^{\text{MV}} = \operatornamewithlimits{argmax}_{k\in[K]} \sum_{j\in\mathcal{A}(x_i)} \mathbf{1}_{\{y_i^{(j)}=k\}} \enspace.
@@ -344,7 +426,7 @@ $$
 
 ### Naive soft (NS)
 
-One pitfall with MV is that the label produced is hard, hence the ambiguity is discarded by construction. To remedy this, the Naive Soft (NS) labeling consists in using the empirical distribution as the task label:
+One pitfall with MV is that the label produced is hard, hence the ambiguity is discarded by construction. To remedy this, the [Naive Soft](https://peerannot.github.io/models/NaiveSoft/) (NS) labeling consists in using the empirical distribution as the task label:
 
 $$
 \hat y_i^{\text{NS}} = \bigg(\frac{1}{\vert\mathcal{A}(x_i)\vert}\sum_{j\in\mathcal{A}(x_i)} \mathbf{1}_{\{y_i^{(j)}=k\}} \bigg)_{j\in[K]} \enspace.
@@ -354,7 +436,7 @@ With the NS label, we keep the ambiguity, but all workers and all tasks are put 
 ### Dawid and Skene (DS)
 
 Refining the aggregation, researchers began creating a noise model to take into account the workers' abilities.
-These types of models are most often optimized using EM-based procedures and one of the most studied [@gao2013minimax] and applied [@servajean2017crowdsourcing;@rodrigues2018deep] is the Dawid and Skene's (DS) model [@dawid_maximum_1979].
+These types of models are most often optimized using EM-based procedures and one of the most studied [@gao2013minimax] and applied [@servajean2017crowdsourcing;@rodrigues2018deep] is the [Dawid and Skene](https://peerannot.github.io/models/DS/)'s (DS) model [@dawid_maximum_1979].
 Assuming the workers are answering tasks independently, this model boils down to model pairwise confusions between each possible class.
 Each worker $w_j$ is assigned a confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ as described in @sec-introaggregation.
 The model assumes that for a task $x_i$, conditionally on the true label $y_i^\star=k$ the label distribution of the worker's answer follows a multinomial distribution with probabilities $\pi^{(j)}_{k,\cdot}$ for each worker.
@@ -382,7 +464,7 @@ Indeed, there are $L$ confusion matrices $\{\Lambda_1,\dots,\Lambda_L\}$ and the
 
 ### Generative model of Labels, Abilities, and Difficulties (GLAD)
 
-Finally, we present the GLAD model [@whitehill_whose_2009] that not only takes into account the worker's ability, but also the task difficulty in the noise model.
+Finally, we present the [GLAD](https://peerannot.github.io/models/GLAD/) model [@whitehill_whose_2009] that not only takes into account the worker's ability, but also the task difficulty in the noise model.
 The likelihood is optimized using an EM algorithm to recover the soft label $\hat y_i^{\text{GLAD}}$.
 
 ![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the GLAD model](./figures/schema_bayesien_glad.png){fig-align="center"}
@@ -443,12 +525,10 @@ With $200$ tasks and $30$ workers, asking for $10$ leads to around $\frac{200\ti
 ```{python}
 #| code-fold: true
 from peerannot.helpers.helpers_visu import feedback_effort, working_load
-import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 from pathlib import Path
 import matplotlib.ticker as mtick
-sns.set_style("whitegrid")
 
 votes_path = Path.cwd() / "simus" / "independent" / "answers.json"
 metadata_path = Path.cwd() / "simus" / "independent" / "metadata.json"
@@ -463,11 +543,9 @@ ax[0].set_xlabel(r"$\vert\mathcal{T}(w_j)\vert$")
 sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
 ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
 ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
-ax[1].xaxis.set_major_locator(plt.MaxNLocator(3))
 ax[1].set_xlim(8, 12)
-ax[1].xaxis.set_major_locator(MaxNLocator(integer=True))
 for i in range(2):
-  ax[i].xaxis.set_major_locator(MaxNLocator(3))
+  ax[i].xaxis.set_major_locator(MaxNLocator(integer=True))
   ax[i].xaxis.label.set_size(15)
   ax[i].yaxis.label.set_size(15)
   ax[i].xaxis.set_tick_params(labelsize=13)
@@ -546,10 +624,8 @@ ax[0].set_xlabel(r"$\vert\mathcal{T}(w_j)\vert$")
 sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
 ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
 ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
-ax[1].xaxis.set_major_locator(plt.MaxNLocator(3))
-ax[1].xaxis.set_major_locator(MaxNLocator(integer=True))
 for i in range(2):
-  ax[i].xaxis.set_major_locator(MaxNLocator(3))
+  ax[i].xaxis.set_major_locator(MaxNLocator(integer=True))
   ax[i].xaxis.label.set_size(15)
   ax[i].yaxis.label.set_size(15)
   ax[i].xaxis.set_tick_params(labelsize=13)
@@ -631,11 +707,9 @@ ax[0].set_xlabel(r"$\vert\mathcal{T}(w_j)\vert$")
 sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
 ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
 ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
-ax[1].xaxis.set_major_locator(plt.MaxNLocator(3))
 ax[1].set_xlim(8, 12)
-ax[1].xaxis.set_major_locator(MaxNLocator(integer=True))
 for i in range(2):
-  ax[i].xaxis.set_major_locator(MaxNLocator(3))
+  ax[i].xaxis.set_major_locator(MaxNLocator(integer=True))
   ax[i].xaxis.label.set_size(15)
   ax[i].yaxis.label.set_size(15)
   ax[i].xaxis.set_tick_params(labelsize=13)
@@ -727,9 +801,8 @@ sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
 ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
 ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
 ax[1].set_xlim(8, 12)
-ax[1].xaxis.set_major_locator(MaxNLocator(integer=True))
 for i in range(2):
-  ax[i].xaxis.set_major_locator(MaxNLocator(3))
+  ax[i].xaxis.set_major_locator(MaxNLocator(integer=True))
   ax[i].xaxis.label.set_size(15)
   ax[i].yaxis.label.set_size(15)
   ax[i].xaxis.set_tick_params(labelsize=13)
