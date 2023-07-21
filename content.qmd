@@ -65,10 +65,10 @@ ImageNet [@imagenet_cvpr09] or Pl\@ntnet [@Garcin_Joly_Bonnet_Affouard_Lombardo_
 
 Crowdsourced datasets induce at least three major challenges to which we contribute with `peerannot`:
 
-  1) *How to identify good workers in the crowd?* When multiple answers are given to a single task, looking for who to trust for which type of task becomes necessary to estimate the ground truth or later train a model with as few noise sources as possible. The module `identify` uses different scoring metrics to create a worker and/or task evaluation.
+  1) **How to identify good workers in the crowd?** When multiple answers are given to a single task, looking for who to trust for which type of task becomes necessary to estimate the ground truth or later train a model with as few noise sources as possible. The module `identify` uses different scoring metrics to create a worker and/or task evaluation.
   This is particularly relevant considering the gamification of crowdsourcing experiments [@plantgame2016]
-  1) *How to aggregate multiple labels into a single label from crowdsourced tasks?* This occurs for example when dealing with a single dataset that has been labeled by multiple workers with disagreements. This is also encountered with other scoring issues such as polls, reviews, peer-grading, *etc.* In our framework this is treated with the `aggregate` command, that given multiple labels, infers a ground truth label. From aggregated labels, a classifier can then be trained using the `train` command.
-  1) *How to learn a classifier from crowdsourced datasets?* Where the first question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision, is common in machine learning, however, it requires the actual tasks (the images, texts, videos, *etc.*) to train on -- and in crowdsourced datasets publicly available, they are not always available. This is treated with the `aggregate-deep` command.
+  1) **How to aggregate multiple labels into a single label from crowdsourced tasks?** This occurs for example when dealing with a single dataset that has been labeled by multiple workers with disagreements. This is also encountered with other scoring issues such as polls, reviews, peer-grading, *etc.* In our framework this is treated with the `aggregate` command, that given multiple labels, infers a ground truth label. From aggregated labels, a classifier can then be trained using the `train` command.
+  1) **How to learn a classifier from crowdsourced datasets?** Where the first question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision, is common in machine learning, however, it requires the actual tasks (the images, texts, videos, *etc.*) to train on -- and in crowdsourced datasets publicly available, they are not always available. This is treated with the `aggregate-deep` command.
 
 The library `peerannot` addresses these practical questions within a reproducible setting. Indeed, the complexity of experiments often leads to a lack of transparency and reproducible results for simulations and real datasets.
 We propose standard simulation settings with explicit implementation parameters that can be shared.
@@ -680,7 +680,7 @@ While more realistic, working with an imbalanced number of votes per task can le
 
 ### Simulated correlated mistakes
 
-The correlated mistakes are also known as the student-teacher setting. Consider that the crowd of workers is divided into two categories: teachers and students (with $n_{\text{teacher}} + n_{\text{student}}=n_{\text{worker}}$). Each student is randomly assigned to one teacher at the beginning of the experiment. We generate the (diagonally dominant as in @sec-simu-independent) confusion matrices of each teacher and the the student share the same confusion matrix as their associated teacher. Hence, clustering strategies are expected to perform best in this context. Then, they all answer independently, following a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$.
+The correlated mistakes are also known as the student-teacher or junior-expert setting (@maxmig). Consider that the crowd of workers is divided into two categories: teachers and students (with $n_{\text{teacher}} + n_{\text{student}}=n_{\text{worker}}$). Each student is randomly assigned to one teacher at the beginning of the experiment. We generate the (diagonally dominant as in @sec-simu-independent) confusion matrices of each teacher and the the student share the same confusion matrix as their associated teacher. Hence, clustering strategies are expected to perform best in this context. Then, they all answer independently, following a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$.
 
 We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=30$ with $80\%$ of students in the crowd. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
 
@@ -1332,6 +1332,12 @@ However, this does not account for the ranking of a given worker by the methods 
 The exploration of the dataset let us look at different scores, but generalization performance presented in @sec-real-datasets should also be considered in crowdsourcing.
 This difference in worker evaluation scores indeed further highlights the importance of using multiple test metrics to compare model's prediction performance in crowdsourcing.
 We have seen that the library `peerannot` allows users to explore the datasets, both in terms of tasks and workers, and easily compare predictive performance in this setting.
+
+In practice, the data exploration step can be used to detect possible ambiguities in the dataset's tasks, but also remove answers from spammers in order to improve the data quality as shown in @fig-pipeline.
+The easy access to the different strategies allows the user to decide if, for their collected dataset, there is a need for more recent deep-learning based strategies to improve the results.
+This is the case for the $\texttt{LabelMe}$ dataset.
+Otherwise, the user can decide that standard aggregation-based crowdsourcing strategies are sufficient and for example, if there are enough votes per tasks like in $\texttt{CIFAR-10H}$, that the entropy in the votes distribution is a criterion that identified enough ambiguous tasks for their case.
+As often, not a single strategy works best for all datasets, hence the need to perform easy comparisons with `peerannot`.
 
 # Conclusion
 
