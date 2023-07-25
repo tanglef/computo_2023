@@ -200,12 +200,13 @@ for i in range(nrow):
   for j in range(ncol):
     image = np.asarray(Image.open(path / all_imgs[j]))
     axs[i,j].imshow(image, aspect="equal")
-    axs[i,j].axis("off")
+    axs[i,j].grid(False)
     axs[i,j].set_yticklabels([])
 rows = list(match_.values())[:ncol]
-for ax, row in zip(axs[:,0], rows):
-    ax.set_ylabel(row, rotation=0, size='large')
+for ax, row in zip(axs[:, 0], rows):
+    ax.set_ylabel(row, rotation=90, size='large')
 plt.subplots_adjust(wspace=-0.8, hspace=0.25)
+plt.tight_layout()
 plt.show()
 ```
 Examples of $\texttt{CIFAR-10H}$ images are available in @fig-cifarh, and $\texttt{LabelMe}$ examples in @fig-labelme here below.
@@ -232,12 +233,13 @@ for i in range(nrow):
   for j in range(ncol):
     image = np.asarray(Image.open(path / all_imgs[j]))
     axs[i,j].imshow(image, aspect="equal")
-    axs[i,j].axis("off")
+    axs[i,j].grid(False)
     axs[i,j].set_yticklabels([])
 rows = list(match_.values())[:ncol]
 for ax, row in zip(axs[:,0], rows):
-    ax.set_ylabel(row, rotation=0, size='large')
+    ax.set_ylabel(row, rotation=90, size='large')
 plt.subplots_adjust(wspace=-0.8, hspace=0.25)
+plt.tight_layout()
 plt.show()
 ```
 
