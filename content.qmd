@@ -463,7 +463,7 @@ Using the independence between workers, we obtain the following likelihood to ma
 
 $$
 \displaystyle\prod_{i\in [n_{\texttt{task}}]}\prod_{k \in [K]}\bigg[\rho_k\prod_{j\in [n_{\texttt{worker}}]}
-    \prod_{\ell\in [K]}\big(\pi^{(j)}_{k, \ell}\big)^{\mathbf{1}_{\{y_i^{(j)}=k\}}}
+    \prod_{\ell\in [K]}\big(\pi^{(j)}_{k, \ell}\big)^{\mathbf{1}_{\{y_i^{(j)}=\ell\}}}
     \bigg]^{T_{i,k}},
 $$
 
