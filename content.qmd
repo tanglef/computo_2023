@@ -1315,6 +1315,7 @@ for method in ["trace_confusion", "spam_score"]:
 
 ```{python}
 #| code-fold: true
+#| warning: false
 #| label: fig-abilitiescifarh
 #| fig-cap: Comparison of ability scores by workers for the CIFAR-10H dataset. All metrics  computed identify the same poorly performing workers. A mass of good and expert workers can be seen as the dataset presents few disagreements, thus few data to seperate good from best workers.
 
@@ -1348,6 +1349,7 @@ for method in ["trace_confusion", "spam_score"]:
 
 ```{python}
 #| code-fold: true
+#| warning: false
 #| label: fig-abilities-labelme
 #| fig-cap: Comparison of ability scores by workers for the labelme dataset. With few labels per task, workers are more difficult to rank. It is more difficult to separate workers with their abilities in this crowd. Hence the importance of investigating the generalization performance of the methods presented in the previous section.
 path_ = Path.cwd() / "datasets" / "labelme"
