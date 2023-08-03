@@ -202,6 +202,7 @@ for i in range(nrow):
     axs[i,j].imshow(image, aspect="equal")
     axs[i,j].grid(False)
     axs[i,j].set_yticklabels([])
+    axs[i,j].set_xticklabels([])
 rows = list(match_.values())[:ncol]
 for ax, row in zip(axs[:, 0], rows):
     ax.set_ylabel(row, rotation=90, size='large')
@@ -235,6 +236,7 @@ for i in range(nrow):
     axs[i,j].imshow(image, aspect="equal")
     axs[i,j].grid(False)
     axs[i,j].set_yticklabels([])
+    axs[i,j].set_xticklabels([])
 rows = list(match_.values())[:ncol]
 for ax, row in zip(axs[:,0], rows):
     ax.set_ylabel(row, rotation=90, size='large')
