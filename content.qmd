@@ -103,7 +103,7 @@ $${#eq-taskset}
 The cardinal $\vert \mathcal{T}(w_j)\vert$ is called the workerload of $w_j$.
 The final dataset can then be decomposed as:
 $$
-\mathcal{D}_{\text{train}} := \bigcup_{i\in[n_\text{task}]} \left\{(x_i, (y_i^{(j)})) \text{ for }j\in\mathcal{A}(x_i)\} = \bigcup_{j\in[n_\text{worker}]} \{(x_i, (y_i^{(j)})) \text{ for }i \in\mathcal{T}(w_j)\right\} \enspace.
+\mathcal{D}_{\text{train}} := \bigcup_{i\in[n_\text{task}]} \left\{(x_i, (y_i^{(j)})) \text{ for }j\in\mathcal{A}(x_i)\right\} = \bigcup_{j\in[n_\text{worker}]} \left\{(x_i, (y_i^{(j)})) \text{ for }i \in\mathcal{T}(w_j)\right\} \enspace.
 $$
 
 
