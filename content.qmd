@@ -136,7 +136,7 @@ Thus, for example for an image named `smiley_face-1`, the associated labels are 
 This key identification system allows us to track directly from the filename the crowdsourced labels without having to rely on multiple indexing files as can be traditionally proposed.
 Furthermore, storing labels in a dictionary is more memory-friendly than having an array of size `(n_task,n_worker)` and writing $y_i^{(j)}=-1$ when the worker $w_j$ did not see the task $x_i$ and $y_i^{(j)}\in[K]$ otherwise.
 
-![Data storage for the `toy-data` crowdsourced dataset, a binary classification problem ($K=2$, smiling/smiling) on recognizing smiling faces. (left: how data is stored in `peerannot` in a file `answers.json`, right: data collected)](./figures/json_answers.png){#fig-answers fig-align="center"}
+![Data storage for the `toy-data` crowdsourced dataset, a binary classification problem ($K=2$, smiling/not smiling) on recognizing smiling faces. (left: how data is stored in `peerannot` in a file `answers.json`, right: data collected)](./figures/json_answers.png){#fig-answers fig-align="center"}
 
 In @fig-answers, there are three tasks, $n_{\text{worker}}=4$ workers and $K=2$ classes.
 Any available task should be stored in a single file whose name follows the convention described in @lst-datasetconvention. These files are spread into a `train`, `val` and `test` subdir as in [`ImageFolder` datasets](https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html) from `torchvision`
@@ -461,10 +461,10 @@ Assuming the workers are answering tasks independently, this model boils down to
 Each worker $w_j$ is assigned a confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ as described in @sec-introaggregation.
 The model assumes that for a task $x_i$, conditionally on the true label $y_i^\star=k$ the label distribution of the worker's answer follows a multinomial distribution with probabilities $\pi^{(j)}_{k,\cdot}$ for each worker.
 Each class has a prevalence $\rho_k=\mathbb{P}(y_i^\star=k)$ to appear in the dataset.
-Using the independence between workers, we obtain the following likelihood to maximize (with latent variables $\rho$, $\{\pi^{(j)}\}_{j}$ and $T$ and observed variables $\{y_i^{(j)}\}_{i,j}$):
+Using the independence between workers, we obtain the following likelihood to maximize (with latent variables $\rho$, $\pi=\{\pi^{(j)}\}_{j}$ and $T=\{T_{i,k}\}_{i,k}$ and observed variables $\{y_i^{(j)}\}_{i,j}$):
 
 $$
-\displaystyle\prod_{i\in [n_{\texttt{task}}]}\prod_{k \in [K]}\bigg[\rho_k\prod_{j\in [n_{\texttt{worker}}]}
+\arg\limits\max_{\rho,\pi,T}\displaystyle\prod_{i\in [n_{\texttt{task}}]}\prod_{k \in [K]}\bigg[\rho_k\prod_{j\in [n_{\texttt{worker}}]}
     \prod_{\ell\in [K]}\big(\pi^{(j)}_{k, \ell}\big)^{\mathbf{1}_{\{y_i^{(j)}=\ell\}}}
     \bigg]^{T_{i,k}},
 $$
@@ -515,7 +515,7 @@ This means that the underlying ground truth must be known -- at least for a repr
 As the set of $n_{\text{task}}$ can be seen as a training set for a future classifier, we denote this metric $\operatornamewithlimits{AccTrain}$ on a dataset $\mathcal{D}$ for some given aggregated label $(\hat y_i)_i$ as:
 
 $$
-\operatornamewithlimits{AccTrain}(\mathcal{D}) = \frac{1}{\vert \mathcal{D}\vert}\sum_{i=1}^{\vert\mathcal{D}\vert} \mathbf{1}_{\{y_i^\star=\operatornamewithlimits{argmax}_{k\in[K]}\hat y_i\}} \enspace.
+\operatornamewithlimits{AccTrain}(\mathcal{D}) = \frac{1}{\vert \mathcal{D}\vert}\sum_{i=1}^{\vert\mathcal{D}\vert} \mathbf{1}_{\{y_i^\star=\limits\operatornamewithlimits{argmax}_{k\in[K]}\hat (y_i)_k\}} \enspace.
 $$
 
 In the following, we write $\operatornamewithlimits{AccTrain}$ for $\operatornamewithlimits{AccTrain}(\mathcal{D}_{\text{train}})$ as we only consider the full training set so there is no ambiguity.
@@ -705,7 +705,7 @@ While more realistic, working with an imbalanced number of votes per task can le
 
 ### Simulated correlated mistakes
 
-The correlated mistakes are also known as the student-teacher or junior-expert setting (@maxmig). Consider that the crowd of workers is divided into two categories: teachers and students (with $n_{\text{teacher}} + n_{\text{student}}=n_{\text{worker}}$). Each student is randomly assigned to one teacher at the beginning of the experiment. We generate the (diagonally dominant as in @sec-simu-independent) confusion matrices of each teacher and the the student share the same confusion matrix as their associated teacher. Hence, clustering strategies are expected to perform best in this context. Then, they all answer independently, following a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$.
+The correlated mistakes are also known as the student-teacher or junior-expert setting (@maxmig). Consider that the crowd of workers is divided into two categories: teachers and students (with $n_{\text{teacher}} + n_{\text{student}}=n_{\text{worker}}$). Each student is randomly assigned to one teacher at the beginning of the experiment. We generate the (diagonally dominant as in @sec-simu-independent) confusion matrices of each teacher and the student share the same confusion matrix as their associated teacher. Hence, clustering strategies are expected to perform best in this context. Then, they all answer independently, following a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$.
 
 We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=30$ with $80\%$ of students in the crowd. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
 
@@ -791,16 +791,16 @@ And the best-performing method here estimates only $10$ confusion matrices (inst
 ### Simulated mistakes with discrete difficulty levels on tasks
 
 For the final simulation setting, we consider the so called discrete difficulty presented in @whitehill_whose_2009.
-Contrary to other simulations, we here consider that workers belong to two levels of abilities: \texttt{good} or \texttt{bad}, and tasks have two levels of difficulty: \texttt{easy} or \texttt{hard}.
-The keyword `ratio-diff` indicates the prevalence of each level of difficulty, it is defined as the ratio of \texttt{easy} tasks over \texttt{hard} tasks:
+Contrary to other simulations, we here consider that workers belong to two levels of abilities: $\texttt{good}$ or $\texttt{bad}$, and tasks have two levels of difficulty: $\texttt{easy}$ or $\texttt{hard}$.
+The keyword `ratio-diff` indicates the prevalence of each level of difficulty, it is defined as the ratio of $\texttt{easy}$ tasks over $\texttt{hard}$ tasks:
 
 $$
 \texttt{ratio-diff} = \frac{\mathbb{P}(\texttt{easy})}{\mathbb{P}(\texttt{hard})} \text{ with } \mathbb{P}(\texttt{easy}) +\mathbb{P}(\texttt{hard}) = 1 \enspace.
 $$
 
 Difficulties are then drawn [at random](https://peerannot.github.io/datasets/simulate_discrete_difficulty/).
-Tasks that are \texttt{easy} are answered correctly by every worker.
-Tasks that are \texttt{hard} are answered following the confusion matrix assigned to each worker (as in @sec-simu-independent).
+Tasks that are $\texttt{easy}$ are answered correctly by every worker.
+Tasks that are $\texttt{hard}$ are answered following the confusion matrix assigned to each worker (as in @sec-simu-independent).
 Each worker then answers independently to the presented tasks.
 
 We simulate $n_{\text{task}}=500$ tasks and $n_{\text{worker}}=100$ with $35\%$ of good workers in the crowd and $50\%$ of easy tasks. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
@@ -906,7 +906,7 @@ Let the scores (logits) output by a given classifier neural network $\mathcal{C}
 Then CrowdLayer adds as a last layer $\pi\in\mathbb{R}^{n_{\text{worker}}\times K\times K}$, the tensor of all $\pi^{(j)}$'s such that the crossentropy loss $(\mathrm{CE})$ is adapted to the crowdsourcing setting into $\mathcal{L}_{CE}^{\text{CrowdLayer}}$ and computed as:
 
 $$
-\mathcal{L}_{CE}^{\text{CrowdLayer}}(x_i) = \sum_{j\in\mathcal{A}(x_i)} \mathrm{CE}(\sigma\left(\pi^{(j)}\sigma\big(z_i\big)\right), y_i^{(j)}) \enspace,
+\mathcal{L}_{CE}^{\text{CrowdLayer}}(x_i) = \sum_{j\in\mathcal{A}(x_i)} \mathrm{CE}\left(\sigma\left(\pi^{(j)}\sigma\big(z_i\big)\right), y_i^{(j)}\right) \enspace,
 $$
 
 where the crossentropy loss for two distribution $u,v \in\Delta_{K}$ is defined as $\mathrm{CE}(u, v) = \sum_{k\in[K]} u_k\log(v_k)$.
@@ -942,16 +942,16 @@ Both CrowdLayer and CoNAL model worker confusions directly in the classifier's w
 ## Prediction error when learning from crowdsourced tasks
 
 The $\mathrm{AccTrain}$ metric presented in @sec-evaluation-aggregation might no longer be of interest when training a classifier. Classical error measurements involve a test dataset to estimate the generalization error.
-To do so, we present hereafter two error metrics. Assuming we trained our classifier $f_\theta$ on a training set and that there is a test set available with known ground truths:
+To do so, we present hereafter two error metrics. Assuming we trained our classifier $\mathcal{C}$ on a training set and that there is a test set available with known ground truths:
 
-  - the test accuracy is computed as $\frac{1}{n_{\text{test}}}\sum_{i=1}^{n_{\text{test}}}\mathbf{1}_{\{y_i^\star = \widehat{f_\theta(x_i)}\}}$
+  - the test accuracy is computed as $\frac{1}{n_{\text{test}}}\sum_{i=1}^{n_{\text{test}}}\mathbf{1}_{\{y_i^\star = \hat y_i\}}$.
   - the expected calibration error [@guo_calibration_2017] over $M$ equally spaced bins $I_1,\dots,I_M$ partitionning the interval $[0,1]$, is computed as:
 $$
 \mathrm{ECE} = \sum_{m=1}^M \frac{|B_m|}{n_{\text{task}}}|\mathrm{acc}(B_m) - \mathrm{conf}(B_m)|\enspace,
 $$
 with $B_m=\{x_i| \mathcal{C}(x_i)_{[1]}\in I_m\}$ the tasks with predicted probability in the $m$-th bin, $\mathrm{acc}(B_m)$ the accuracy of the network for the samples in $B_m$ and $\mathrm{conf}(B_m)$ the associated empirical confidence. More precisely:
 $$
-\mathrm{acc}(B_m) = \frac{1}{|B_m|}\sum_{i\in B_m} \mathbf{1}(\hat y_i=y_i^\star)\quad \text{and} \quad \mathrm{conf}(B_m) = \frac{1}{|B_m|}\sum_{i\in B_m} \sigma(\mathcal{C}(x_i)_{[1]})\enspace.
+\mathrm{acc}(B_m) = \frac{1}{|B_m|}\sum_{i\in B_m} \mathbf{1}(\hat y_i=y_i^\star)\quad \text{and} \quad \mathrm{conf}(B_m) = \frac{1}{|B_m|}\sum_{i\in B_m} \sigma(\mathcal{C}(x_i))_{[1]}\enspace.
 $$
 
 The accuracy represents how well the classifier generalizes, and the expected calibration error (ECE) quantifies the deviation between the accuracy and the confidence of the classifier. Modern neural networks are known to often be overconfident in their predictions [@guo_calibration_2017]. However, it has also been remarked that training on crowdsourced data, depending on the strategy, mitigates this confidence issue. That is why we propose to compare them both in our coming experiments.
@@ -964,7 +964,7 @@ And in the crowdsourcing setting, openly available datasets are often quite smal
 Few real crowdsourcing experiments have been released publicly.
 Among the available ones, $\texttt{CIFAR-10H}$ [@peterson_human_2019] is one of the largest with $10 000$ tasks labeled by workers (the testing set of CIFAR-10).
 The main limitation of $\texttt{CIFAR-10H}$ is that there are few disagreements between workers and a simple majority voting already leads to a near-perfect $\mathrm{AccTrain}$ error.
-Hence, comparing the impact of aggregation and end-to-end strategies might not be relevant [@peterson_human_2019;@aitchison2020statistical], it is however a good benchmark for task difficulty identification and worker evaluation scoring
+Hence, comparing the impact of aggregation and end-to-end strategies might not be relevant [@peterson_human_2019;@aitchison2020statistical], it is however a good benchmark for task difficulty identification and worker evaluation scoring.
 
 The $\texttt{LabelMe}$ dataset was extracted from crowdsourcing segmentation experiments and a subset of $K=8$ classes was released in @rodrigues2017learning.
 
@@ -1292,7 +1292,7 @@ GLAD's strategy estimates a reliability scalar coefficient $\alpha_j$ per worker
 With strategies looking to estimate confusion matrices, we investigate two scoring rules for workers:
 
 - The trace of the confusion matrix: the closer to $K$ the better the worker.
-- The closeness to spammer metric [@raykar_ranking_2011] (also called spammer score) that is the Frobenius norm between the estimated confusion matrix $\hat\pi^{(j)}$ and the closest rank-$1$ matrix. The further to zero the better the worker. On the contrary, the closer to zero, the more likely it is the worker to be a spammer.
+- The closeness to spammer metric [@raykar_ranking_2011] (also called spammer score) that is the Frobenius norm between the estimated confusion matrix $\hat\pi^{(j)}$ and the closest rank-$1$ matrix. The further to zero the better the worker. On the contrary, the closer to zero, the more likely it is the worker to be a spammer. This score separates spammers from common workers and experts (with profiles as in @fig-confusionmatrix).
 
 When the tasks are available, confusion-matrix-based deep learning models can also be used.
 We thus add to the comparison the trace of the confusion matrices with CrowdLayer and CoNAL on the $\texttt{LabelMe}$ datasets.
