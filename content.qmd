@@ -515,7 +515,7 @@ This means that the underlying ground truth must be known -- at least for a repr
 As the set of $n_{\text{task}}$ can be seen as a training set for a future classifier, we denote this metric $\operatornamewithlimits{AccTrain}$ on a dataset $\mathcal{D}$ for some given aggregated label $(\hat y_i)_i$ as:
 
 $$
-\operatornamewithlimits{AccTrain}(\mathcal{D}) = \frac{1}{\vert \mathcal{D}\vert}\sum_{i=1}^{\vert\mathcal{D}\vert} \mathbf{1}_{\{y_i^\star=\operatornamewithlimits{argmax}_{k\in[K]}\hat (y_i)_k\}} \enspace.
+\operatornamewithlimits{AccTrain}(\mathcal{D}) = \frac{1}{\vert \mathcal{D}\vert}\sum_{i=1}^{\vert\mathcal{D}\vert} \mathbf{1}_{\{y_i^\star=\operatornamewithlimits{argmax}_{k\in[K]}\hat{(y_i)}_k\}} \enspace.
 $$
 
 In the following, we write $\operatornamewithlimits{AccTrain}$ for $\operatornamewithlimits{AccTrain}(\mathcal{D}_{\text{train}})$ as we only consider the full training set so there is no ambiguity.
