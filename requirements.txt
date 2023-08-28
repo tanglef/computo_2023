@@ -1,6 +1,6 @@
 jupyter
 jupyter-cache
-peerannot
+peerannot==0.0.1-26
 matplotlib
 seaborn
 --find-links https://download.pytorch.org/whl/torch_stable.html
