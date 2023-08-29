@@ -1,5 +1,5 @@
 ---
-title: "Peerannot: learning from crowdsourced image datasets with Python"
+title: "Peerannot: classification for crowdsourced image datasets with Python"
 subtitle: ""
 author:
   - name: Tanguy Lefort
@@ -32,10 +32,10 @@ description: |
   Crowdsourcing is a quick and easy way to collect labels for large datasets, involving many workers.
   However, it is common for workers to disagree with each other.
   Sources of error can arise from the workers' skills, but also from the intrinsic difficulty of the task.
-  We introduce `peerannot`, a Python library for managing and learning from crowdsourced labels.
+  We introduce `peerannot`, a Python library for managing and learning from crowdsourced labels of image classification tasks.
 abstract: >+
-  Crowdsourcing is a quick and easy way to collect labels for large datasets, involving many workers. However, workers often disagree with each other. Sources of error can arise from the workers' skills, but also from the intrinsic difficulty of the task. We present `peerannot`: a `Python` library for managing and learning from crowdsourced labels. Our library allows users to aggregate labels from common noise models or train a deep learning-based classifier directly from crowdsourced labels. In addition, we provide an identification module to easily explore the task difficulty of datasets and worker capabilities.
-keywords: [crowdsourcing, label noise, task difficulty, worker ability]
+  Crowdsourcing is a quick and easy way to collect labels for large datasets, involving many workers. However, workers often disagree with each other. Sources of error can arise from the workers' skills, but also from the intrinsic difficulty of the task. We present `peerannot`: a `Python` library for managing and learning from crowdsourced labels for classification. Our library allows users to aggregate labels from common noise models or train a deep learning-based classifier directly from crowdsourced labels. In addition, we provide an identification module to easily explore the task difficulty of datasets and worker capabilities.
+keywords: [crowdsourcing, label noise, task difficulty, worker ability, classification]
 citation:
   type: article-journal
   container-title: "Computo"
@@ -1378,7 +1378,7 @@ We have seen that the library `peerannot` allows users to explore the datasets, 
 In practice, the data exploration step can be used to detect possible ambiguities in the dataset's tasks, but also remove answers from spammers to improve the data quality as shown in @fig-pipeline.
 The easy access to the different strategies allows the user to decide if, for their collected dataset, there is a need for more recent deep-learning based strategies to improve the results.
 This is the case for the $\texttt{LabelMe}$ dataset.
-Otherwise, the user can decide that standard aggregation-based crowdsourcing strategies are sufficient and for example, if there are enough votes per tasks like in $\texttt{CIFAR-10H}$, that the entropy in the votes distribution is a criterion that identified enough ambiguous tasks for their case.
+Otherwise, the user can decide that standard aggregation-based crowdsourcing strategies are sufficient and for example, if there are plenty of votes per tasks like in $\texttt{CIFAR-10H}$, that the entropy in the votes distribution is a criterion that identified enough ambiguous tasks for their case.
 As often, not a single strategy works best for all datasets, hence the need to perform easy comparisons with `peerannot`.
 
 # Conclusion
