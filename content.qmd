@@ -182,34 +182,11 @@ import json
 import matplotlib.ticker as mtick
 import pandas as pd
 sns.set_style("whitegrid")
+import utils as utx
 
-nrow = 5
-ncol = 5
-fig, axs = plt.subplots(
-        nrow,
-        ncol,
-        sharey="row",
-        sharex="col",
-        figsize=(12,8)
-    )
-match_ = {0: "bird", 1: "car", 2: "cat", 3: "deer", 4: "dog", 5: "frog", 6: "horse", 7: "plane", 8: "ship", 9: "truck"}
-path = Path.cwd() / "datasets" / "cifar10H" / "train"
-for i in range(nrow):
-  img_folder = path / f"{match_[i]}"
-  all_imgs = list(img_folder.glob("*"))[:ncol]
-  for j in range(ncol):
-    image = np.asarray(Image.open(path / all_imgs[j]))
-    axs[i,j].imshow(image, aspect="equal")
-    axs[i,j].grid(False)
-    axs[i,j].set_yticklabels([])
-    axs[i,j].set_xticklabels([])
-rows = list(match_.values())[:ncol]
-for ax, row in zip(axs[:, 0], rows):
-    ax.set_ylabel(row, rotation=90, size='large')
-plt.subplots_adjust(wspace=-0.8, hspace=0.25)
-plt.tight_layout()
-plt.show()
+utx.figure_3()
 ```
+
 Examples of $\texttt{CIFAR-10H}$ images are available in @fig-cifarh, and $\texttt{LabelMe}$ examples in @fig-labelme here below.
 
 ```{python}
@@ -217,119 +194,18 @@ Examples of $\texttt{CIFAR-10H}$ images are available in @fig-cifarh, and $\text
 #| label: fig-labelme
 #| fig-cap: Example of images from LabelMe. We display images rowise according to the ground truth label given with the crowdsourced data.
 
-nrow = 5
-ncol = 5
-fig, axs = plt.subplots(
-        nrow,
-        ncol,
-        sharey="row",
-        sharex="col",
-        figsize=(12,8)
-    )
-match_ = {0: "coast", 1: "forest", 2: "highway", 3: "insidecity", 4: "mountain", 5: "opencountry", 6: "street", 7: "tallbuilding"}
-path = Path.cwd() / "datasets" / "labelme" / "train"
-for i in range(nrow):
-  img_folder = path / f"{match_[i]}"
-  all_imgs = list(img_folder.glob("*"))[:ncol]
-  for j in range(ncol):
-    image = np.asarray(Image.open(path / all_imgs[j]))
-    axs[i,j].imshow(image, aspect="equal")
-    axs[i,j].grid(False)
-    axs[i,j].set_yticklabels([])
-    axs[i,j].set_xticklabels([])
-rows = list(match_.values())[:ncol]
-for ax, row in zip(axs[:,0], rows):
-    ax.set_ylabel(row, rotation=90, size='large')
-plt.subplots_adjust(wspace=-0.8, hspace=0.25)
-plt.tight_layout()
-plt.show()
+utx.figure_4()
 ```
 
 Each of these tasks has been assigned a ground truth label by the dataset's authors. Crowdsourcing votes however bring additional information about possible confusions (see @fig-cifarexamplevotes).
 
 ```{python}
 #| code-fold: true
+#| warning: false
 #| label: fig-cifarexamplevotes
 #| fig-cap: Example of crowdsourced images from CIFAR-10H. Each task has been labelled by multiple workers. We display the associated voting distribution over the possible classes. In addition, a ground truth label is provided using the original CIFAR-10 dataset. This ground truth is only used for performance evaluation.
 
-nrow = 2
-ncol = 5
-fig, axs = plt.subplots(nrow, ncol, sharey="row", figsize=(15, 8))
-match_ = {
-    0: "bird",
-    1: "car",
-    2: "cat",
-    3: "deer",
-    4: "dog",
-    5: "frog",
-    6: "horse",
-    7: "plane",
-    8: "ship",
-    9: "truck",
-}
-inv_match_ = {v: k for k, v in match_.items()}
-real_class_to_idx = {
-    "plane": 0,
-    "car": 1,
-    "bird": 2,
-    "cat": 3,
-    "deer": 4,
-    "dog": 5,
-    "frog": 6,
-    "horse": 7,
-    "ship": 8,
-    "truck": 9,
-}
-inv_real_class_to_idx = {v: k for k, v in real_class_to_idx.items()}
-path = Path.cwd() / "datasets" / "cifar10H" / "train"
-list_numbers = [231, 26, 766, 0, 34]
-names = []
-for j in range(ncol):
-    img_folder = path / f"{match_[j]}"
-    all_imgs = list(img_folder.glob("*"))
-    i = 0
-    id_ = list_numbers[j]
-    if j == 3:
-      image = np.asarray(Image.open(path / "deer" / "deer-8153.png"))
-      names.append("deer-8153")
-    else:
-      image = np.asarray(Image.open(path / all_imgs[id_]))
-      names.append((path / all_imgs[id_]).stem)
-    axs[i, j].imshow(image)
-    axs[i, j].axis("off")
-    # axs[i, j].set_yticklabels([])
-with open(path / ".." / "answers.json", "r") as f:
-    votes = json.load(f)
-for i, name in enumerate(names):
-    taskid = str(name).split("-")[-1]
-    worker_votes = votes[taskid]
-    distrib = np.zeros(len(match_))
-    for worker, vote in worker_votes.items():
-        distrib[inv_match_[inv_real_class_to_idx[vote]]] += 1
-    sns.barplot(
-        data=pd.DataFrame(
-            {"label": match_.values(), "voting distribution": distrib},
-        ),
-        x="label",
-        y="voting distribution",
-        ax=axs[1, i],
-    )
-    axs[1, i].set_xticklabels(match_.values(), rotation=90)
-    if i > 0:
-      axs[1, i].set_yticklabels([])
-      axs[1, i].set_ylim([0, 100])
-      axs[1, i].set_ylabel("")
-    else:
-      axs[1, i].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
-cols = [rf"$y^\star=${match_[i]}" for i in range(5)]
-for ax, col in zip(axs[0], cols):
-    ax.set_title(col)
-for ax in axs.flatten():
-  ax.xaxis.label.set_size(15)
-  ax.yaxis.label.set_size(15)
-  ax.xaxis.set_tick_params(labelsize=13)
-  ax.yaxis.set_tick_params(labelsize=13)
-plt.show()
+utx.figure_5()
 ```
 
 # Aggregation strategies in crowdsourcing {#sec-introaggregation}
@@ -354,72 +230,23 @@ A confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ of a worker $w_j$ is def
 ```{python}
 #| code-fold: true
 #| output: false
-!peerannot simulate --n-worker=10 --n-task=100 --n-classes=5 --strategy hammer-spammer --feedback=5 --seed=0 --folder ./simus/hammer_spammer
-!peerannot simulate --n-worker=10 --n-task=100 --n-classes=5 --strategy independent-confusion --feedback=5 --seed=0 --folder ./simus/hammer_spammer/confusion
+!peerannot simulate --n-worker=10 --n-task=100 --n-classes=5 \
+  --strategy hammer-spammer --feedback=5 --seed=0 \
+  --folder ./simus/hammer_spammer
+!peerannot simulate --n-worker=10 --n-task=100 --n-classes=5 \
+  --strategy independent-confusion --feedback=5 --seed=0 \
+  --folder ./simus/hammer_spammer/confusion
 ```
 ```{python}
 #| code-fold: true
 #| label: fig-confusionmatrix
 #| fig-cap: Three types of profiles of worker confusion matrices. The spammer answers independent from the ground truth label. Expert workers identify classes without mistakes. In practice common workers are good for some classes but might confuse two (ore more) labels. All workers are simulated using the `peerannot simulate` command presented in @sec-evaluation-aggregation.
 
-import matplotlib.cm as cm
 
 mats = np.load("./simus/hammer_spammer/matrices.npy")
 mats_confu = np.load("./simus/hammer_spammer/confusion/matrices.npy")
 
-def hinton(matrix, max_weight=None, ax=None, classes=None,
-           my_title={}):
-    """Draw Hinton diagram for visualizing a weight matrix."""
-    ax = ax if ax is not None else plt.gca()
-
-    if not max_weight:
-        max_weight = 2 ** np.ceil(np.log2(np.abs(matrix).max()))
-    ax.set_title(my_title, y=1.02)
-    ax.patch.set_facecolor("white")
-    ax.set_aspect("equal", "box")
-    ax.xaxis.set_major_locator(plt.NullLocator())
-    ax.yaxis.set_major_locator(plt.NullLocator())
-    ax.set_xticks(range(len(classes)))
-    ax.set_yticks(range(len(classes)))
-    ax.set_ylabel("True label")
-    ax.set_xlabel("Proposed label")
-    ax.set_xlim(-1, len(classes))
-    ax.set_ylim(-1, len(classes))
-    ax.set_yticks(range(len(classes)))
-    ax.set_xticklabels(classes, rotation=90)
-    ax.set_yticklabels(classes)
-
-    blues = cm.Blues
-    newcolors = blues(np.linspace(0, 1, 256))
-    for (x, y), w in np.ndenumerate(matrix[classes, :][:, classes]):
-        idx = np.searchsorted(np.linspace(0, 1, 256), w)
-        color = newcolors[idx]
-        size = (
-            np.sqrt(abs(w) / max_weight)
-            if w > 0
-            else np.sqrt(abs(1e-8) / max_weight)
-        )
-        x, y = y, x
-        rect = plt.Rectangle(
-            [x - size / 2.1, y - size / 2.1],
-            size,
-            size,
-            facecolor=color,
-            edgecolor='black',
-        )
-        ax.add_patch(rect)
-    ax.margins(y=0.05, x=0.05)
-    ax.invert_yaxis()
-
-fig, axs = plt.subplots(1, 3, sharey=True)
-hinton(mats[-1], 1, my_title="Spammer worker", ax=axs[0], classes=np.arange(5))
-hinton(mats[0], 1, my_title="Expert worker", ax=axs[2], classes=np.arange(5))
-hinton(mats_confu[8], 1, my_title="Common worker", ax=axs[1], classes=np.arange(5))
-axs[0].set_ylabel("")
-axs[1].set_ylabel("")
-axs[2].set_ylabel("")
-plt.tight_layout()
-plt.show()
+utx.figure_6(mats, mats_confu)
 ```
 
 In @fig-confusionmatrix, we illustrate multiple profiles of workers.
@@ -557,24 +384,7 @@ metadata_path = Path.cwd() / "simus" / "independent" / "metadata.json"
 efforts = feedback_effort(votes_path)
 workerload = working_load(votes_path, metadata_path)
 feedback = feedback_effort(votes_path)
-nbins = 17
-fig, ax = plt.subplots(1, 2, figsize=(9, 4))
-sns.histplot(workerload, stat="percent", bins=nbins, shrink=1, ax=ax[0])
-ax[0].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
-ax[0].set_xlabel(r"$\vert\mathcal{T}(w_j)\vert$")
-sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
-ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
-ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
-ax[1].set_xlim(8, 12)
-for i in range(2):
-  ax[i].xaxis.set_major_locator(MaxNLocator(integer=True))
-  ax[i].xaxis.label.set_size(15)
-  ax[i].yaxis.label.set_size(15)
-  ax[i].xaxis.set_tick_params(labelsize=13)
-  ax[i].yaxis.set_tick_params(labelsize=13)
-  ax[i].title.set_size(18)
-plt.tight_layout()
-plt.show()
+utx.figure_simulations(workerload, feedback)
 ```
 
 With the obtained answers, we can look at the aforementioned aggregation strategies performance:
@@ -593,7 +403,10 @@ import pandas as pd
 import numpy as np
 from IPython.display import display
 simu_indep = Path.cwd() / 'simus' / "independent"
-results = {"mv": [], "naivesoft": [], "glad": [], "ds": [], "dswc[l=5]": [], "dswc[l=10]": []}
+results = {
+  "mv": [], "naivesoft": [], "glad": [],
+  "ds": [], "dswc[l=5]": [], "dswc[l=10]": []
+  }
 for strategy in results.keys():
   path_labels = simu_indep / "labels" / f"labels_independent-confusion_{strategy}.npy"
   ground_truth = np.load(simu_indep / "ground_truth.npy")
@@ -611,7 +424,9 @@ results["NS"] = results["naivesoft"]
 results.pop("naivesoft")
 results = pd.DataFrame(results, index=['AccTrain'])
 results.columns = map(str.upper, results.columns)
-results = results.style.set_table_styles([dict(selector='th', props=[('text-align', 'center')])])
+results = results.style.set_table_styles(
+  [dict(selector='th', props=[('text-align', 'center')])]
+  )
 results.set_properties(**{'text-align': 'center'})
 results = results.format(precision=3)
 display(results)
@@ -642,23 +457,7 @@ metadata_path = Path.cwd() / "simus" / "independent-imbalanced" / "metadata.json
 efforts = feedback_effort(votes_path)
 workerload = working_load(votes_path, metadata_path)
 feedback = feedback_effort(votes_path)
-nbins = 17
-fig, ax = plt.subplots(1, 2, figsize=(9, 4))
-sns.histplot(workerload, stat="percent", bins=nbins, shrink=1, ax=ax[0])
-ax[0].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
-ax[0].set_xlabel(r"$\vert\mathcal{T}(w_j)\vert$")
-sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
-ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
-ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
-for i in range(2):
-  ax[i].xaxis.set_major_locator(MaxNLocator(integer=True))
-  ax[i].xaxis.label.set_size(15)
-  ax[i].yaxis.label.set_size(15)
-  ax[i].xaxis.set_tick_params(labelsize=13)
-  ax[i].yaxis.set_tick_params(labelsize=13)
-  ax[i].title.set_size(18)
-plt.tight_layout()
-plt.show()
+utx.figure_simulations(workerload, feedback)
 ```
 
 With the obtained answers, we can look at the aforementioned aggregation strategies performance:
@@ -677,7 +476,10 @@ import pandas as pd
 import numpy as np
 from IPython.display import display
 simu_indep = Path.cwd() / 'simus' / "independent-imbalanced"
-results = {"mv": [], "naivesoft": [], "glad": [], "ds": [], "dswc[l=5]": [], "dswc[l=10]": []}
+results = {
+  "mv": [], "naivesoft": [], "glad": [],
+  "ds": [], "dswc[l=5]": [], "dswc[l=10]": []
+  }
 for strategy in results.keys():
   path_labels = simu_indep / "labels" / f"labels_independent-confusion_{strategy}.npy"
   ground_truth = np.load(simu_indep / "ground_truth.npy")
@@ -728,24 +530,7 @@ metadata_path = Path.cwd() / "simus" / "student_teacher" / "metadata.json"
 efforts = feedback_effort(votes_path)
 workerload = working_load(votes_path, metadata_path)
 feedback = feedback_effort(votes_path)
-nbins = 17
-fig, ax = plt.subplots(1, 2, figsize=(9, 4))
-sns.histplot(workerload, stat="percent", bins=nbins, shrink=1, ax=ax[0])
-ax[0].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
-ax[0].set_xlabel(r"$\vert\mathcal{T}(w_j)\vert$")
-sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
-ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
-ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
-ax[1].set_xlim(8, 12)
-for i in range(2):
-  ax[i].xaxis.set_major_locator(MaxNLocator(integer=True))
-  ax[i].xaxis.label.set_size(15)
-  ax[i].yaxis.label.set_size(15)
-  ax[i].xaxis.set_tick_params(labelsize=13)
-  ax[i].yaxis.set_tick_params(labelsize=13)
-  ax[i].title.set_size(18)
-plt.tight_layout()
-plt.show()
+utx.figure_simulations(workerload, feedback)
 ```
 
 With the obtained answers, we can look at the aforementioned aggregation strategies performance:
@@ -824,24 +609,7 @@ metadata_path = Path.cwd() / "simus" / "discrete_difficulty" / "metadata.json"
 efforts = feedback_effort(votes_path)
 workerload = working_load(votes_path, metadata_path)
 feedback = feedback_effort(votes_path)
-nbins = 17
-fig, ax = plt.subplots(1, 2, figsize=(9, 4))
-sns.histplot(workerload, stat="percent", bins=nbins, shrink=1, ax=ax[0])
-ax[0].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
-ax[0].set_xlabel(r"$\vert\mathcal{T}(w_j)\vert$")
-sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
-ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
-ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
-ax[1].set_xlim(8, 12)
-for i in range(2):
-  ax[i].xaxis.set_major_locator(MaxNLocator(integer=True))
-  ax[i].xaxis.label.set_size(15)
-  ax[i].yaxis.label.set_size(15)
-  ax[i].xaxis.set_tick_params(labelsize=13)
-  ax[i].yaxis.set_tick_params(labelsize=13)
-  ax[i].title.set_size(18)
-plt.tight_layout()
-plt.show()
+utx.figure_simulations(workerload, feedback)
 ```
 
 With the obtained answers, we can look at the aforementioned aggregation strategies performance:
@@ -856,7 +624,10 @@ for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=2]", "DSWC[L=5]"]:
 #| tbl-cap: AccTrain metric on simulated mistakes when tasks are associated a difficulty level considering classical feature-blind label aggregation strategies
 #| code-fold: true
 simu_corr = Path.cwd() / 'simus' / "discrete_difficulty"
-results = {"mv": [], "naivesoft": [], "glad": [], "ds": [], "dswc[l=2]": [], "dswc[l=5]": []}
+results = {
+  "mv": [], "naivesoft": [], "glad": [],
+  "ds": [], "dswc[l=2]": [], "dswc[l=5]": []
+  }
 for strategy in results.keys():
   path_labels = simu_corr / "labels" / f"labels_discrete-difficulty_{strategy}.npy"
   ground_truth = np.load(simu_corr / "ground_truth.npy")
@@ -977,15 +748,26 @@ Other models from the `torchvision` library can be used, such as Resnets, Alexne
 #| output: false
 for strat in ["MV", "NaiveSoft", "DS", "GLAD"]:
   ! peerannot aggregate ./labelme/ -s {strat}
-  ! peerannot train ./labelme -o labelme_${strat} -K 8 --labels=./labelme/labels/labels_labelme_${strat}.npy --model modellabelme --n-epochs 500 -m 50 -m 150 -m 250 --scheduler=multistep --lr=0.01 --num-workers=8 --pretrained --data-augmentation --optimizer=adam --batch-size=32 --img-size=224 --seed=1
+  ! peerannot train ./labelme -o labelme_${strat} \
+    -K 8 --labels=./labelme/labels/labels_labelme_${strat}.npy \
+    --model modellabelme --n-epochs 500 -m 50 -m 150 -m 250 \
+    --scheduler=multistep --lr=0.01 --num-workers=8 \
+    --pretrained --data-augmentation --optimizer=adam \
+    --batch-size=32 --img-size=224 --seed=1
 for strat in ["CrowdLayer", "CoNAL[scale=0]", "CoNAL[scale=1e-4]"]:
-  ! peerannot aggregate-deep ./labelme -o labelme_${strat} --answers ./labelme/answers.json -s ${strat} --model modellabelme --img-size=224 --pretrained --n-classes=8 --n-epochs=500 --lr=0.001 -m 300 -m 400 --scheduler=multistep --batch-size=228 --optimizer=adam --num-workers=8 --data-augmentation --seed=1
+  ! peerannot aggregate-deep ./labelme -o labelme_${strat} \
+    --answers ./labelme/answers.json -s ${strat} --model modellabelme \
+    --img-size=224 --pretrained --n-classes=8 --n-epochs=500 --lr=0.001 \
+    -m 300 -m 400 --scheduler=multistep --batch-size=228 --optimizer=adam \
+    --num-workers=8 --data-augmentation --seed=1
 
 
 # command to save separately a specific part of conal model (memory intensive otherwise)
 path_ = Path.cwd() / "datasets" / "labelme"
-best_conal = torch.load(path_ / "best_models" / "labelme_conal[scale=1e-4].pth", map_location="cpu")
-torch.save(best_conal["noise_adaptation"]["local_confusion_matrices"], path_ / "best_models"/ "labelme_conal[scale=1e-4]_local_confusion.pth")
+best_conal = torch.load(path_ / "best_models" / "labelme_conal[scale=1e-4].pth",
+map_location="cpu")
+torch.save(best_conal["noise_adaptation"]["local_confusion_matrices"],
+path_ / "best_models"/ "labelme_conal[scale=1e-4]_local_confusion.pth")
 ```
 
 ```{python}
@@ -1010,15 +792,22 @@ for res in dir_results.glob("modellabelme/*"):
     dd = json.load(f)
     accuracy.append(dd["test_accuracy"])
     ece.append(dd["test_ece"])
-results = pd.DataFrame(list(zip(meth, accuracy, ece)), columns=["method", "AccTest", "ECE"])
-results["method"] = ["NS", "CoNAL[scale=0]", "CrowdLayer", "CoNAL[scale=1e-4]", "MV", "DS", "GLAD"]
+results = pd.DataFrame(list(zip(meth, accuracy, ece)),
+                       columns=["method", "AccTest", "ECE"])
+results["method"] = [
+  "NS", "CoNAL[scale=0]", "CrowdLayer", "CoNAL[scale=1e-4]", "MV", "DS", "GLAD"
+  ]
 results = results.sort_values(by="AccTest", ascending=True)
 results.reset_index(drop=True, inplace=True)
-results = results.style.set_table_styles([dict(selector='th', props=[('text-align', 'center')])])
+results = results.style.set_table_styles([dict(selector='th', props=[
+  ('text-align', 'center')])]
+  )
 results.set_properties(**{'text-align': 'center'})
 results = results.format(precision=3)
-results.apply(highlight_max, props='background-color:#e6ffe6;', axis=0, subset=["AccTest"])
-results.apply(highlight_min, props='background-color:#e6ffe6;', axis=0, subset=["ECE"])
+results.apply(highlight_max, props='background-color:#e6ffe6;',
+              axis=0, subset=["AccTest"])
+results.apply(highlight_min, props='background-color:#e6ffe6;',
+              axis=0, subset=["ECE"])
 display(results)
 ```
 
@@ -1098,148 +887,9 @@ classes = (
     "truck",
 )
 
-
-def load_data(dataset, n_classes, classes):
-
-    entrop = np.load(f"./datasets/{dataset}/identification/entropies.npy")
-    path_train = Path(f"./datasets/{dataset}/train")
-    glad = 1 / np.exp(
-        np.load(f"./datasets/{dataset}/identification/glad/difficulties.npy")[
-            :, 1
-        ]
-    )
-    dfwaum = pd.read_csv(
-        f"./datasets/{dataset}/identification/resnet34/waum_0.01_yang/waum.csv"
-    ) if dataset.startswith("cifar") else pd.read_csv(
-      f"./datasets/{dataset}/identification/modellabelme/waum_0.01_yang/waum.csv"
-    )
-    tasks = dfwaum.sort_values(by="waum")["task"].values
-    img_ns, img_glad, img_waum = [], [], []
-    idxs_ns = np.argsort(entrop)[::-1]
-    idxs_glad = np.argsort(glad)[::-1]
-    idxs_waum = [Path(task).stem.split("-")[1] for task in tasks]
-    for idxs, im_store in zip(
-        [idxs_ns, idxs_glad, idxs_waum], [img_ns, img_glad, img_waum]
-    ):
-        imgs = []
-        for k in range(n_classes):
-            imgs.append([])
-            flag = 0
-            for (id_, file) in list(
-                itertools.product(idxs, path_train.glob(f"{classes[k]}/*"))
-            ):
-                if file.stem.endswith(f"-{id_}"):
-                    im = Image.open(file)
-                    if dataset.startswith("cifar"):
-                      im = im.resize((32,32))
-                    else:
-                      im = im.resize((64, 64))  # memory saving
-                    imgs[k].append(np.array(im))
-                    flag += 1
-                if flag == 12:
-                    break
-            image_k_row1 = np.hstack(imgs[k][:6])
-            image_k_row2 = np.hstack(imgs[k][6:])
-            image_k = np.vstack((image_k_row1, image_k_row2))
-            im_store.append(image_k)
-    all_images = [img_ns, img_glad, img_waum]
-    return all_images
-
-
-def get_visible_strat(strategy):
-    ll = [False] * (n_classes * 3)
-    for k in range(n_classes * strategy, n_classes * (strategy + 1)):
-        ll[k] = True
-    return ll
-
-
-def get_layer_strat(strategy):
-    ll_layer = ["below"] * (n_classes * 3)
-    for k in range(n_classes * strategy, n_classes * (strategy + 1)):
-        ll_layer[k] = "above"
-    return ll_layer
-
-
-def get_visible_class(lab):
-    ll = [False] * (n_classes * 3)
-    for k in range(3):
-        ll[n_classes * k + lab] = True
-    return ll
-
-
-def generate_plot(n_classes, all_images):
-    fig = make_subplots(
-        rows=3, cols=1, subplot_titles=("Entropy", "GLAD difficulty", "WAUM"), vertical_spacing=0.1
-    )
-    button_classes = [
-        dict(
-            args=[{"visible": get_visible_class(k)}],
-            label=f"{classes[k]}",
-            method="update",
-        )
-        for k in range(n_classes)
-    ]
-    buttons_method = [
-        dict(
-            args=[
-                {"visible": get_visible_strat(0), "layer": get_layer_strat(0)}
-            ],
-            label="entropy",
-            method="update",
-        ),
-        dict(
-            args=[
-                {"visible": get_visible_strat(1), "layer": get_layer_strat(1)}
-            ],
-            label="glad",
-            method="update",
-        ),
-        dict(
-            args=[
-                {"visible": get_visible_strat(2), "layer": get_layer_strat(1)}
-            ],
-            label="waum",
-            method="update",
-        ),
-    ]
-    layout = go.Layout(
-        updatemenus=[
-            {
-                "type": "buttons",
-                "buttons": button_classes,
-                "active": 3,
-                "showactive": True,
-                "direction": "down",  # Display buttons horizontally
-                "x": 0.1,  # X-position of the buttons (0.5 centers them)
-                "y": 1.,  # Y-position   of the buttons
-            },
-        ]
-    )
-    data = [
-        go.Image(
-            z=all_images[method][k],
-            visible=True if k == 3 else False,
-            name=f"{classes[k]} - {method}",
-        )
-        for method in range(len(all_images))
-        for k in range(n_classes)
-    ]
-
-    for k in range(n_classes * len(all_images)):
-        fig.add_trace(
-            data[k],
-            row=1 + k // n_classes,
-            col=1,
-        )
-    fig.update_layout(layout)
-    fig.update_layout(width=800, height=700, margin=dict(l=0, r=0, t=30, b=0, autoexpand=True))
-    fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
-    fig.show()
-
-
 n_classes = 10
-all_images = load_data("cifar10H", n_classes, classes)
-generate_plot(n_classes, all_images)
+all_images = utx.load_data("cifar10H", n_classes, classes)
+utx.generate_plot(n_classes, all_images, classes)
 ```
 
 The entropy, GLAD's difficulty, and WAUM's difficulty each show different images as exhibited in the interactive Figure. We highlight that for the `cat` label, each strategy retrieves images that are mislabeled in the ground truth labeling. Indeed, the frog, dog and fox images are labeled as `cat` in $\texttt{CIFAR-10}$. And while the entropy and GLAD output similar tasks, in this case the WAUM often differs. We can also observe an ambiguity induced by the labels in the `truck` category, with the presence of a trailer that is technically a mixup between a `car` and a `truck`.
@@ -1255,9 +905,12 @@ Now, let us compare the tasks' difficulty distribution depending on the strategy
 #| output: false
 #| eval: false
 
-! peerannot identify ./datasets/labelme -s entropy -K 8 --labels ./datasets/labelme/answers.json
+! peerannot identify ./datasets/labelme -s entropy -K 8 \
+  --labels ./datasets/labelme/answers.json
 ! peerannot aggregate ./datasets/labelme/ -s GLAD
-! peerannot identify ./datasets/labelme/ -K 8 --method WAUM --labels ./datasets/labelme/answers.json --model modellabelme --lr=0.01 --n-epochs 100 --maxiter-DS=100 --alpha=0.01 --pretrained --optimizer=sgd
+! peerannot identify ./datasets/labelme/ -K 8 --method WAUM \
+  --labels ./datasets/labelme/answers.json --model modellabelme --lr=0.01 \
+  --n-epochs 100 --maxiter-DS=100 --alpha=0.01 --pretrained --optimizer=sgd
 
 ```
 
@@ -1276,8 +929,8 @@ classes = {
 }
 classes = list(classes.values())
 n_classes = len(classes)
-all_images = load_data("labelme", n_classes, classes)
-generate_plot(n_classes, all_images) # create interactive plot
+all_images = utx.load_data("labelme", n_classes, classes)
+utx.generate_plot(n_classes, all_images, classes) # create interactive plot
 ```
 
 Note that in this experiment, because the number of labels given per task is in $\{1,2,3\}$, the entropy only takes four values.
@@ -1298,6 +951,12 @@ When the tasks are available, confusion-matrix-based deep learning models can al
 We thus add to the comparison the trace of the confusion matrices with CrowdLayer and CoNAL on the $\texttt{LabelMe}$ datasets.
 For CoNAL, we only consider the trace of the confusion matrix $\pi^{(j)}$ in the pairwise comparison.
 Moreover, for CrowdLayer and CoNAL we show in @fig-abilities-labelme the weights learned without the softmax operation by row to keep the comparison as simple as possible with the actual outputs of the model.
+
+Comparisons in @fig-abilitiescifarh and @fig-abilities-labelme are plotted pairwise between the evaluated metrics.
+Each point represents a worker.
+Each off-diagonal plot shows the joint distribution between the scores of the y-axis row and x-axis column.
+They allow us to visualize the relationship between these two variables.
+The main diagonal represents the (smoothed) marginal distribution of the score of the considered column.
 
 ### CIFAR-10H
 
@@ -1352,18 +1011,45 @@ for method in ["trace_confusion", "spam_score"]:
 #| warning: false
 #| label: fig-abilities-labelme
 #| fig-cap: Comparison of ability scores by workers for the labelme dataset. With few labels per task, workers are more difficult to rank. It is more difficult to separate workers with their abilities in this crowd. Hence the importance of investigating the generalization performance of the methods presented in the previous section.
+
 path_ = Path.cwd() / "datasets" / "labelme"
-results_identif = {"Trace DS": [], "Spam score": [], "glad": [], "Trace CrowdLayer": [], "Trace CoNAL[scale=1e-4]": []}
-best_cl = torch.load(path_ / "best_models" / "labelme_crowdlayer.pth", map_location="cpu")
-best_conal = torch.load(path_ / "best_models" / "labelme_conal[scale=1e-4]_local_confusion.pth", map_location="cpu")
+results_identif = {
+    "Trace DS": [],
+    "Spam score": [],
+    "glad": [],
+    "Trace CrowdLayer": [],
+    "Trace CoNAL[scale=1e-4]": [],
+}
+best_cl = torch.load(
+    path_ / "best_models" / "labelme_crowdlayer.pth", map_location="cpu"
+)
+best_conal = torch.load(
+    path_ / "best_models" / "labelme_conal[scale=1e-4]_local_confusion.pth",
+    map_location="cpu",
+)
 pi_conal = best_conal
-results_identif["Trace CoNAL[scale=1e-4]"].extend([torch.trace(pi_conal[i]).item() for i in range(pi_conal.shape[0])])
-results_identif["Trace CrowdLayer"].extend([torch.trace(best_cl["confusion"][i]).item() for i in range(best_cl["confusion"].shape[0])])
-results_identif["Trace DS"].extend(np.load(path_ / 'identification' / "traces_confusion.npy"))
-results_identif["Spam score"].extend(np.load(path_ / 'identification' / "spam_score.npy"))
-results_identif["glad"].extend(np.load(path_ / 'identification' / "glad" / "abilities.npy")[:, 1])
+results_identif["Trace CoNAL[scale=1e-4]"].extend(
+    [torch.trace(pi_conal[i]).item() for i in range(pi_conal.shape[0])]
+)
+results_identif["Trace CrowdLayer"].extend(
+    [
+        torch.trace(best_cl["confusion"][i]).item()
+        for i in range(best_cl["confusion"].shape[0])
+    ]
+)
+results_identif["Trace DS"].extend(
+    np.load(path_ / "identification" / "traces_confusion.npy")
+)
+results_identif["Spam score"].extend(
+    np.load(path_ / "identification" / "spam_score.npy")
+)
+results_identif["glad"].extend(
+    np.load(path_ / "identification" / "glad" / "abilities.npy")[:, 1]
+)
 results_identif = pd.DataFrame(results_identif)
-g = sns.pairplot(results_identif, corner=True, diag_kind="kde", plot_kws={'alpha':0.2})
+g = sns.pairplot(
+    results_identif, corner=True, diag_kind="kde", plot_kws={"alpha": 0.2}
+)
 plt.tight_layout()
 plt.show()
 ```
