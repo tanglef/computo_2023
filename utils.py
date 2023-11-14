@@ -254,7 +254,6 @@ def figure_simulations(workerload, feedback):
         ax[i].yaxis.set_tick_params(labelsize=13)
         ax[i].title.set_size(18)
     plt.tight_layout()
-    plt.show()
 
 
 def load_data(dataset, n_classes, classes):

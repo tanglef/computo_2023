@@ -363,6 +363,7 @@ In this setting, the DS model is expected to perform better with enough data as 
 
 We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=30$ workers with $K=5$ possible classes. Each task $x_i$ receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
 With $200$ tasks and $30$ workers, asking for $10$ leads to around $\frac{200\times 10}{30}\simeq 67$ tasks per worker (with variations due to randomness in the affectations).
+
 ```{python}
 #| output: false
 ! peerannot simulate --n-worker=30 --n-task=200  --n-classes=5 \
@@ -372,6 +373,7 @@ With $200$ tasks and $30$ workers, asking for $10$ leads to around $\frac{200\ti
 ```
 ```{python}
 #| code-fold: true
+#| label: fig-simu1
 #| fig-cap: Distribution of number of tasks given per worker (left) and number of labels per task (right) in the independent mistakes setting.
 
 from peerannot.helpers.helpers_visu import feedback_effort, working_load
@@ -385,6 +387,7 @@ efforts = feedback_effort(votes_path)
 workerload = working_load(votes_path, metadata_path)
 feedback = feedback_effort(votes_path)
 utx.figure_simulations(workerload, feedback)
+plt.show()
 ```
 
 With the obtained answers, we can look at the aforementioned aggregation strategies performance:
@@ -445,9 +448,9 @@ As expected by the simulation framework, @tbl-simu-independent fits the DS model
                      --folder ./simus/independent-imbalanced/
 ```
 
-
 ```{python}
 #| code-fold: true
+#| label: fig-simu2
 #| fig-cap: Distribution of number of tasks given per worker (left) and number of labels per task (right) in the independent mistakes setting with voting imbalance enabled.
 
 sns.set_style("whitegrid")
@@ -458,6 +461,7 @@ efforts = feedback_effort(votes_path)
 workerload = working_load(votes_path, metadata_path)
 feedback = feedback_effort(votes_path)
 utx.figure_simulations(workerload, feedback)
+plt.show()
 ```
 
 With the obtained answers, we can look at the aforementioned aggregation strategies performance:
@@ -520,9 +524,9 @@ We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=30$ with $80\%$ o
                      --folder ./simus/student_teacher
 ```
 
-
 ```{python}
 #| code-fold: true
+#| label: fig-simu3
 #| fig-cap: Distribution of number of tasks given per worker (left) and number of labels per task (right) in the correlated mistakes setting.
 
 votes_path = Path.cwd() / "simus" / "student_teacher" / "answers.json"
@@ -531,6 +535,7 @@ efforts = feedback_effort(votes_path)
 workerload = working_load(votes_path, metadata_path)
 feedback = feedback_effort(votes_path)
 utx.figure_simulations(workerload, feedback)
+plt.show()
 ```
 
 With the obtained answers, we can look at the aforementioned aggregation strategies performance:
@@ -602,6 +607,7 @@ We simulate $n_{\text{task}}=500$ tasks and $n_{\text{worker}}=100$ with $35\%$ 
 
 ```{python}
 #| code-fold: true
+#| label: fig-simu4
 #| fig-cap: Distribution of number of tasks given per worker (left) and number of labels per task (right) in the setting with simulated discrete difficulty levels.
 
 votes_path = Path.cwd() / "simus" / "discrete_difficulty" / "answers.json"
@@ -610,6 +616,7 @@ efforts = feedback_effort(votes_path)
 workerload = working_load(votes_path, metadata_path)
 feedback = feedback_effort(votes_path)
 utx.figure_simulations(workerload, feedback)
+plt.show()
 ```
 
 With the obtained answers, we can look at the aforementioned aggregation strategies performance:
