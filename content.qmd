@@ -65,10 +65,10 @@ ImageNet [@imagenet_cvpr09] or Pl\@ntnet [@Garcin_Joly_Bonnet_Affouard_Lombardo_
 
 Crowdsourced datasets induce at least three major challenges to which we contribute with `peerannot`:
 
-  1) **How to identify good workers in the crowd?** When multiple answers are given to a single task, looking for who to trust for which type of task becomes necessary to estimate the ground truth or later train a model with as few noise sources as possible. The module `identify` uses different scoring metrics to create a worker and/or task evaluation.
+  1) **How to identify good workers in the crowd and difficult tasks?** When multiple answers are given to a single task, looking for who to trust for which type of task becomes necessary to estimate the labels or later train a model with as few noise sources as possible. The module `identify` uses different scoring metrics to create a worker and/or task evaluation.
   This is particularly relevant considering the gamification of crowdsourcing experiments [@plantgame2016]
-  1) **How to aggregate multiple labels into a single label from crowdsourced tasks?** This occurs for example when dealing with a single dataset that has been labeled by multiple workers with disagreements. This is also encountered with other scoring issues such as polls, reviews, peer-grading, *etc.* In our framework this is treated with the `aggregate` command, that given multiple labels, infers a ground truth label. From aggregated labels, a classifier can then be trained using the `train` command.
-  1) **How to learn a classifier from crowdsourced datasets?** Where the first question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision, is common in machine learning, however, it requires the actual tasks (the images, texts, videos, *etc.*) to train on -- and in crowdsourced datasets publicly available, they are not always available. This is treated with the `aggregate-deep` command.
+  1) **How to aggregate multiple labels into a single label from crowdsourced tasks?** This occurs for example when dealing with a single dataset that has been labeled by multiple workers with disagreements. This is also encountered with other scoring issues such as polls, reviews, peer-grading, *etc.* In our framework this is treated with the `aggregate` command, that given multiple labels, infers a label. From aggregated labels, a classifier can then be trained using the `train` command.
+  1) **How to learn a classifier from crowdsourced datasets?** Where the second question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision, is common in machine learning, however, it requires the actual tasks (the images, texts, videos, *etc.*) to train on -- and in crowdsourced datasets publicly available, they are not always available. This is treated with the `aggregate-deep` command.
 
 The library `peerannot` addresses these practical questions within a reproducible setting. Indeed, the complexity of experiments often leads to a lack of transparency and reproducible results for simulations and real datasets.
 We propose standard simulation settings with explicit implementation parameters that can be shared.
@@ -80,14 +80,15 @@ For real datasets, `peerannot` is compatible with standard neural networks archi
 
 ## Crowdsourcing notation
 
-Let us consider the classical supervised learning classification framework. A training set $\mathcal{D}=\{(x_i, y_i^\star)\}_{i=1}^{n_{\text{task}}}$ is composed of $n_{\text{task}}$ tasks $x_i\in\mathcal{X}$ (the feature space) with (unobserved) ground truth label $y_i^\star \in [K]=\{1,\dots,K\}$ one of the $K$ possible classes.
+Let us consider the classical supervised learning classification framework. A training set $\mathcal{D}=\{(x_i, y_i^\star)\}_{i=1}^{n_{\text{task}}}$ is composed of $n_{\text{task}}$ tasks $x_i\in\mathcal{X}$ (the feature space) with (unknown) true label $y_i^\star \in [K]=\{1,\dots,K\}$ one of the $K$ possible classes.
 In the following, the tasks considered are generally RGB images. We use the notation $\sigma(\cdot)$ for the softmax function.
-In praticular, given a classifier $\mathcal{C}$ with logits outputs, $\sigma(\mathcal{C}(x_i))_{[1]}$ represents the largest probability and we can sort the probabilities as $\sigma(\mathcal{C}(x_i))_{[1]}\geq \sigma(\mathcal{C}(x_i))_{[2]}\geq \dots\geq \sigma(\mathcal{C}(x_i))_{[K]}$. The indicator function is denoted $\mathbf{1}(\cdot)$.
+In particular, given a classifier $\mathcal{C}$ with logits outputs, $\sigma(\mathcal{C}(x_i))_{[1]}$ represents the largest probability and we can sort the probabilities as $\sigma(\mathcal{C}(x_i))_{[1]}\geq \sigma(\mathcal{C}(x_i))_{[2]}\geq \dots\geq \sigma(\mathcal{C}(x_i))_{[K]}$. The indicator function is denoted $\mathbf{1}(\cdot)$.
 We use the $i$ index notation to range over the different tasks and the $j$ index notation for the workers in the crowdsourcing experiment.
 Note that indices start at position $1$ in the equation to follow mathematical standard notation such as $[K]=\{1,\dots,K\}$ but it should be noted that, as this is a `Python` library, in the code indices start at the $0$ position.
 
-With crowdsourced data the ground truth of a task $x_i$, denoted $y_i^\star$ is unknown, and there is no single label that can be trusted as in standard supervised learning (even on the train set!).
+With crowdsourced data the true label of a task $x_i$, denoted $y_i^\star$ is unknown, and there is no single label that can be trusted as in standard supervised learning (even on the train set!).
 Instead, there is a crowd of $n_{\text{worker}}$ workers from which multiple workers $(w_j)_j$ propose a label $(y_i^{(j)})_j$.
+These proposed labels are used to estimate a true label.
 The set of workers answering the task $x_i$ is denoted by
 $$
 \mathcal{A}(x_i)=\left\{j\in[n_\text{worker}]: w_j \text{ answered }x_i\right\}.
@@ -107,7 +108,7 @@ $$
 $$
 
 
-In this article, we do not address the setting where workers report their self-confidence [@YasminRomena2022ICIC], nor settings where workers are presented a trapping set -- *i.e* a subset of tasks where the ground truth is known to evaluate them with known labels [@khattak_toward_2017].
+In this article, we do not address the setting where workers report their self-confidence [@YasminRomena2022ICIC], nor settings where workers are presented a trapping set -- *i.e* a subset of tasks where the true label is known to evaluate them with known labels [@khattak_toward_2017].
 
 ## Storing crowdsourced datasets in `peerannot`
 
@@ -164,13 +165,13 @@ To install them, run the `install` command from `peerannot`:
 ```
 
 For both $\texttt{CIFAR-10H}$ and $\texttt{LabelMe}$, the dataset was originally released in classical supervised learning form (without crowdsourcing).
-These labels are used as ground truth in evaluations and visualizations.
-However, we emphasize that crowdsourcing strategies do not rely on the ground truth (only on the workers' answers).
+These labels are used as true labels in evaluations and visualizations.
+However, we emphasize that crowdsourcing strategies do not rely on the true labels (only on the workers' answers).
 
 ```{python}
 #| code-fold: true
 #| label: fig-cifarh
-#| fig-cap: Example of images from CIFAR-10H. We display images rowise according to the ground truth label given initially in CIFAR-10.
+#| fig-cap: Example of images from CIFAR-10H. We display images rowise according to the true label given initially in CIFAR-10.
 
 import torch
 import seaborn as sns
@@ -192,18 +193,18 @@ Examples of $\texttt{CIFAR-10H}$ images are available in @fig-cifarh, and $\text
 ```{python}
 #| code-fold: true
 #| label: fig-labelme
-#| fig-cap: Example of images from LabelMe. We display images rowise according to the ground truth label given with the crowdsourced data.
+#| fig-cap: Example of images from LabelMe. We display images rowise according to the true label label given with the crowdsourced data.
 
 utx.figure_4()
 ```
 
-Each of these tasks has been assigned a ground truth label by the dataset's authors. Crowdsourcing votes however bring additional information about possible confusions (see @fig-cifarexamplevotes).
+Each of these tasks has been assigned a true label by the dataset's authors. Crowdsourcing votes however bring additional information about possible confusions (see @fig-cifarexamplevotes).
 
 ```{python}
 #| code-fold: true
 #| warning: false
 #| label: fig-cifarexamplevotes
-#| fig-cap: Example of crowdsourced images from CIFAR-10H. Each task has been labelled by multiple workers. We display the associated voting distribution over the possible classes. In addition, a ground truth label is provided using the original CIFAR-10 dataset. This ground truth is only used for performance evaluation.
+#| fig-cap: Example of crowdsourced images from CIFAR-10H. Each task has been labelled by multiple workers. We display the associated voting distribution over the possible classes. In addition, a true label is provided using the original CIFAR-10 dataset. This true label is only used for performance evaluation.
 
 utx.figure_5()
 ```
@@ -226,6 +227,8 @@ Note that when a strategy produces a soft label, a hard label can be easily indu
 
 Moreover, the concept of confusion matrices has been commonly used to represent worker abilities.
 A confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ of a worker $w_j$ is defined such that $\pi^{(j)}_{k,\ell} = \mathbb{P}(y_i^{(j)}=\ell\vert y_i^\star=k)$.
+These quantities are not obtained using the true labels as they are unknown.
+In practice, the confusion matrices of each worker is estimated via an aggregation strategy like Dawid and Skene's @dawid_maximum_1979 presented hereafter.
 
 ```{python}
 #| code-fold: true
@@ -240,7 +243,7 @@ A confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ of a worker $w_j$ is def
 ```{python}
 #| code-fold: true
 #| label: fig-confusionmatrix
-#| fig-cap: Three types of profiles of worker confusion matrices. The spammer answers independent from the ground truth label. Expert workers identify classes without mistakes. In practice common workers are good for some classes but might confuse two (ore more) labels. All workers are simulated using the `peerannot simulate` command presented in @sec-evaluation-aggregation.
+#| fig-cap: Three types of profiles of worker confusion matrices. The spammer answers independent from the true label. Expert workers identify classes without mistakes. In practice common workers are good for some classes but might confuse two (ore more) labels. All workers are simulated using the `peerannot simulate` command presented in @sec-evaluation-aggregation.
 
 
 mats = np.load("./simus/hammer_spammer/matrices.npy")
@@ -256,7 +259,7 @@ $$
 \forall k\in[K],\ \mathbb{P}(y_i^{(j)}=k|y_i^\star) = \mathbb{P}(y_i^{(j)}=k)\enspace.
 $${#eq-spammer}
 
-As the probability distribution by row represent the confusion given a ground truth label, the spammer has a confusion matrix with near-identical rows.
+As the probability distribution by row represent the confusion given an estimated true label, the spammer has a confusion matrix with near-identical rows.
 Apart from the spammer, common mistakes often involve workers ming-up one or several classes.
 Expert workers have a confusion matrix near the identity matrix.
 
@@ -288,15 +291,28 @@ Assuming the workers are answering tasks independently, this model boils down to
 Each worker $w_j$ is assigned a confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ as described in @sec-introaggregation.
 The model assumes that for a task $x_i$, conditionally on the true label $y_i^\star=k$ the label distribution of the worker's answer follows a multinomial distribution with probabilities $\pi^{(j)}_{k,\cdot}$ for each worker.
 Each class has a prevalence $\rho_k=\mathbb{P}(y_i^\star=k)$ to appear in the dataset.
-Using the independence between workers, we obtain the following likelihood to maximize (with latent variables $\rho$, $\pi=\{\pi^{(j)}\}_{j}$ and $T=\{T_{i,k}\}_{i,k}$ and observed variables $\{y_i^{(j)}\}_{i,j}$):
+Using the independence between workers, we obtain the following likelihood to maximize (with latent variables $\rho$, $\pi=\{\pi^{(j)}\}_{j}$ and unobserved variables $(y_i^{(j)})_{i,j}$):
+$$
+\arg\max_{\rho,\pi}\displaystyle\prod_{i\in [n_{\texttt{task}}]}\prod_{k \in [K]}\bigg[\rho_k\prod_{j\in [n_{\texttt{worker}}]}
+    \prod_{\ell\in [K]}\big(\pi^{(j)}_{k, \ell}\big)^{\mathbf{1}_{\{y_i^{(j)}=\ell\}}}
+    \bigg].
+$$
 
+When the true labels are not available, the data comes from a mixture of categorical distributions.
+In order to retrieve ground truth labels and be able to estimate these parameters, @dawid_maximum_1979 propose to consider the true labels as missing parameters.
+In this case, denoting $T_{i,k}=\mathbf{1}_{\{y_i^{\star}=k \}}$ the vectors of label class indicators for each task, the likelihood with known true labels is:
 $$
 \arg\max_{\rho,\pi,T}\displaystyle\prod_{i\in [n_{\texttt{task}}]}\prod_{k \in [K]}\bigg[\rho_k\prod_{j\in [n_{\texttt{worker}}]}
     \prod_{\ell\in [K]}\big(\pi^{(j)}_{k, \ell}\big)^{\mathbf{1}_{\{y_i^{(j)}=\ell\}}}
     \bigg]^{T_{i,k}},
 $$
 
-with $T_{i,k}=\mathbf{1}_{\{y_i^{\star}=k \}}$. The final aggregated soft label is $\hat y_i^{\text{DS}} = T_{i,\cdot}$.
+This framework allows to estimate $\rho,\pi,T$ with an EM algorithm as follows:
+- With the MV strategy, get an initial estimate of the true labels $T$.
+- Estimate $\rho$ and $\pi$ knowing $T$ using maximum likelihood estimators.
+- Update $T$ knowing $\rho$ and $\pi$ using Bayes formula.
+- Repeat until convergence of the likelihood.
+The final aggregated soft label is $\hat y_i^{\text{DS}} = T_{i,\cdot}$.
 
 ![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the DS model](./figures/bayesien_plaque_ds.png){fig-align="center"}
 
@@ -350,7 +366,7 @@ While this metric is useful, in practice there are a few arguable issues:
 
 - the $\operatornamewithlimits{AccTrain}$ metric does not consider the ambiguity of the soft label, only the most probable class, whereas in some contexts ambiguity can be informative,
 - in supervised learning one objective is to identify difficult or mislabeled tasks [@pleiss_identifying_2020;@lefort2022improve], pruning those tasks can easily artificially improve the $\operatornamewithlimits{AccTrain}$, but there is no guarantee over the predictive performance of a model based on the newly pruned dataset,
-- in practice, ground truth labels are unknown, thus this metric would not be computable.
+- in practice, true labels are unknown, thus this metric would not be computable.
 
 We first consider classical simulation settings in the literature that can easily be created and reproduced using `peerannot`.
 For each dataset, we present the distribution of the number of workers per task $(|\mathcal{A}(x_i)|)_i$ @eq-workerset on the right and the distribution of the number of tasks per worker $(|\mathcal{T}(w_j)|)_j$ @eq-taskset on the left.
@@ -578,88 +594,6 @@ display(results)
 With @tbl-simu-corr, we see that with correlated data ($24$ students and $6$ teachers), using $5$ confusion matrices with DSWC[L=5] outperforms the vanilla DS strategy that does not consider the correlations.
 And the best-performing method here estimates only $10$ confusion matrices (instead of $30$ for the vanilla DS model).
 
-### Simulated mistakes with discrete difficulty levels on tasks
-
-For the final simulation setting, we consider the so called discrete difficulty presented in @whitehill_whose_2009.
-Contrary to other simulations, we here consider that workers belong to two levels of abilities: $\texttt{good}$ or $\texttt{bad}$, and tasks have two levels of difficulty: $\texttt{easy}$ or $\texttt{hard}$.
-The keyword `ratio-diff` indicates the prevalence of each level of difficulty, it is defined as the ratio of $\texttt{easy}$ tasks over $\texttt{hard}$ tasks:
-
-$$
-\texttt{ratio-diff} = \frac{\mathbb{P}(\texttt{easy})}{\mathbb{P}(\texttt{hard})} \text{ with } \mathbb{P}(\texttt{easy}) +\mathbb{P}(\texttt{hard}) = 1 \enspace.
-$$
-
-Difficulties are then drawn [at random](https://peerannot.github.io/datasets/simulate_discrete_difficulty/).
-Tasks that are $\texttt{easy}$ are answered correctly by every worker.
-Tasks that are $\texttt{hard}$ are answered following the confusion matrix assigned to each worker (as in @sec-simu-independent).
-Each worker then answers independently to the presented tasks.
-
-We simulate $n_{\text{task}}=500$ tasks and $n_{\text{worker}}=100$ with $35\%$ of good workers in the crowd and $50\%$ of easy tasks. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
-
-```{python}
-#| output: false
-! peerannot simulate --n-worker=100 --n-task=200  --n-classes=5 \
-                     --strategy discrete-difficulty \
-                     --ratio 0.35 --ratio-diff 1 \
-                     --feedback 10 --seed 0 \
-                     --folder ./simus/discrete_difficulty
-```
-
-
-```{python}
-#| code-fold: true
-#| label: fig-simu4
-#| fig-cap: Distribution of number of tasks given per worker (left) and number of labels per task (right) in the setting with simulated discrete difficulty levels.
-
-votes_path = Path.cwd() / "simus" / "discrete_difficulty" / "answers.json"
-metadata_path = Path.cwd() / "simus" / "discrete_difficulty" / "metadata.json"
-efforts = feedback_effort(votes_path)
-workerload = working_load(votes_path, metadata_path)
-feedback = feedback_effort(votes_path)
-utx.figure_simulations(workerload, feedback)
-plt.show()
-```
-
-With the obtained answers, we can look at the aforementioned aggregation strategies performance:
-
-```{python}
-#| output: false
-for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=2]", "DSWC[L=5]"]:
-  ! peerannot aggregate ./simus/discrete_difficulty/ -s {strat}
-```
-```{python}
-#| label: tbl-simu-discrete-diff
-#| tbl-cap: AccTrain metric on simulated mistakes when tasks are associated a difficulty level considering classical feature-blind label aggregation strategies
-#| code-fold: true
-simu_corr = Path.cwd() / 'simus' / "discrete_difficulty"
-results = {
-  "mv": [], "naivesoft": [], "glad": [],
-  "ds": [], "dswc[l=2]": [], "dswc[l=5]": []
-  }
-for strategy in results.keys():
-  path_labels = simu_corr / "labels" / f"labels_discrete-difficulty_{strategy}.npy"
-  ground_truth = np.load(simu_corr / "ground_truth.npy")
-  labels = np.load(path_labels)
-  acc = (
-          np.mean(labels == ground_truth)
-          if labels.ndim == 1
-          else np.mean(
-              np.argmax(labels, axis=1)
-              == ground_truth
-          )
-        )
-  results[strategy].append(acc)
-results["NS"] = results["naivesoft"]
-results.pop("naivesoft")
-results = pd.DataFrame(results, index=['AccTrain'])
-results.columns = map(str.upper, results.columns)
-results = results.style.set_table_styles([dict(selector='th', props=[('text-align', 'center')])])
-results.set_properties(**{'text-align': 'center'})
-results = results.format(precision=3)
-display(results)
-```
-
-Finally, in this setting involving task difficulty coefficients, the only strategy that involves a latent variable for the task difficulty, knowing GLAD, outperforms the other strategies (see @tbl-simu-discrete-diff). Note that in this case, creating clusters of answers leads to worse decisions than an MV aggregation.
-
 To summarize our simulations, we see that depending on workers answering strategies, different latent variable models perform best.
 However, these are unknown outside of a simulation framework, thus if we want to obtain labels from multiple responses, we need to investigate multiple models.
 This can be done easily with `peerannot` as we demonstrated using the `aggregate` module.
@@ -687,7 +621,7 @@ $$
 \mathcal{L}_{CE}^{\text{CrowdLayer}}(x_i) = \sum_{j\in\mathcal{A}(x_i)} \mathrm{CE}\left(\sigma\left(\pi^{(j)}\sigma\big(z_i\big)\right), y_i^{(j)}\right) \enspace,
 $$
 
-where the crossentropy loss for two distribution $u,v \in\Delta_{K}$ is defined as $\mathrm{CE}(u, v) = \sum_{k\in[K]} u_k\log(v_k)$.
+where the crossentropy loss for two distribution $u,v \in\Delta_{K}$ is defined as $\mathrm{CE}(u, v) = \sum_{k\in[K]} v_k\log(u_k)$.
 
 The confusion matrices of DS are taken into the network architecture as a new layer of weights to transform the output probabilities.
 The backbone classifier predicts a distribution that is then corrupted through the added layer to learn the worker-specific confusion.
@@ -720,7 +654,7 @@ Both CrowdLayer and CoNAL model worker confusions directly in the classifier's w
 ## Prediction error when learning from crowdsourced tasks
 
 The $\mathrm{AccTrain}$ metric presented in @sec-evaluation-aggregation might no longer be of interest when training a classifier. Classical error measurements involve a test dataset to estimate the generalization error.
-To do so, we present hereafter two error metrics. Assuming we trained our classifier $\mathcal{C}$ on a training set and that there is a test set available with known ground truths:
+To do so, we present hereafter two error metrics. Assuming we trained our classifier $\mathcal{C}$ on a training set and that there is a test set available with known true labels:
 
   - the test accuracy is computed as $\frac{1}{n_{\text{test}}}\sum_{i=1}^{n_{\text{test}}}\mathbf{1}_{\{y_i^\star = \hat y_i\}}$.
   - the expected calibration error [@guo_calibration_2017] over $M$ equally spaced bins $I_1,\dots,I_M$ partitionning the interval $[0,1]$, is computed as:
@@ -899,7 +833,7 @@ all_images = utx.load_data("cifar10H", n_classes, classes)
 utx.generate_plot(n_classes, all_images, classes)
 ```
 
-The entropy, GLAD's difficulty, and WAUM's difficulty each show different images as exhibited in the interactive Figure. We highlight that for the `cat` label, each strategy retrieves images that are mislabeled in the ground truth labeling. Indeed, the frog, dog and fox images are labeled as `cat` in $\texttt{CIFAR-10}$. And while the entropy and GLAD output similar tasks, in this case the WAUM often differs. We can also observe an ambiguity induced by the labels in the `truck` category, with the presence of a trailer that is technically a mixup between a `car` and a `truck`.
+The entropy, GLAD's difficulty, and WAUM's difficulty each show different images as exhibited in the interactive Figure. We highlight that for the `cat` label, each strategy retrieves images that are mislabeled in the true labeling. Indeed, the frog, dog and fox images are labeled as `cat` in $\texttt{CIFAR-10}$. And while the entropy and GLAD output similar tasks, in this case the WAUM often differs. We can also observe an ambiguity induced by the labels in the `truck` category, with the presence of a trailer that is technically a mixup between a `car` and a `truck`.
 
 ### LabelMe dataset
 
@@ -945,7 +879,7 @@ In particular, tasks with only one label all have a null entropy, so not just co
 
 The underlying difficulty of these tasks mainly comes from the overlap in possible labels. For example, `tallbuildings` are most often found `insidecities`, and so are `streets`. In the `opencountry` we find `forests`, river-`coasts` and `mountains`.
 
-## Exploring workers' reliability
+## Identification of worker reliability and task difficulty
 
 From the labels we can explore different worker evaluation scores.
 GLAD's strategy estimates a reliability scalar coefficient $\alpha_j$ per worker.
@@ -1081,3 +1015,121 @@ Our library also comes with templated datasets to better share crowdsourced data
 Going beyond templating, it helps the crowdsourcing community to have openly accessible strategies to test, compare and improve in order to develop common strategies to analyse more and more common crowdsourced datasets.
 
 We hope that this library helps reproducibility in the crowdsourcing community and also standardizes training from crowdsourced datasets. New strategies can easily be incorporated into the open-source code [available on github](https://github.com/peerannot/peerannot). Finally, as `peerannot` is mostly directed to handle classification datasets, one of our future works would be to consider other `peerannot` modules to handle crowdsourcing for object detection, segmentation and even worker evaluation in other contexts like peer-grading.
+
+
+# Appendix {.appendix}
+## Supplementary simulation: Simulated mistakes with discrete difficulty levels on tasks {.appendix}
+
+For an additional simulation setting, we consider the so called discrete difficulty presented in @whitehill_whose_2009.
+Contrary to other simulations, we here consider that workers belong to two levels of abilities: $\texttt{good}$ or $\texttt{bad}$, and tasks have two levels of difficulty: $\texttt{easy}$ or $\texttt{hard}$.
+The keyword `ratio-diff` indicates the prevalence of each level of difficulty, it is defined as the ratio of $\texttt{easy}$ tasks over $\texttt{hard}$ tasks:
+
+$$
+\texttt{ratio-diff} = \frac{\mathbb{P}(\texttt{easy})}{\mathbb{P}(\texttt{hard})} \text{ with } \mathbb{P}(\texttt{easy}) +\mathbb{P}(\texttt{hard}) = 1 \enspace.
+$$
+
+Difficulties are then drawn [at random](https://peerannot.github.io/datasets/simulate_discrete_difficulty/).
+Tasks that are $\texttt{easy}$ are answered correctly by every worker.
+Tasks that are $\texttt{hard}$ are answered following the confusion matrix assigned to each worker (as in @sec-simu-independent).
+Each worker then answers independently to the presented tasks.
+
+We simulate $n_{\text{task}}=500$ tasks and $n_{\text{worker}}=100$ with $35\%$ of good workers in the crowd and $50\%$ of easy tasks. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
+
+```{python}
+#| output: false
+! peerannot simulate --n-worker=100 --n-task=200  --n-classes=5 \
+                     --strategy discrete-difficulty \
+                     --ratio 0.35 --ratio-diff 1 \
+                     --feedback 10 --seed 0 \
+                     --folder ./simus/discrete_difficulty
+```
+
+```{python}
+#| code-fold: true
+#| label: fig-simu4
+#| fig-cap: Distribution of number of tasks given per worker (left) and number of labels per task (right) in the setting with simulated discrete difficulty levels.
+
+votes_path = Path.cwd() / "simus" / "discrete_difficulty" / "answers.json"
+metadata_path = Path.cwd() / "simus" / "discrete_difficulty" / "metadata.json"
+efforts = feedback_effort(votes_path)
+workerload = working_load(votes_path, metadata_path)
+feedback = feedback_effort(votes_path)
+utx.figure_simulations(workerload, feedback)
+plt.show()
+```
+
+With the obtained answers, we can look at the aforementioned aggregation strategies performance:
+
+```{python}
+#| output: false
+for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=2]", "DSWC[L=5]"]:
+  ! peerannot aggregate ./simus/discrete_difficulty/ -s {strat}
+```
+```{python}
+#| label: tbl-simu-discrete-diff
+#| tbl-cap: AccTrain metric on simulated mistakes when tasks are associated a difficulty level considering classical feature-blind label aggregation strategies
+#| code-fold: true
+simu_corr = Path.cwd() / 'simus' / "discrete_difficulty"
+results = {
+  "mv": [], "naivesoft": [], "glad": [],
+  "ds": [], "dswc[l=2]": [], "dswc[l=5]": []
+  }
+for strategy in results.keys():
+  path_labels = simu_corr / "labels" / f"labels_discrete-difficulty_{strategy}.npy"
+  ground_truth = np.load(simu_corr / "ground_truth.npy")
+  labels = np.load(path_labels)
+  acc = (
+          np.mean(labels == ground_truth)
+          if labels.ndim == 1
+          else np.mean(
+              np.argmax(labels, axis=1)
+              == ground_truth
+          )
+        )
+  results[strategy].append(acc)
+results["NS"] = results["naivesoft"]
+results.pop("naivesoft")
+results = pd.DataFrame(results, index=['AccTrain'])
+results.columns = map(str.upper, results.columns)
+results = results.style.set_table_styles([dict(selector='th', props=[('text-align', 'center')])])
+results.set_properties(**{'text-align': 'center'})
+results = results.format(precision=3)
+display(results)
+```
+
+Finally, in this setting involving task difficulty coefficients, the only strategy that involves a latent variable for the task difficulty, knowing GLAD, outperforms the other strategies (see @tbl-simu-discrete-diff). Note that in this case, creating clusters of answers leads to worse decisions than an MV aggregation.
+
+## Comparison with other libraries
+
+In this section, we provide several comparisons with the @CrowdKit library.
+- Framework: `peerannot` focuses on image classification problems with categorical answers. `crowd-kit` also considers textual responses and image-segmentation with three aggregation strategies for each field.
+- Data storage: `peerannot` introduces this `.json` storage that can handle large datasets. `crowd-kit` stores the collected data in a `.csv` file with colums `task,worker,label`.
+- Identification module: one of the major differences between the two libraries resides in the `identification` module of `peerannot`. This module allows us to explore the dataset and detect poorly performing workers / difficult tasks easily. `crowd-kit` only allows to explore workers with the `accuracy_on_aggregation` metric that computes the accuracy of a worker given aggregated hard labels. `peerannot`, as demonstrated in @sec-exploration, proposes several metrics such as the spam score, GLAD's worker ability coefficient and the trace of the confusion matrices. As for the task side, `peerannot` proposes the different popular metrics in `crowd-kit` accompanied with the $\mathrm{WAUM}$ (and also the $\mathrm{AUMC}$) metrics from @lefort2022improve and GLAD's difficulty coefficients.
+- Training: `peerannot` lets users directly `train` a neural network architecture from the aggregated labels. This feature is not proposed by `crowd-kit`.
+- Simulation: `peerannot` created a `simulate` module to check strategies on. This feature is also not in the `crowd-kit` library.
+
+Finally, to compare different strategies accross libraries, we implemented a [crowdsourcing benchmark](https://github.com/benchopt/benchmark_crowdsourcing) in the Benchopt (@benchopt) library.
+The Benchopt library allows users to easily compare and reproduce optimization problems benchmarks between multiple frameworks.
+Each strategy is run, we measure cumulated time taken to reach the optimum during the optimization steps.
+The metric measured on the y-axis is the $\mathrm{AccTrain}$.
+Each strategy is run 5 times until convergence.
+The differences in results accross iterations for the MV strategy come from the randomness in the choice in case of equalities.
+We provide a clone of the crowdsourcing benchmark and the results are obtained by running the following command:
+
+```{bash}
+#| output: false
+#| eval: false
+benchopt run ./benchmark_crowdsourcing
+```
+
+First, let us see the performances on the [Bluebirds](https://github.com/welinder/cubam/tree/public/demo/bluebirds) dataset, a small dataset with 39 workers, 108 tasks and $K=2$ classes.
+
+![Aggregation strategies computational time during optimization procedure for the BlueBirds dataset with K=2.](./figures/bluebirds_benchopt.png){#fig-bluebirdsbench}
+
+We see in @fig-bluebirdsbench that the DS strategy from `peerannot` is the first to reach the optimum, followed by the [Fast-DS strategy](https://github.com/sukrutrao/Fast-Dawid-Skene/) and then `crowd-kit` DS. Other strategies do not lead to better accuracy on this dataset, DS seem to be the best fitting strategy.
+
+![Aggregation strategies computational time during optimization procedure for the LabelMe dataset with K=8](./figures/labelme_benchopt.png){#fig-labelmebench}
+
+For the LabelMe dataset, DS strategy is also the best aggregation strategy, faster for `crowd-kit`.
+The sensitivy of GLAD's method to the priors on $\alpha$ and $\beta$ parameters can lead to large differences on real datasets performance as we see in @fig-labelmebench.
+Note that `crowd-kit`'s KOS strategy is not available for this dataset as it is only fitting on binary classification datasets.
