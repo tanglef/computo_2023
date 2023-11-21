@@ -163,11 +163,14 @@ To install them, run the `install` command from `peerannot`:
 For both $\texttt{CIFAR-10H}$ and $\texttt{LabelMe}$, the dataset was originally released in classical supervised learning form (without crowdsourcing).
 These labels are used as true labels in evaluations and visualizations.
 However, we emphasize that crowdsourcing strategies do not rely on the true labels (only on the workers' answers).
+Examples of $\texttt{CIFAR-10H}$ images are available in @fig-cifarh, and $\texttt{LabelMe}$ examples in @fig-labelme in Appendix.
+Crowdsourcing votes however bring information about possible confusions (see @fig-cifarexamplevotes for an example with $\texttt{CIFAR-10H}$ and @fig-labelmeexamples with $\texttt{LabelMe}$).
 
 ```{python}
 #| code-fold: true
-#| label: fig-cifarh
-#| fig-cap: Example of images from CIFAR-10H. We display images row-wise according to the true label given initially in CIFAR-10.
+#| warning: false
+#| label: fig-cifarexamplevotes
+#| fig-cap: Example of crowdsourced images from CIFAR-10H. Each task has been labeled by multiple workers. We display the associated voting distribution over the possible classes.
 
 import torch
 import seaborn as sns
@@ -180,30 +183,18 @@ import matplotlib.ticker as mtick
 import pandas as pd
 sns.set_style("whitegrid")
 import utils as utx
-
-utx.figure_3()
+utx.figure_5()
 ```
-
-Examples of $\texttt{CIFAR-10H}$ images are available in @fig-cifarh, and $\texttt{LabelMe}$ examples in @fig-labelme below.
-
-```{python}
-#| code-fold: true
-#| label: fig-labelme
-#| fig-cap: Example of images from LabelMe. We display images row-wise according to the true label given with the crowdsourced data.
-
-utx.figure_4()
-```
-
-Each of these tasks has been assigned a true label by the dataset's authors. Crowdsourcing votes however bring additional information about possible confusions (see @fig-cifarexamplevotes).
 
 ```{python}
 #| code-fold: true
 #| warning: false
-#| label: fig-cifarexamplevotes
-#| fig-cap: Example of crowdsourced images from CIFAR-10H. Each task has been labeled by multiple workers. We display the associated voting distribution over the possible classes. In addition, a true label is provided using the original CIFAR-10 dataset. This true label is only used for performance evaluation.
+#| label: fig-labelmeexamples
+#| fig-cap: Example of crowdsourced images from LabelMe. Each task has been labeled by multiple workers. We display the associated voting distribution over the possible classes.
 
-utx.figure_5()
+utx.figure_5_labelmeversion()
 ```
+
 
 # Aggregation strategies in crowdsourcing {#sec-introaggregation}
 
@@ -565,7 +556,8 @@ for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=5]", "DSWC[L=6]", "DSWC[L
 #| tbl-cap: AccTrain metric on simulated correlated mistakes considering classical feature-blind label aggregation strategies
 #| code-fold: true
 simu_corr = Path.cwd() / 'simus' / "student_teacher"
-results = {"mv": [], "naivesoft": [], "glad": [], "ds": [], "dswc[l=5]": [], "dswc[l=6]": [], "dswc[l=10]": []}
+results = {"mv": [], "naivesoft": [], "glad": [], "ds": [], "dswc[l=5]": [],
+           "dswc[l=6]": [], "dswc[l=10]": []}
 for strategy in results.keys():
   path_labels = simu_corr / "labels" / f"labels_student-teacher_{strategy}.npy"
   ground_truth = np.load(simu_corr / "ground_truth.npy")
@@ -583,7 +575,8 @@ results["NS"] = results["naivesoft"]
 results.pop("naivesoft")
 results = pd.DataFrame(results, index=['AccTrain'])
 results.columns = map(str.upper, results.columns)
-results = results.style.set_table_styles([dict(selector='th', props=[('text-align', 'center')])])
+results = results.style.set_table_styles(
+  [dict(selector='th', props=[('text-align', 'center')])])
 results.set_properties(**{'text-align': 'center'})
 results = results.format(precision=3)
 display(results)
@@ -1130,3 +1123,26 @@ We see in @fig-bluebirdsbench that the DS strategy from `peerannot` is the first
 For the LabelMe dataset, DS strategy is also the best aggregation strategy, faster for `crowd-kit`.
 The sensitivity of GLAD's method to the priors on $\alpha$ and $\beta$ parameters can lead to large performance differences for real datasets as we see in @fig-labelmebench.
 Note that `crowd-kit`'s KOS strategy is not available for this dataset as it is only made for binary classification datasets.
+
+## Examples of images in CIFAR-10H and Labelme
+
+In this section, we provide examples of images from the $\texttt{CIFAR-10H}$ and $\texttt{LabelMe}$ datasets.
+Both of these datasets came with known true labels.
+For $\texttt{CIFAR-10H}$, the true labels were from the original $\texttt{CIFAR-10}$ dataset.
+For $\texttt{LabelMe}$, the true labels were determined by the authors at release.
+
+```{python}
+#| code-fold: true
+#| label: fig-cifarh
+#| fig-cap: Example of images from CIFAR-10H. We display images row-wise according to the true label given initially in CIFAR-10.
+
+utx.figure_3()
+```
+
+```{python}
+#| code-fold: true
+#| label: fig-labelme
+#| fig-cap: Example of images from LabelMe. We display images row-wise according to the true label given with the crowdsourced data.
+
+utx.figure_4()
+```

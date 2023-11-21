@@ -152,16 +152,77 @@ def figure_5():
         )
         axs[1, i].set_xticklabels(match_.values(), rotation=90)
         if i > 0:
-            axs[1, i].set_yticklabels([])
+            # axs[1, i].set_yticklabels([])
             axs[1, i].set_ylim([0, 100])
             axs[1, i].set_ylabel("")
         else:
             axs[1, i].yaxis.set_major_formatter(
                 mtick.PercentFormatter(decimals=0)
             )
-    cols = [rf"$y^\star=${match_[i]}" for i in range(5)]
-    for ax, col in zip(axs[0], cols):
-        ax.set_title(col)
+    # cols = [rf"$y^\star=${match_[i]}" for i in range(5)]
+    # for ax, col in zip(axs[0], cols):
+    #     ax.set_title(col)
+    for ax in axs.flatten():
+        ax.xaxis.label.set_size(15)
+        ax.yaxis.label.set_size(15)
+        ax.xaxis.set_tick_params(labelsize=13)
+        ax.yaxis.set_tick_params(labelsize=13)
+    plt.show()
+
+
+def figure_5_labelmeversion():
+    nrow = 2
+    ncol = 5
+    match_ = {
+        0: "coast",
+        1: "forest",
+        2: "highway",
+        3: "insidecity",
+        4: "mountain",
+        5: "opencountry",
+        6: "street",
+        7: "tallbuilding",
+    }
+
+    fig, axs = plt.subplots(nrow, ncol, sharey="row", figsize=(15, 8))
+    path = Path.cwd() / "datasets" / "labelme" / "train"
+    list_numbers = [0, 50, 3, 4, 91]
+    names = []
+    for j in range(ncol):
+        img_folder = path / f"{match_[j]}"
+        all_imgs = list(img_folder.glob("*"))
+        i = 0
+        id_ = list_numbers[j]
+        image = np.asarray(Image.open(path / all_imgs[id_]))
+        names.append((path / all_imgs[id_]).stem)
+        axs[i, j].imshow(image)
+        axs[i, j].axis("off")
+    with open(path / ".." / "answers.json", "r") as f:
+        votes = json.load(f)
+    for i, name in enumerate(names):
+        taskid = str(name).split("-")[-1]
+        worker_votes = votes[taskid]
+        distrib = np.zeros(len(match_))
+        for worker, vote in worker_votes.items():
+            distrib[vote] += 1
+        distrib = distrib / np.sum(distrib) * 100
+        sns.barplot(
+            data=pd.DataFrame(
+                {"label": match_.values(), "voting distribution": distrib},
+            ),
+            x="label",
+            y="voting distribution",
+            ax=axs[1, i],
+        )
+        axs[1, i].set_xticklabels(match_.values(), rotation=90)
+        if i > 0:
+            # axs[1, i].set_yticklabels([])
+            axs[1, i].set_ylim([0, 100])
+            axs[1, i].set_ylabel("")
+        else:
+            axs[1, i].yaxis.set_major_formatter(
+                mtick.PercentFormatter(decimals=0)
+            )
     for ax in axs.flatten():
         ax.xaxis.label.set_size(15)
         ax.yaxis.label.set_size(15)
