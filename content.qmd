@@ -108,7 +108,7 @@ $$
 $$
 
 
-In this article, we do not address the setting where workers report their self-confidence [@YasminRomena2022ICIC], nor settings where workers are presented a trapping set -- *i.e* a subset of tasks where the true label is known to evaluate them with known labels [@khattak_toward_2017].
+In this article, we do not address the setting where workers report their self-confidence [@YasminRomena2022ICIC], nor settings where workers are presented a trapping set -- *i.e.,* a subset of tasks where the true label is known to evaluate them with known labels [@khattak_toward_2017].
 
 ## Storing crowdsourced datasets in `peerannot`
 
@@ -210,12 +210,11 @@ We usually expect a classification dataset to associate a task $x_i$ to a single
 In this case, we recommend releasing the anonymous answered labels and the aggregation strategy used to reach a consensus on a single label.
 With `peerannot`, both soft and hard labels can be produced.
 
-Note that when a strategy produces a soft label, a hard label can be easily induced by taking the mode, *i.e.*, the class achieving the maximum probability.
+Note that when a strategy produces a soft label, a hard label can be easily induced by taking the mode, *i.e.,* the class achieving the maximum probability.
 
 Moreover, the concept of confusion matrices has been commonly used to represent worker abilities.
 A confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ of a worker $w_j$ is defined such that $\pi^{(j)}_{k,\ell} = \mathbb{P}(y_i^{(j)}=\ell\vert y_i^\star=k)$.
-These quantities are not obtained using the true labels as they are unknown.
-In practice, the confusion matrices of each worker is estimated via an aggregation strategy like Dawid and Skene's [@dawid_maximum_1979] presented hereafter.
+In practice, estimators $\hat{\pi}^{(j)}$ of the confusion matrices of each worker $w_j$ are obtained via an aggregation strategy, *e.g.,* with the Dawid and Skene's method [@dawid_maximum_1979] presented hereafter.
 
 ```{python}
 #| code-fold: true
@@ -238,17 +237,19 @@ mats_confu = np.load("./simus/hammer_spammer/confusion/matrices.npy")
 
 utx.figure_6(mats, mats_confu)
 ```
+**XXX? je ne comprends dans la figure 6, tu utilise quelle methode? le code semble dire que tu ne fais pas de DS ou autre pour estimer le ground truth, donc utilise le ground truth? ici c'est un cas où c'est raisonnable sachant qu'on est en simulation...**
 
-In @fig-confusionmatrix, we illustrate multiple profiles of workers.
-In particular, one type of worker that can hurt data quality is the spammer.
-@raykar_ranking_2011 defined a spammer as a worker that answers randomly:
+In @fig-confusionmatrix, we illustrate multiple profiles of workers, in a simulated scenario.
+In particular, we display a type of worker that can hurt data quality: the spammer.
+@raykar_ranking_2011 defined a spammer as a worker that answers randomly,
+**XXX??? here you have to precise: is this just the fact that the row have constant value (i.e.,) [1/K,...1/K] or could you include the case where all rows are equal, but possibly different from the constant row? if this is the case the sentence should be : "a spammer as a worker that answers labels independently from the true label one"**
 $$
 \forall k\in[K],\ \mathbb{P}(y_i^{(j)}=k|y_i^\star) = \mathbb{P}(y_i^{(j)}=k)\enspace.
 $${#eq-spammer}
 
-Each row of the confusion matrix represents the label's probability distribution given an estimated true label, the spammer has a confusion matrix with near-identical rows.
-Apart from the spammer, common mistakes often involve workers ming-up one or several classes.
-Expert workers have a confusion matrix near the identity matrix.
+Each row of the confusion matrix represents the label's probability distribution given a true label. Hence, the spammer has a confusion matrix with near-identical rows.
+Apart from the spammer, common mistakes often involve workers mixing up one or several classes.
+Expert workers have a confusion matrix close to the identity matrix.
 
 ## Classical models
 We list below the most classical aggregation strategies used in crowdsourcing.
@@ -262,7 +263,7 @@ $$
 
 ### Naive soft (NS)
 
-One pitfall with MV is that the label produced is hard, hence the ambiguity is discarded by construction. A simple remedy consists in using the [Naive Soft](https://peerannot.github.io/models/NaiveSoft/) (NS) labeling, *i.e.* output the empirical distribution as the task label:
+One pitfall with MV is that the label produced is hard, hence the ambiguity is discarded by construction. A simple remedy consists in using the [Naive Soft](https://peerannot.github.io/models/NaiveSoft/) (NS) labeling, *i.e.,* output the empirical distribution as the task label:
 
 $$
 \hat{y}_i^{\text{NS}} = \bigg(\frac{1}{\vert\mathcal{A}(x_i)\vert}\sum_{j\in\mathcal{A}(x_i)} \mathbf{1}_{\{y_i^{(j)}=k\}} \bigg)_{j\in[K]} \enspace.
@@ -301,7 +302,7 @@ This framework allows to estimate $\rho,\pi,T$ with an EM algorithm as follows:
 - Update $T$ knowing $\rho$ and $\pi$ using Bayes formula.
 - Repeat until convergence of the likelihood.
 
-The final aggregated soft label is $\hat{y}_i^{\text{DS}} = T_{i,\cdot}$.
+The final aggregated soft labels are $\hat{y}_i^{\text{DS}} = T_{i,\cdot}$. Note that DS also provides the estimated confusion matrices $\hat{\pi}^{(j)}$ for each worker $w_j$.
 
 ![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the DS model](./figures/bayesien_plaque_ds.png){fig-align="center"}
 
@@ -337,7 +338,7 @@ This results in estimating $n_{\text{worker}} + n_{\text{task}}$ parameters.
 All of these aggregation strategies -- and more -- are available in the `peerannot` library from [the `peerannot.models` module](https://github.com/peerannot/peerannot/tree/main/peerannot/models/aggregation).
 Each model is a class object in its own `Python` file. It inherits from the `CrowdModel` template class and is defined with at least two methods:
 
-- `run`: includes the optimization procedure to obtain needed weights (*e.g.* the EM algorithm for the DS model),
+- `run`: includes the optimization procedure to obtain needed weights (*e.g.,* the EM algorithm for the DS model),
 - `get_probas`: returns the soft labels output for each task.
 
 ## Experiments and evaluation of label aggregation strategies {#sec-evaluation-aggregation}
@@ -614,6 +615,7 @@ $$
 
 where the crossentropy loss for two distribution $u,v \in\Delta_{K}$ is defined as $\mathrm{CE}(u, v) = \sum_{k\in[K]} v_k\log(u_k)$.
 
+**XXX Below I dont' see where in the code is the DS method used in your CrowdLayer code, so if correct remove the mention to DS here.**
 The confusion matrices of DS are taken into the network architecture as a new layer of weights to transform the output probabilities.
 The backbone classifier predicts a distribution that is then corrupted through the added layer to learn the worker-specific confusion.
 
@@ -753,7 +755,7 @@ To do so, we can explore the datasets from two points of view: worker-wise or ta
 If a dataset requires crowdsourcing to be labeled, it is because expert knowledge is long and costly to obtain. In the era of big data, where datasets are built using web scraping (or using a platform like [Amazon Mechanical Turk](https://www.mturk.com/)), citizen science is popular as it is an easy way to produce many labels.
 
 However, mistakes and confusions happen during these experiments.
-Sometimes involuntarily (*e.g.* because the task is too hard or the worker is unable to differentiate between two classes) and sometimes voluntarily (*e.g.* the worker is a spammer).
+Sometimes involuntarily (*e.g.,* because the task is too hard or the worker is unable to differentiate between two classes) and sometimes voluntarily (*e.g.,* the worker is a spammer).
 
 Underlying all the learning models and aggregation strategies, the cornerstone of crowdsourcing is evaluating the trust we put in each worker depending on the presented task. And with the gamification of crowdsourcing [@plantgame2016;@tinati2017investigation], it has become essential to find scoring metrics both for workers and tasks to keep citizens in the loop so to speak.
 This is the purpose of the identification module in `peerannot`.
@@ -771,15 +773,20 @@ $$
 $$
   - GLAD's scoring: by construction, @whitehill_whose_2009 introduced a scalar coefficient to score the difficulty of a task.
   - the Weighted Area Under the Margins (WAUM): introduced by @lefort2022improve, this weighted area under the margins indicates how difficult it is for a classifier $\mathcal{C}$ to learn a task's label. This procedure is done with a budget of $T>0$ epochs. Given the crowdsourced labels and the trust we have in each worker denoted $s^{(j)}(x_i)>0$, the WAUM of a given task $x_i\in\mathcal{X}$ and a set of crowdsourced labels $\{y_i^{(j)}\}_j \in [K]^{|\mathcal{A}(x_i)|}$ is defined as:
-$$\mathrm{WAUM}(x_i) := \frac{1}{|\mathcal{A}(x_i)|}\sum_{j\in\mathcal{A}(x_i)} s^{(j)}(x_i)\left\{\frac{1}{T}\sum_{t=1}^T  \sigma(\mathcal{C}(x_i))_{y_i^{(j)}} - \sigma(\mathcal{C}(x_i))_{[2]}\right\} \enspace.
+$$\mathrm{WAUM}(x_i) := \frac{1}{|\mathcal{A}(x_i)|}\sum_{j\in\mathcal{A}(x_i)} s^{(j)}(x_i)\left\{\frac{1}{T}\sum_{t=1}^T  \sigma(\mathcal{C}(x_i))_{y_i^{(j)}} - \sigma(\mathcal{C}(x_i))_{[2]}\right\} \enspace,
 $$
-The weights $s^{(j)}(x_i)$ are computed à-la @servajean2017crowdsourcing:
+where we remind that $\mathcal{C}(x_i))_{[2]}$ is the second largest probability output by the classifier $\mathcal{C}$ for the task $x_i$.
+
+The weights $s^{(j)}(x_i)$ are computed à la @servajean2017crowdsourcing:
 $$
-\forall j\in[n_\texttt{worker}]\forall i\in[n_{\text{task}}],\ s^{(j)}(x_i) = \left\langle \sigma(\mathcal{C}(x_i)), \mathrm{diag}(\pi^{(j)})\right\rangle \enspace.
+\forall j\in[n_\texttt{worker}], \forall i\in[n_{\text{task}}],\ s^{(j)}(x_i) = \left\langle \sigma(\mathcal{C}(x_i)), \mathrm{diag}(\pi^{(j)})\right\rangle \enspace,
 $$
+where $\hat{\pi}^{(j)}$ is the estimated confusion matrix of worker $w_j$ (by default, the estimation provided by DS).
+
 The WAUM is a generalization of the AUM by @pleiss_identifying_2020 to the crowdsourcing setting. A high WAUM indicates a high trust in the task classification by the network given the crowd labels. A low WAUM indicates difficulty for the network to classify the task into the given classes (taking into consideration the trust we have in each worker for the task considered). Where other methods only consider the labels and not directly the tasks, the WAUM directly considers the learning trajectories to identify ambiguous tasks. One pitfall of the WAUM is that it is dependent on the architecture used.
 
-Note that each of these statistics is useful in its context. The entropy can not be used in a setting with small $|\mathcal{A}(x_i)|$ (few labels per task), in particular for the $\texttt{LabelMe}$ dataset it is uninformative.
+Note that each of these statistics could prove useful in different contexts.
+The entropy is irrelevant in settings with few labels per task (small $|\mathcal{A}(x_i)|$). For instance, it is uninformative for $\texttt{LabelMe}$ dataset.
 The WAUM can handle any number of labels, but the larger the better. However, as it uses a deep learning classifier, the WAUM needs the tasks $(x_i)_i$ in addition to the proposed labels while the other strategies are feature-blind.
 
 ### CIFAR-1OH dataset
