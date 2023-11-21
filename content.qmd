@@ -68,7 +68,7 @@ Crowdsourced datasets induce at least three major challenges to which we contrib
   1) **How to identify good workers in the crowd and difficult tasks?** When multiple answers are given to a single task, looking for who to trust for which type of task becomes necessary to estimate the labels or later train a model with as few noise sources as possible. The module `identify` uses different scoring metrics to create a worker and/or task evaluation.
   This is particularly relevant considering the gamification of crowdsourcing experiments [@plantgame2016]
   1) **How to aggregate multiple labels into a single label from crowdsourced tasks?** This occurs for example when dealing with a single dataset that has been labeled by multiple workers with disagreements. This is also encountered with other scoring issues such as polls, reviews, peer-grading, *etc.* In our framework this is treated with the `aggregate` command, that given multiple labels, infers a label. From aggregated labels, a classifier can then be trained using the `train` command.
-  1) **How to learn a classifier from crowdsourced datasets?** Where the second question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision, is common in machine learning, however, it requires the actual tasks (the images, texts, videos, *etc.*) to train on -- and in crowdsourced datasets publicly available, they are not always available. This is treated with the `aggregate-deep` command.
+  1) **How to learn a classifier from crowdsourced datasets?** Where the second question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision, is common in machine learning, however, it requires the actual tasks (the images, texts, videos, *etc.*) to train on -- and in crowdsourced datasets publicly available, they are not always available. This is treated with the `aggregate-deep` command that runs strategies where thea aggregation has been transformed into a deep learning optimization problem.
 
 The library `peerannot` addresses these practical questions within a reproducible setting. Indeed, the complexity of experiments often leads to a lack of transparency and reproducible results for simulations and real datasets.
 We propose standard simulation settings with explicit implementation parameters that can be shared.
@@ -308,10 +308,12 @@ $$
 $$
 
 This framework allows to estimate $\rho,\pi,T$ with an EM algorithm as follows:
+
 - With the MV strategy, get an initial estimate of the true labels $T$.
 - Estimate $\rho$ and $\pi$ knowing $T$ using maximum likelihood estimators.
 - Update $T$ knowing $\rho$ and $\pi$ using Bayes formula.
 - Repeat until convergence of the likelihood.
+
 The final aggregated soft label is $\hat y_i^{\text{DS}} = T_{i,\cdot}$.
 
 ![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the DS model](./figures/bayesien_plaque_ds.png){fig-align="center"}
@@ -1018,7 +1020,7 @@ We hope that this library helps reproducibility in the crowdsourcing community a
 
 
 # Appendix {.appendix}
-## Supplementary simulation: Simulated mistakes with discrete difficulty levels on tasks {.appendix}
+## Supplementary simulation: Simulated mistakes with discrete difficulty levels on tasks
 
 For an additional simulation setting, we consider the so called discrete difficulty presented in @whitehill_whose_2009.
 Contrary to other simulations, we here consider that workers belong to two levels of abilities: $\texttt{good}$ or $\texttt{bad}$, and tasks have two levels of difficulty: $\texttt{easy}$ or $\texttt{hard}$.
@@ -1102,6 +1104,7 @@ Finally, in this setting involving task difficulty coefficients, the only strate
 ## Comparison with other libraries
 
 In this section, we provide several comparisons with the @CrowdKit library.
+
 - Framework: `peerannot` focuses on image classification problems with categorical answers. `crowd-kit` also considers textual responses and image-segmentation with three aggregation strategies for each field.
 - Data storage: `peerannot` introduces this `.json` storage that can handle large datasets. `crowd-kit` stores the collected data in a `.csv` file with colums `task,worker,label`.
 - Identification module: one of the major differences between the two libraries resides in the `identification` module of `peerannot`. This module allows us to explore the dataset and detect poorly performing workers / difficult tasks easily. `crowd-kit` only allows to explore workers with the `accuracy_on_aggregation` metric that computes the accuracy of a worker given aggregated hard labels. `peerannot`, as demonstrated in @sec-exploration, proposes several metrics such as the spam score, GLAD's worker ability coefficient and the trace of the confusion matrices. As for the task side, `peerannot` proposes the different popular metrics in `crowd-kit` accompanied with the $\mathrm{WAUM}$ (and also the $\mathrm{AUMC}$) metrics from @lefort2022improve and GLAD's difficulty coefficients.
@@ -1117,8 +1120,6 @@ The differences in results accross iterations for the MV strategy come from the 
 We provide a clone of the crowdsourcing benchmark and the results are obtained by running the following command:
 
 ```{bash}
-#| output: false
-#| eval: false
 benchopt run ./benchmark_crowdsourcing
 ```
 
@@ -1132,4 +1133,4 @@ We see in @fig-bluebirdsbench that the DS strategy from `peerannot` is the first
 
 For the LabelMe dataset, DS strategy is also the best aggregation strategy, faster for `crowd-kit`.
 The sensitivy of GLAD's method to the priors on $\alpha$ and $\beta$ parameters can lead to large differences on real datasets performance as we see in @fig-labelmebench.
-Note that `crowd-kit`'s KOS strategy is not available for this dataset as it is only fitting on binary classification datasets.
+Note that `crowd-kit`'s KOS strategy is not available for this dataset as it is only made for binary classification datasets.
