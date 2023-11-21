@@ -228,7 +228,7 @@ Note that when a strategy produces a soft label, a hard label can be easily indu
 Moreover, the concept of confusion matrices has been commonly used to represent worker abilities.
 A confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ of a worker $w_j$ is defined such that $\pi^{(j)}_{k,\ell} = \mathbb{P}(y_i^{(j)}=\ell\vert y_i^\star=k)$.
 These quantities are not obtained using the true labels as they are unknown.
-In practice, the confusion matrices of each worker is estimated via an aggregation strategy like Dawid and Skene's @dawid_maximum_1979 presented hereafter.
+In practice, the confusion matrices of each worker is estimated via an aggregation strategy like Dawid and Skene's [@dawid_maximum_1979] presented hereafter.
 
 ```{python}
 #| code-fold: true
