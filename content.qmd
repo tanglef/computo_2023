@@ -120,12 +120,7 @@ Let us set up a toy dataset example to understand the data structure and how to 
 ```{#lst-datasetconvention .bash lst-cap="Dataset storage tree structure."}
 datasetname
       ├── train
-      │     ├── class1
-      │     │     ├─ imagename-<key>.png
-      │     │     ├─ ...
-      │     │     └─ anotherimagename-<anotherkey>.png
-      │     ├── ...
-      │     └── classK
+      │     └── data as imagename-<key>.png
       ├── val
       ├── test
       ├── metadata.json
@@ -759,7 +754,7 @@ In this case, it is expected behavior as CoNAL was created for the $\texttt{Labe
 However, using `peerannot` we can look into **why modeling common confusion returns better results with this dataset**.
 To do so, we can explore the datasets from two points of view: worker-wise or task-wise in @sec-exploration.
 
-# Exploring crowdsourced datasets {#sec-exploration}
+# Identifying tasks difficulty and worker abilities {#sec-exploration}
 
 If a dataset requires crowdsourcing to be labeled, it is because expert knowledge is long and costly to obtain. In the era of big data, where datasets are built using web scraping (or using a platform like [Amazon Mechanical Turk](https://www.mturk.com/)), citizen science is popular as it is an easy way to produce many labels.
 
