@@ -318,6 +318,10 @@ def figure_simulations(workerload, feedback):
 
 
 def load_data(dataset, n_classes, classes):
+    if "cifar" in dataset:
+        mv = np.load(f"./datasets/{dataset}/labels/labels_cifar-10h_mv.npy")
+    else:
+        mv = np.load(f"./datasets/{dataset}/labels/labels_labelme_mv.npy")
 
     entrop = np.load(f"./datasets/{dataset}/identification/entropies.npy")
     path_train = Path(f"./datasets/{dataset}/train")
@@ -335,11 +339,13 @@ def load_data(dataset, n_classes, classes):
             f"./datasets/{dataset}/identification/modellabelme/waum_0.01_yang/waum.csv"
         )
     )
-    tasks = dfwaum.sort_values(by="waum")["task"].values
+    sorted_df = dfwaum.sort_values(by="waum")
+    tasks = sorted_df["task"].values
     img_ns, img_glad, img_waum = [], [], []
     idxs_ns = np.argsort(entrop)[::-1]
     idxs_glad = np.argsort(glad)[::-1]
     idxs_waum = [Path(task).stem.split("-")[1] for task in tasks]
+    # key_to_index = {v: k for k, v in zip(sorted_df["index"], idxs_waum)}
     for idxs, im_store in zip(
         [idxs_ns, idxs_glad, idxs_waum], [img_ns, img_glad, img_waum]
     ):
@@ -350,7 +356,7 @@ def load_data(dataset, n_classes, classes):
             for (id_, file) in list(
                 itertools.product(idxs, path_train.glob(f"{classes[k]}/*"))
             ):
-                if file.stem.endswith(f"-{id_}"):
+                if file.stem.endswith(f"-{id_}") and mv[int(id_)] == k:
                     im = Image.open(file)
                     if dataset.startswith("cifar"):
                         im = im.resize((32, 32))
@@ -473,3 +479,6 @@ def generate_plot(n_classes, all_images, classes):
     )
     fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
     fig.show()
+    fig, ax = plt.subplots(figsize=(0.1, 0.1), layout="constrained")
+    ax.axis("off")
+    plt.show()

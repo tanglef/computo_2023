@@ -799,7 +799,7 @@ First, let us consider a dataset with a large number of tasks, annotations and w
 ```{python}
 #| code-fold: true
 #| output: true
-#| fig-cap: Most difficult tasks identified depending on the strategy used (entropy, GLAD or WAUM) using a Resnet34.
+#| fig-cap: Most difficult tasks identified depending on the strategy used (entropy, GLAD or WAUM) using a Resnet34. Classes displayed are from the MV aggregation.
 
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -824,7 +824,7 @@ all_images = utx.load_data("cifar10H", n_classes, classes)
 utx.generate_plot(n_classes, all_images, classes)
 ```
 
-The entropy, GLAD's difficulty, and WAUM's difficulty each show different images as exhibited in the interactive Figure. We highlight that for the `cat` label, each strategy retrieves images that are mislabeled in the true labeling. Indeed, the frog, dog and fox images are labeled as `cat` in $\texttt{CIFAR-10}$. While the entropy and GLAD output similar tasks, in this case, the WAUM often differs. We can also observe an ambiguity induced by the labels in the `truck` category, with the presence of a trailer that is technically a mixup between a `car` and a `truck`.
+The entropy, GLAD's difficulty, and WAUM's difficulty each show different images as exhibited in the interactive Figure. While the entropy and GLAD output similar tasks, in this case, the WAUM often differs. We can also observe an ambiguity induced by the labels in the `truck` category, with the presence of a trailer that is technically a mixup between a `car` and a `truck`.
 
 ### LabelMe dataset
 
@@ -848,7 +848,7 @@ Now, let us compare the tasks' difficulty distribution depending on the strategy
 
 ```{python}
 #| code-fold: true
-#| fig-cap: Most difficult tasks identified depending on the strategy used (entropy, GLAD or WAUM) using a VGG-16 with two dense layers.
+#| fig-cap: Most difficult tasks identified depending on the strategy used (entropy, GLAD or WAUM) using a VGG-16 with two dense layers. Classes displayed are from the MV aggregation.
 classes = {
     0: "coast",
     1: "forest",
@@ -867,6 +867,7 @@ utx.generate_plot(n_classes, all_images, classes) # create interactive plot
 
 Note that in this experiment, because the number of labels given per task is in $\{1,2,3\}$, the entropy only takes four values.
 In particular, tasks with only one label all have a null entropy, so not just consensual tasks.
+The MV is also not suited in this case because of the low number of votes per task.
 
 The underlying difficulty of these tasks mainly comes from the overlap in possible labels. For example, `tallbuildings` are most often found `insidecities`, and so are `streets`. In the `opencountry` we find `forests`, river-`coasts` and `mountains`.
 
