@@ -208,10 +208,10 @@ utx.figure_5()
 # Aggregation strategies in crowdsourcing {#sec-introaggregation}
 
 The first question we address with `peerannot` is: *How to aggregate multiple labels into a single label from crowdsourced tasks?*
-The aggregation step can lead to two types of learnable labels $\hat y_i\in\Delta_{K}$ (where $\Delta_{K}$ is the simplex of dimension $K-1$: $\Delta_{K}=\{p\in [K]: \sum_{k=1}^K p_k = 1, p_k \geq 0 \}$ ) depending on the use case for each task $x_i$, $i=1,\dots,n_{\text{task}}$:
+The aggregation step can lead to two types of learnable labels $\hat{y}_i\in\Delta_{K}$ (where $\Delta_{K}$ is the simplex of dimension $K-1$: $\Delta_{K}=\{p\in \mathbb{R}^K: \sum_{k=1}^K p_k = 1, p_k \geq 0 \}$ ) depending on the use case for each task $x_i$, $i=1,\dots,n_{\text{task}}$:
 
-- a **hard** label: $\hat y_i$ is a Dirac distribution, this can be encoded as a classical label in $[K]$,
-- a **soft** label: $\hat y_i\in\Delta_{K}$ can represent any probability distribution on $[K]$. In that case, each coordinate of the $K-$ dimensional vector $\hat y_i$ represents the probability of belonging to the given class.
+- a **hard** label: $\hat{y}_i$ is a Dirac distribution, this can be encoded as a classical label in $[K]$,
+- a **soft** label: $\hat{y}_i\in\Delta_{K}$ can represent any probability distribution on $[K]$. In that case, each coordinate of the $K-$ dimensional vector $\hat{y}_i$ represents the probability of belonging to the given class.
 
 Learning from soft labels has been shown to improve learning performance and make the classifier learn the task ambiguity [@zhang2017mixup;@peterson_human_2019;@park2022calibration].
 However, crowdsourcing is often used as a stepping stone to create a new dataset.
@@ -266,7 +266,7 @@ We list below the most classical aggregation strategies used in crowdsourcing.
 The most intuitive way to create a label from multiple answers for any type of crowdsourced task is to take the [majority vote](https://peerannot.github.io/models/MV/) (MV). Yet, this strategy has many shortcomings [@james1998majority] -- there is no noise model, no worker reliability estimated, no task difficulty involved and especially no way to remove poorly performing workers. This standard choice can be expressed as:
 
 $$
-\hat y_i^{\text{MV}} = \operatornamewithlimits{argmax}_{k\in[K]} \sum_{j\in\mathcal{A}(x_i)} \mathbf{1}_{\{y_i^{(j)}=k\}} \enspace.
+\hat{y}_i^{\text{MV}} = \operatornamewithlimits{argmax}_{k\in[K]} \sum_{j\in\mathcal{A}(x_i)} \mathbf{1}_{\{y_i^{(j)}=k\}} \enspace.
 $$
 
 ### Naive soft (NS)
@@ -274,7 +274,7 @@ $$
 One pitfall with MV is that the label produced is hard, hence the ambiguity is discarded by construction. A simple remedy consists in using the [Naive Soft](https://peerannot.github.io/models/NaiveSoft/) (NS) labeling, *i.e.* output the empirical distribution as the task label:
 
 $$
-\hat y_i^{\text{NS}} = \bigg(\frac{1}{\vert\mathcal{A}(x_i)\vert}\sum_{j\in\mathcal{A}(x_i)} \mathbf{1}_{\{y_i^{(j)}=k\}} \bigg)_{j\in[K]} \enspace.
+\hat{y}_i^{\text{NS}} = \bigg(\frac{1}{\vert\mathcal{A}(x_i)\vert}\sum_{j\in\mathcal{A}(x_i)} \mathbf{1}_{\{y_i^{(j)}=k\}} \bigg)_{j\in[K]} \enspace.
 $$
 With the NS label, we keep the ambiguity, but all workers and all tasks are put on the same level. In practice, it is known that each worker comes with their abilities, thus modeling this knowledge can produce better results.
 
@@ -310,7 +310,7 @@ This framework allows to estimate $\rho,\pi,T$ with an EM algorithm as follows:
 - Update $T$ knowing $\rho$ and $\pi$ using Bayes formula.
 - Repeat until convergence of the likelihood.
 
-The final aggregated soft label is $\hat y_i^{\text{DS}} = T_{i,\cdot}$.
+The final aggregated soft label is $\hat{y}_i^{\text{DS}} = T_{i,\cdot}$.
 
 ![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the DS model](./figures/bayesien_plaque_ds.png){fig-align="center"}
 
@@ -326,7 +326,7 @@ Indeed, there are $L$ confusion matrices $\Lambda=\{\Lambda_1,\dots,\Lambda_L\}$
 ### Generative model of Labels, Abilities, and Difficulties (GLAD)
 
 Finally, we present the [GLAD](https://peerannot.github.io/models/GLAD/) model [@whitehill_whose_2009] that not only takes into account the worker's ability, but also the task difficulty in the noise model.
-The likelihood is optimized using an EM algorithm to recover the soft label $\hat y_i^{\text{GLAD}}$.
+The likelihood is optimized using an EM algorithm to recover the soft label $\hat{y}_i^{\text{GLAD}}$.
 
 ![Bayesian [plate notation](https://en.wikipedia.org/wiki/Plate_notation) for the GLAD model](./figures/schema_bayesien_glad.png){fig-align="center"}
 
@@ -353,10 +353,10 @@ Each model is a class object in its own `Python` file. It inherits from the `Cro
 
 One way to evaluate the label aggregation strategies is to measure their accuracy.
 This means that the underlying ground truth must be known -- at least for a representative subset.
-As the set of $n_{\text{task}}$ can be seen as a training set for a future classifier, we denote this metric $\operatornamewithlimits{AccTrain}$ on a dataset $\mathcal{D}$ for some given aggregated label $(\hat y_i)_i$ as:
+As the set of $n_{\text{task}}$ can be seen as a training set for a future classifier, we denote this metric $\operatornamewithlimits{AccTrain}$ on a dataset $\mathcal{D}$ for some given aggregated label $(\hat{y}_i)_i$ as:
 
 $$
-\operatornamewithlimits{AccTrain}(\mathcal{D}) = \frac{1}{\vert \mathcal{D}\vert}\sum_{i=1}^{\vert\mathcal{D}\vert} \mathbf{1}_{\{y_i^\star=\operatornamewithlimits{argmax}_{k\in[K]}\hat{(y_i)}_k\}} \enspace.
+\operatornamewithlimits{AccTrain}(\mathcal{D}) = \frac{1}{\vert \mathcal{D}\vert}\sum_{i=1}^{\vert\mathcal{D}\vert} \mathbf{1}_{\{y_i^\star=\operatornamewithlimits{argmax}_{k\in[K]}(\hat{y}_i)_k\}} \enspace.
 $$
 
 In the following, we write $\operatornamewithlimits{AccTrain}$ for $\operatornamewithlimits{AccTrain}(\mathcal{D}_{\text{train}})$ as we only consider the full training set so there is no ambiguity.
@@ -367,7 +367,7 @@ While this metric is useful, in practice there are a few arguable issues:
 - in practice, true labels are unknown, thus this metric would not be computable.
 
 We first consider classical simulation settings in the literature that can easily be created and reproduced using `peerannot`.
-For each dataset, we present the distribution of the number of workers per task $(|\mathcal{A}(x_i)|)_i$ @eq-workerset on the right and the distribution of the number of tasks per worker $(|\mathcal{T}(w_j)|)_j$ @eq-taskset on the left.
+For each dataset, we present the distribution of the number of workers per task $(|\mathcal{A}(x_i)|)_{i=1,\dots, n_{\text{task}}}~$ @eq-workerset on the right and the distribution of the number of tasks per worker $(|\mathcal{T}(w_j)|)_{j=1,\dots,n_{\text{worker}}~$ @eq-taskset on the left.
 
 ### Simulated independent mistakes {#sec-simu-independent}
 
@@ -451,7 +451,7 @@ display(results)
 
 As expected by the simulation framework, @tbl-simu-independent fits the DS model, thus leading to better accuracy in retrieving the simulated labels for the DS strategy. The MV and NS aggregations do not consider any worker-ability scoring or the task's difficulty and perform the worst.
 
-**Remark.** `peerannot` can also simulate datasets with an imbalanced number of votes chosen uniformly at random between $1$ and the number of workers available. For example:
+**Remark:** `peerannot` can also simulate datasets with an imbalanced number of votes chosen uniformly at random between $1$ and the number of workers available. For example:
 
 ```{python}
 #| output: false
@@ -654,14 +654,14 @@ Both CrowdLayer and CoNAL model worker confusions directly in the classifier's w
 The $\mathrm{AccTrain}$ metric presented in @sec-evaluation-aggregation might no longer be of interest when training a classifier. Classical error measurements involve a test dataset to estimate the generalization error.
 To do so, we present hereafter two error metrics. Assuming we trained our classifier $\mathcal{C}$ on a training set and that there is a test set available with known true labels:
 
-  - the test accuracy is computed as $\frac{1}{n_{\text{test}}}\sum_{i=1}^{n_{\text{test}}}\mathbf{1}_{\{y_i^\star = \hat y_i\}}$.
+  - the test accuracy is computed as $\frac{1}{n_{\text{test}}}\sum_{i=1}^{n_{\text{test}}}\mathbf{1}_{\{y_i^\star = \hat{y}_i\}}$.
   - the expected calibration error [@guo_calibration_2017] over $M$ equally spaced bins $I_1,\dots,I_M$ partitionning the interval $[0,1]$, is computed as:
 $$
 \mathrm{ECE} = \sum_{m=1}^M \frac{|B_m|}{n_{\text{task}}}|\mathrm{acc}(B_m) - \mathrm{conf}(B_m)|\enspace,
 $$
 with $B_m=\{x_i| \mathcal{C}(x_i)_{[1]}\in I_m\}$ the tasks with predicted probability in the $m$-th bin, $\mathrm{acc}(B_m)$ the accuracy of the network for the samples in $B_m$ and $\mathrm{conf}(B_m)$ the associated empirical confidence. More precisely:
 $$
-\mathrm{acc}(B_m) = \frac{1}{|B_m|}\sum_{i\in B_m} \mathbf{1}(\hat y_i=y_i^\star)\quad \text{and} \quad \mathrm{conf}(B_m) = \frac{1}{|B_m|}\sum_{i\in B_m} \sigma(\mathcal{C}(x_i))_{[1]}\enspace.
+\mathrm{acc}(B_m) = \frac{1}{|B_m|}\sum_{i\in B_m} \mathbf{1}(\hat{y}_i=y_i^\star)\quad \text{and} \quad \mathrm{conf}(B_m) = \frac{1}{|B_m|}\sum_{i\in B_m} \sigma(\mathcal{C}(x_i))_{[1]}\enspace.
 $$
 
 The accuracy represents how well the classifier generalizes, and the expected calibration error (ECE) quantifies the deviation between the accuracy and the confidence of the classifier. Modern neural networks are known to often be overconfident in their predictions [@guo_calibration_2017]. However, it has also been remarked that training on crowdsourced data, depending on the strategy, mitigates this confidence issue. That is why we propose to compare them both in our coming experiments.
@@ -774,7 +774,7 @@ To explore the tasks' intrinsic difficulty, we propose to compare three scoring 
 
   - the entropy of the NS distribution: the entropy measures the inherent uncertainty of the distribution to the possible outcomes. It is reliable with a big enough and not adversarial crowd. More formally:
 $$
-\forall i\in [n_{\text{task}}],\ \mathrm{Entropy}(\hat y_i^{NS}) = -\sum_{k\in[K]} (y_i^{NS})_k \log\left((y_i^{NS})_k\right) \enspace.
+\forall i\in [n_{\text{task}}],\ \mathrm{Entropy}(\hat{y}_i^{NS}) = -\sum_{k\in[K]} (y_i^{NS})_k \log\left((y_i^{NS})_k\right) \enspace.
 $$
   - GLAD's scoring: by construction, @whitehill_whose_2009 introduced a scalar coefficient to score the difficulty of a task.
   - the Weighted Area Under the Margins (WAUM): introduced by @lefort2022improve, this weighted area under the margins indicates how difficult it is for a classifier $\mathcal{C}$ to learn a task's label. This procedure is done with a budget of $T>0$ epochs. Given the crowdsourced labels and the trust we have in each worker denoted $s^{(j)}(x_i)>0$, the WAUM of a given task $x_i\in\mathcal{X}$ and a set of crowdsourced labels $\{y_i^{(j)}\}_j \in [K]^{|\mathcal{A}(x_i)|}$ is defined as:
@@ -884,7 +884,7 @@ GLAD's strategy estimates a reliability scalar coefficient $\alpha_j$ per worker
 With strategies looking to estimate confusion matrices, we investigate two scoring rules for workers:
 
 - The trace of the confusion matrix: the closer to $K$ the better the worker.
-- The closeness to spammer metric [@raykar_ranking_2011] (also called spammer score) that is the Frobenius norm between the estimated confusion matrix $\hat\pi^{(j)}$ and the closest rank-$1$ matrix. The further to zero the better the worker. On the contrary, the closer to zero, the more likely it is for the worker to be a spammer. This score separates spammers from common workers and experts (with profiles as in @fig-confusionmatrix).
+- The closeness to spammer metric [@raykar_ranking_2011] (also called spammer score) that is the Frobenius norm between the estimated confusion matrix $\hat{\pi}^{(j)}$ and the closest rank-$1$ matrix. The further to zero the better the worker. On the contrary, the closer to zero, the more likely it is for the worker to be a spammer. This score separates spammers from common workers and experts (with profiles as in @fig-confusionmatrix).
 
 When the tasks are available, confusion-matrix-based deep learning models can also be used.
 We thus add to the comparison the trace of the confusion matrices with CrowdLayer and CoNAL on the $\texttt{LabelMe}$ datasets.
