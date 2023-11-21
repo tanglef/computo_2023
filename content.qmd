@@ -59,7 +59,7 @@ execute:  # to remove at the end
 
 # Introduction: crowdsourcing in image classification
 
-Image datasets widely use crowdsourcing to collect labels, involving many workers that can annotate images for a small cost (or even free for instance in citizen science) and faster than using expert labeling.
+Image datasets widely use crowdsourcing to collect labels, involving many workers who can annotate images for a small cost (or even free for instance in citizen science) and faster than using expert labeling.
 Many classical datasets considered in machine learning have been created with human intervention to create labels, such as CIFAR-$10$, [@krizhevsky2009learning],
 ImageNet [@imagenet_cvpr09] or Pl\@ntnet [@Garcin_Joly_Bonnet_Affouard_Lombardo_Chouet_Servajean_Lorieul_Salmon2021] in image classification, but also COCO [@cocodataset], solar photovoltaic arrays [@kasmi2023crowdsourced] or even macro litter [@chagneux2023] in image segmentation and object counting.
 
@@ -67,8 +67,8 @@ Crowdsourced datasets induce at least three major challenges to which we contrib
 
   1) **How to identify good workers in the crowd and difficult tasks?** When multiple answers are given to a single task, looking for who to trust for which type of task becomes necessary to estimate the labels or later train a model with as few noise sources as possible. The module `identify` uses different scoring metrics to create a worker and/or task evaluation.
   This is particularly relevant considering the gamification of crowdsourcing experiments [@plantgame2016]
-  1) **How to aggregate multiple labels into a single label from crowdsourced tasks?** This occurs for example when dealing with a single dataset that has been labeled by multiple workers with disagreements. This is also encountered with other scoring issues such as polls, reviews, peer-grading, *etc.* In our framework this is treated with the `aggregate` command, that given multiple labels, infers a label. From aggregated labels, a classifier can then be trained using the `train` command.
-  1) **How to learn a classifier from crowdsourced datasets?** Where the second question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision, is common in machine learning, however, it requires the actual tasks (the images, texts, videos, *etc.*) to train on -- and in crowdsourced datasets publicly available, they are not always available. This is treated with the `aggregate-deep` command that runs strategies where thea aggregation has been transformed into a deep learning optimization problem.
+  1) **How to aggregate multiple labels into a single label from crowdsourced tasks?** This occurs for example when dealing with a single dataset that has been labeled by multiple workers with disagreements. This is also encountered with other scoring issues such as polls, reviews, peer-grading, *etc.* In our framework this is treated with the `aggregate` command, which given multiple labels, infers a label. From aggregated labels, a classifier can then be trained using the `train` command.
+  1) **How to learn a classifier from crowdsourced datasets?** Where the second question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision is common in machine learning, however, it requires the actual tasks (the images, texts, videos, *etc.*) to train on -- and in crowdsourced datasets publicly available, they are not always available. This is treated with the `aggregate-deep` command that runs strategies where the aggregation has been transformed into a deep learning optimization problem.
 
 The library `peerannot` addresses these practical questions within a reproducible setting. Indeed, the complexity of experiments often leads to a lack of transparency and reproducible results for simulations and real datasets.
 We propose standard simulation settings with explicit implementation parameters that can be shared.
@@ -116,8 +116,7 @@ Crowdsourced datasets come in various forms.
 To store [crowdsourcing datasets](https://peerannot.github.io/datasets/) efficiently and in a standardized way, `peerannot` proposes the following structure, where each dataset corresponds to a folder.
 Let us set up a toy dataset example to understand the data structure and how to store it.
 
-
-```{#lst-datasetconvention .bash lst-cap="Dataset storage tree structure."}
+```{#lst-datasetconvention .default lst-cap="Dataset storage tree structure."}
 datasetname
       ├── train
       │     └── data as imagename-<key>.png
@@ -254,7 +253,7 @@ $$
 \forall k\in[K],\ \mathbb{P}(y_i^{(j)}=k|y_i^\star) = \mathbb{P}(y_i^{(j)}=k)\enspace.
 $${#eq-spammer}
 
-As the probability distribution by row represent the confusion given an estimated true label, the spammer has a confusion matrix with near-identical rows.
+Each row of the confusion matrix represents the label's probability distribution given an estimated true label, the spammer has a confusion matrix with near-identical rows.
 Apart from the spammer, common mistakes often involve workers ming-up one or several classes.
 Expert workers have a confusion matrix near the identity matrix.
 
@@ -280,7 +279,7 @@ With the NS label, we keep the ambiguity, but all workers and all tasks are put 
 ### Dawid and Skene (DS)
 
 Refining the aggregation, researchers have proposed a noise model to take into account the workers' abilities.
-The [Dawid and Skene](https://peerannot.github.io/models/DS/)'s (DS) model [@dawid_maximum_1979] is one of the must studied [@gao2013minimax] and applied [@servajean2017crowdsourcing;@rodrigues2018deep].
+The [Dawid and Skene](https://peerannot.github.io/models/DS/)'s (DS) model [@dawid_maximum_1979] is one of the most studied [@gao2013minimax] and applied [@servajean2017crowdsourcing;@rodrigues2018deep].
 These types of models are most often optimized using EM-based procedures.
 Assuming the workers are answering tasks independently, this model boils down to model pairwise confusions between each possible class.
 Each worker $w_j$ is assigned a confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ as described in @sec-introaggregation.
@@ -294,7 +293,7 @@ $$
 $$
 
 When the true labels are not available, the data comes from a mixture of categorical distributions.
-In order to retrieve ground truth labels and be able to estimate these parameters, @dawid_maximum_1979 propose to consider the true labels as missing parameters.
+To retrieve ground truth labels and be able to estimate these parameters, @dawid_maximum_1979 have proposed to consider the true labels as missing parameters.
 In this case, denoting $T_{i,k}=\mathbf{1}_{\{y_i^{\star}=k \}}$ the vectors of label class indicators for each task, the likelihood with known true labels is:
 $$
 \arg\max_{\rho,\pi,T}\displaystyle\prod_{i\in [n_{\texttt{task}}]}\prod_{k \in [K]}\bigg[\rho_k\prod_{j\in [n_{\texttt{worker}}]}
@@ -448,7 +447,7 @@ results = results.format(precision=3)
 display(results)
 ```
 
-As expected by the simulation framework, @tbl-simu-independent fits the DS model, thus leading to better accuracy to retrieve the simulated labels for the DS strategy. The MV and NS aggregations do not consider any worker-ability scoring or the task's difficulty and performs the worse.
+As expected by the simulation framework, @tbl-simu-independent fits the DS model, thus leading to better accuracy in retrieving the simulated labels for the DS strategy. The MV and NS aggregations do not consider any worker-ability scoring or the task's difficulty and perform the worst.
 
 **Remark.** `peerannot` can also simulate datasets with an imbalanced number of votes chosen uniformly at random between $1$ and the number of workers available). For example:
 
@@ -524,7 +523,7 @@ While more realistic, working with an imbalanced number of votes per task can le
 
 ### Simulated correlated mistakes
 
-The correlated mistakes are also known as the student-teacher or junior-expert setting (@maxmig). Consider that the crowd of workers is divided into two categories: teachers and students (with $n_{\text{teacher}} + n_{\text{student}}=n_{\text{worker}}$). Each student is randomly assigned to one teacher at the beginning of the experiment. We generate the (diagonally dominant as in @sec-simu-independent) confusion matrices of each teacher and the student share the same confusion matrix as their associated teacher. Hence, clustering strategies are expected to perform best in this context. Then, they all answer independently, following a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$.
+The correlated mistakes are also known as the student-teacher or junior-expert setting (@maxmig). Consider that the crowd of workers is divided into two categories: teachers and students (with $n_{\text{teacher}} + n_{\text{student}}=n_{\text{worker}}$). Each student is randomly assigned to one teacher at the beginning of the experiment. We generate the (diagonally dominant as in @sec-simu-independent) confusion matrices of each teacher and the students share the same confusion matrix as their associated teacher. Hence, clustering strategies are expected to perform best in this context. Then, they all answer independently, following a multinomial distribution with weights given at the row $y_i^\star$ of their confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$.
 
 We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=30$ with $80\%$ of students in the crowd. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
 
@@ -589,7 +588,7 @@ display(results)
 ```
 
 With @tbl-simu-corr, we see that with correlated data ($24$ students and $6$ teachers), using $5$ confusion matrices with DSWC[L=5] outperforms the vanilla DS strategy that does not consider the correlations.
-And the best-performing method here estimates only $10$ confusion matrices (instead of $30$ for the vanilla DS model).
+The best-performing method here estimates only $10$ confusion matrices (instead of $30$ for the vanilla DS model).
 
 To summarize our simulations, we see that depending on workers answering strategies, different latent variable models perform best.
 However, these are unknown outside of a simulation framework, thus if we want to obtain labels from multiple responses, we need to investigate multiple models.
@@ -783,7 +782,7 @@ The weights $s^{(j)}(x_i)$ are computed à-la @servajean2017crowdsourcing:
 $$
 \forall j\in[n_\texttt{worker}]\forall i\in[n_{\text{task}}],\ s^{(j)}(x_i) = \left\langle \sigma(\mathcal{C}(x_i)), \mathrm{diag}(\pi^{(j)})\right\rangle \enspace.
 $$
-The WAUM is a generalization of the AUM by @pleiss_identifying_2020 to the crowdsourcing setting. A high WAUM indicates a high trust in the task classification by the network given the crowd labels. A low WAUM indicates a difficulty for the network to classify the task into the given classes (taking into consideration the trust we have in each worker for the task considered). Where other methods only consider the labels and not directly the tasks, the WAUM directly considers the learning trajectories to identify ambiguous tasks. One pitfall of the WAUM is that it is dependent of the architecture used.
+The WAUM is a generalization of the AUM by @pleiss_identifying_2020 to the crowdsourcing setting. A high WAUM indicates a high trust in the task classification by the network given the crowd labels. A low WAUM indicates difficulty for the network to classify the task into the given classes (taking into consideration the trust we have in each worker for the task considered). Where other methods only consider the labels and not directly the tasks, the WAUM directly considers the learning trajectories to identify ambiguous tasks. One pitfall of the WAUM is that it is dependent on the architecture used.
 
 Note that each of these statistics is useful in its context. The entropy can not be used in a setting with small $|\mathcal{A}(x_i)|$ (few labels per task), in particular for the $\texttt{LabelMe}$ dataset it is uninformative.
 The WAUM can handle any number of labels, but the larger the better. However, as it uses a deep learning classifier, the WAUM needs the tasks $(x_i)_i$ in addition to the proposed labels while the other strategies are feature-blind.
@@ -830,11 +829,11 @@ all_images = utx.load_data("cifar10H", n_classes, classes)
 utx.generate_plot(n_classes, all_images, classes)
 ```
 
-The entropy, GLAD's difficulty, and WAUM's difficulty each show different images as exhibited in the interactive Figure. We highlight that for the `cat` label, each strategy retrieves images that are mislabeled in the true labeling. Indeed, the frog, dog and fox images are labeled as `cat` in $\texttt{CIFAR-10}$. And while the entropy and GLAD output similar tasks, in this case the WAUM often differs. We can also observe an ambiguity induced by the labels in the `truck` category, with the presence of a trailer that is technically a mixup between a `car` and a `truck`.
+The entropy, GLAD's difficulty, and WAUM's difficulty each show different images as exhibited in the interactive Figure. We highlight that for the `cat` label, each strategy retrieves images that are mislabeled in the true labeling. Indeed, the frog, dog and fox images are labeled as `cat` in $\texttt{CIFAR-10}$. While the entropy and GLAD output similar tasks, in this case, the WAUM often differs. We can also observe an ambiguity induced by the labels in the `truck` category, with the presence of a trailer that is technically a mixup between a `car` and a `truck`.
 
 ### LabelMe dataset
 
-As for the $\texttt{LabelMe}$ dataset, one difficulty in evaluating tasks' intrinsic difficulty is that there a limited amount of votes available per task.
+As for the $\texttt{LabelMe}$ dataset, one difficulty in evaluating tasks' intrinsic difficulty is that there is a limited amount of votes available per task.
 Hence, the entropy in the distribution of the votes is no longer a reliable metric, and we need to rely on other models.
 
 Now, let us compare the tasks' difficulty distribution depending on the strategy considered using `peerannot`.
@@ -878,12 +877,12 @@ The underlying difficulty of these tasks mainly comes from the overlap in possib
 
 ## Identification of worker reliability and task difficulty
 
-From the labels we can explore different worker evaluation scores.
+From the labels, we can explore different worker evaluation scores.
 GLAD's strategy estimates a reliability scalar coefficient $\alpha_j$ per worker.
 With strategies looking to estimate confusion matrices, we investigate two scoring rules for workers:
 
 - The trace of the confusion matrix: the closer to $K$ the better the worker.
-- The closeness to spammer metric [@raykar_ranking_2011] (also called spammer score) that is the Frobenius norm between the estimated confusion matrix $\hat\pi^{(j)}$ and the closest rank-$1$ matrix. The further to zero the better the worker. On the contrary, the closer to zero, the more likely it is the worker to be a spammer. This score separates spammers from common workers and experts (with profiles as in @fig-confusionmatrix).
+- The closeness to spammer metric [@raykar_ranking_2011] (also called spammer score) that is the Frobenius norm between the estimated confusion matrix $\hat\pi^{(j)}$ and the closest rank-$1$ matrix. The further to zero the better the worker. On the contrary, the closer to zero, the more likely it is for the worker to be a spammer. This score separates spammers from common workers and experts (with profiles as in @fig-confusionmatrix).
 
 When the tasks are available, confusion-matrix-based deep learning models can also be used.
 We thus add to the comparison the trace of the confusion matrices with CrowdLayer and CoNAL on the $\texttt{LabelMe}$ datasets.
@@ -892,7 +891,7 @@ Moreover, for CrowdLayer and CoNAL we show in @fig-abilities-labelme the weights
 
 Comparisons in @fig-abilitiescifarh and @fig-abilities-labelme are plotted pairwise between the evaluated metrics.
 Each point represents a worker.
-Each off-diagonal plot shows the joint distribution between the scores of the y-axis row and x-axis column.
+Each off-diagonal plot shows the joint distribution between the scores of the y-axis row and the x-axis column.
 They allow us to visualize the relationship between these two variables.
 The main diagonal represents the (smoothed) marginal distribution of the score of the considered column.
 
@@ -927,7 +926,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-From @fig-abilitiescifarh, we can see that in this dataset, different methods easily separate the worse workers from the rest of the crowd (workers in the left tail of the distribution).
+From @fig-abilitiescifarh, we can see that in this dataset, different methods easily separate the worst workers from the rest of the crowd (workers in the left tail of the distribution).
 
 ### LabelMe
 
@@ -995,21 +994,21 @@ plt.show()
 We can see in @fig-abilities-labelme that the number of labels available by task highly impacts the worker evaluation scores.
 The spam score, DS model and CoNAL all show similar results in the distribution shape (bimodal distribution) whereas GLAD and CrowdLayer are more concentrated.
 However, this does not account for the ranking of a given worker by the methods considered.
-The exploration of the dataset let us look at different scores, but generalization performance presented in @sec-real-datasets should also be considered in crowdsourcing.
-This difference in worker evaluation scores indeed further highlights the importance of using multiple test metrics to compare model's prediction performance in crowdsourcing.
+The exploration of the dataset lets us look at different scores, but generalization performance presented in @sec-real-datasets should also be considered in crowdsourcing.
+This difference in worker evaluation scores indeed further highlights the importance of using multiple test metrics to compare the model's prediction performance in crowdsourcing.
 We have seen that the library `peerannot` allows users to explore the datasets, both in terms of tasks and workers, and easily compare predictive performance in this setting.
 
 In practice, the data exploration step can be used to detect possible ambiguities in the dataset's tasks, but also remove answers from spammers to improve the data quality as shown in @fig-pipeline.
-The easy access to the different strategies allows the user to decide if, for their collected dataset, there is a need for more recent deep-learning based strategies to improve the results.
+The easy access to the different strategies allows the user to decide if, for their collected dataset, there is a need for more recent deep-learning-based strategies to improve the results.
 This is the case for the $\texttt{LabelMe}$ dataset.
-Otherwise, the user can decide that standard aggregation-based crowdsourcing strategies are sufficient and for example, if there are plenty of votes per tasks like in $\texttt{CIFAR-10H}$, that the entropy in the votes distribution is a criterion that identified enough ambiguous tasks for their case.
+Otherwise, the user can decide that standard aggregation-based crowdsourcing strategies are sufficient and for example, if there are plenty of votes per task like in $\texttt{CIFAR-10H}$, that the entropy of the vote distribution is a criterion that identified enough ambiguous tasks for their case.
 As often, not a single strategy works best for all datasets, hence the need to perform easy comparisons with `peerannot`.
 
 # Conclusion
 
 We introduced `peerannot`, a library to handle crowdsourced datasets. This library enables both easy label aggregation and direct training strategies with classical state-of-the-art classifiers. The identification module of the library allows exploring the collected data from both the tasks and the workers' point of view for better scorings and data cleaning procedures.
 Our library also comes with templated datasets to better share crowdsourced datasets.
-Going beyond templating, it helps the crowdsourcing community to have openly accessible strategies to test, compare and improve in order to develop common strategies to analyse more and more common crowdsourced datasets.
+Going beyond templating, it helps the crowdsourcing community to have openly accessible strategies to test, compare and improve to develop common strategies to analyze more and more common crowdsourced datasets.
 
 We hope that this library helps reproducibility in the crowdsourcing community and also standardizes training from crowdsourced datasets. New strategies can easily be incorporated into the open-source code [available on github](https://github.com/peerannot/peerannot). Finally, as `peerannot` is mostly directed to handle classification datasets, one of our future works would be to consider other `peerannot` modules to handle crowdsourcing for object detection, segmentation and even worker evaluation in other contexts like peer-grading.
 
@@ -1017,7 +1016,7 @@ We hope that this library helps reproducibility in the crowdsourcing community a
 # Appendix {.appendix}
 ## Supplementary simulation: Simulated mistakes with discrete difficulty levels on tasks
 
-For an additional simulation setting, we consider the so called discrete difficulty presented in @whitehill_whose_2009.
+For an additional simulation setting, we consider the so-called discrete difficulty presented in @whitehill_whose_2009.
 Contrary to other simulations, we here consider that workers belong to two levels of abilities: $\texttt{good}$ or $\texttt{bad}$, and tasks have two levels of difficulty: $\texttt{easy}$ or $\texttt{hard}$.
 The keyword `ratio-diff` indicates the prevalence of each level of difficulty, it is defined as the ratio of $\texttt{easy}$ tasks over $\texttt{hard}$ tasks:
 
@@ -1100,18 +1099,18 @@ Finally, in this setting involving task difficulty coefficients, the only strate
 
 In this section, we provide several comparisons with the @CrowdKit library.
 
-- Framework: `peerannot` focuses on image classification problems with categorical answers. `crowd-kit` also considers textual responses and image-segmentation with three aggregation strategies for each field.
-- Data storage: `peerannot` introduces this `.json` storage that can handle large datasets. `crowd-kit` stores the collected data in a `.csv` file with colums `task,worker,label`.
-- Identification module: one of the major differences between the two libraries resides in the `identification` module of `peerannot`. This module allows us to explore the dataset and detect poorly performing workers / difficult tasks easily. `crowd-kit` only allows to explore workers with the `accuracy_on_aggregation` metric that computes the accuracy of a worker given aggregated hard labels. `peerannot`, as demonstrated in @sec-exploration, proposes several metrics such as the spam score, GLAD's worker ability coefficient and the trace of the confusion matrices. As for the task side, `peerannot` proposes the different popular metrics in `crowd-kit` accompanied with the $\mathrm{WAUM}$ (and also the $\mathrm{AUMC}$) metrics from @lefort2022improve and GLAD's difficulty coefficients.
+- Framework: `peerannot` focuses on image classification problems with categorical answers. `crowd-kit` also considers textual responses and image segmentation with three aggregation strategies for each field.
+- Data storage: `peerannot` introduces this `.json` storage that can handle large datasets. `crowd-kit` stores the collected data in a `.csv` file with columns `task,worker,label`.
+- Identification module: one of the major differences between the two libraries resides in the `identification` module of `peerannot`. This module allows us to explore the dataset and detect poorly performing workers / difficult tasks easily. `crowd-kit` only allows us to explore workers with the `accuracy_on_aggregation` metric that computes the accuracy of a worker given aggregated hard labels. `peerannot`, as demonstrated in @sec-exploration, proposes several metrics such as the spam score, GLAD's worker ability coefficient and the trace of the confusion matrices. As for the task side, `peerannot` proposes the different popular metrics in `crowd-kit` accompanied with the $\mathrm{WAUM}$ (and also the $\mathrm{AUMC}$) metrics from @lefort2022improve and GLAD's difficulty coefficients.
 - Training: `peerannot` lets users directly `train` a neural network architecture from the aggregated labels. This feature is not proposed by `crowd-kit`.
 - Simulation: `peerannot` created a `simulate` module to check strategies on. This feature is also not in the `crowd-kit` library.
 
-Finally, to compare different strategies accross libraries, we implemented a [crowdsourcing benchmark](https://github.com/benchopt/benchmark_crowdsourcing) in the Benchopt (@benchopt) library.
-The Benchopt library allows users to easily compare and reproduce optimization problems benchmarks between multiple frameworks.
-Each strategy is run, we measure cumulated time taken to reach the optimum during the optimization steps.
+Finally, to compare different strategies across libraries, we implemented a [crowdsourcing benchmark](https://github.com/benchopt/benchmark_crowdsourcing) in the Benchopt (@benchopt) library.
+The Benchopt library allows users to easily compare and reproduce optimization problem benchmarks between multiple frameworks.
+After running each strategy, we measure the cumulated time taken to reach the optimum during the optimization steps.
 The metric measured on the y-axis is the $\mathrm{AccTrain}$.
 Each strategy is run 5 times until convergence.
-The differences in results accross iterations for the MV strategy come from the randomness in the choice in case of equalities.
+The differences in results across iterations for the MV strategy come from the randomness in the choice in case of equalities.
 We provide a clone of the crowdsourcing benchmark and the results are obtained by running the following command:
 
 ```{bash}
@@ -1122,10 +1121,10 @@ First, let us see the performances on the [Bluebirds](https://github.com/welinde
 
 ![Aggregation strategies computational time during optimization procedure for the BlueBirds dataset with K=2.](./figures/bluebirds_benchopt.png){#fig-bluebirdsbench}
 
-We see in @fig-bluebirdsbench that the DS strategy from `peerannot` is the first to reach the optimum, followed by the [Fast-DS strategy](https://github.com/sukrutrao/Fast-Dawid-Skene/) and then `crowd-kit` DS. Other strategies do not lead to better accuracy on this dataset, DS seem to be the best fitting strategy.
+We see in @fig-bluebirdsbench that the DS strategy from `peerannot` is the first to reach the optimum, followed by the [Fast-DS strategy](https://github.com/sukrutrao/Fast-Dawid-Skene/) and then `crowd-kit` DS. Other strategies do not lead to better accuracy on this dataset and DS seems to be the best fitting strategy.
 
 ![Aggregation strategies computational time during optimization procedure for the LabelMe dataset with K=8](./figures/labelme_benchopt.png){#fig-labelmebench}
 
 For the LabelMe dataset, DS strategy is also the best aggregation strategy, faster for `crowd-kit`.
-The sensitivy of GLAD's method to the priors on $\alpha$ and $\beta$ parameters can lead to large differences on real datasets performance as we see in @fig-labelmebench.
+The sensitivity of GLAD's method to the priors on $\alpha$ and $\beta$ parameters can lead to large performance differences for real datasets as we see in @fig-labelmebench.
 Note that `crowd-kit`'s KOS strategy is not available for this dataset as it is only made for binary classification datasets.
