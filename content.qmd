@@ -72,9 +72,9 @@ Crowdsourced datasets induce at least three major challenges to which we contrib
 
 The library `peerannot` addresses these practical questions within a reproducible setting. Indeed, the complexity of experiments often leads to a lack of transparency and reproducible results for simulations and real datasets.
 We propose standard simulation settings with explicit implementation parameters that can be shared.
-For real datasets, `peerannot` is compatible with standard neural networks architectures from the `Torchvision` [@torchvision] library and `Pytorch` [@pytorch], allowing a flexible framework with easy-to-share scripts to reproduce experiments.
+For real datasets, `peerannot` is compatible with standard neural network architectures from the `Torchvision` [@torchvision] library and `Pytorch` [@pytorch], allowing a flexible framework with easy-to-share scripts to reproduce experiments.
 
-![From crowdsourced labels to training a classifier neural network, the learning pipeline using the `peerannot` library. An optional preprocessing step using the `identify` command allows us to remove worse performing workers or images that can not be classified correctly (very bad quality for example). Then, from the cleaned dataset, the `aggregate` command may generate a single label per task from a prescribed strategy. From the aggregated labels we can train a neural network classifier with the `train` command. Otherwise, we can directly train a neural network classifier that takes into account the crowdsourcing setting in its architecture using `aggregate-deep`.](./figures/strategiesbis.png){#fig-pipeline width=550}
+![From crowdsourced labels to training a classifier neural network, the learning pipeline using the `peerannot` library. An optional preprocessing step using the `identify` command allows us to remove the worst-performing workers or images that can not be classified correctly (very bad quality for example). Then, from the cleaned dataset, the `aggregate` command may generate a single label per task from a prescribed strategy. From the aggregated labels we can train a neural network classifier with the `train` command. Otherwise, we can directly train a neural network classifier that takes into account the crowdsourcing setting in its architecture using `aggregate-deep`.](./figures/strategiesbis.png){#fig-pipeline width=550}
 
 # Notation and package structure
 
@@ -84,7 +84,7 @@ Let us consider the classical supervised learning classification framework. A tr
 In the following, the tasks considered are generally RGB images. We use the notation $\sigma(\cdot)$ for the softmax function.
 In particular, given a classifier $\mathcal{C}$ with logits outputs, $\sigma(\mathcal{C}(x_i))_{[1]}$ represents the largest probability and we can sort the probabilities as $\sigma(\mathcal{C}(x_i))_{[1]}\geq \sigma(\mathcal{C}(x_i))_{[2]}\geq \dots\geq \sigma(\mathcal{C}(x_i))_{[K]}$. The indicator function is denoted $\mathbf{1}(\cdot)$.
 We use the $i$ index notation to range over the different tasks and the $j$ index notation for the workers in the crowdsourcing experiment.
-Note that indices start at position $1$ in the equation to follow mathematical standard notation such as $[K]=\{1,\dots,K\}$ but it should be noted that, as this is a `Python` library, in the code indices start at the $0$ position.
+Note that indices start at position $1$ in the equation to follow mathematical standard notation such as $[K]=\{1,\dots, K\}$ but it should be noted that, as this is a `Python` library, in the code indices start at the $0$ position.
 
 With crowdsourced data the true label of a task $x_i$, denoted $y_i^\star$ is unknown, and there is no single label that can be trusted as in standard supervised learning (even on the train set!).
 Instead, there is a crowd of $n_{\text{worker}}$ workers from which multiple workers $(w_j)_j$ propose a label $(y_i^{(j)})_j$.
@@ -101,7 +101,7 @@ $$
 \mathcal{T}(w_j)=\left\{i\in[n_\text{task}]: w_j \text{ answered } x_i\right\}.
 $${#eq-taskset}
 
-The cardinal $\vert \mathcal{T}(w_j)\vert$ is called the workerload of $w_j$.
+The cardinal $\vert \mathcal{T}(w_j)\vert$ is called the workload of $w_j$.
 The final dataset can then be decomposed as:
 $$
 \mathcal{D}_{\text{train}} := \bigcup_{i\in[n_\text{task}]} \left\{(x_i, (y_i^{(j)})) \text{ for }j\in\mathcal{A}(x_i)\right\} = \bigcup_{j\in[n_\text{worker}]} \left\{(x_i, (y_i^{(j)})) \text{ for }i \in\mathcal{T}(w_j)\right\} \enspace.
@@ -119,7 +119,9 @@ Let us set up a toy dataset example to understand the data structure and how to 
 ```{#lst-datasetconvention .default lst-cap="Dataset storage tree structure."}
 datasetname
       ├── train
-      │     └── data as imagename-<key>.png
+      │     ├── ...
+      │     ├── data as imagename-<key>.png
+      │     └── ...
       ├── val
       ├── test
       ├── metadata.json
@@ -134,7 +136,7 @@ Furthermore, storing labels in a dictionary is more memory-friendly than having 
 ![Data storage for the `toy-data` crowdsourced dataset, a binary classification problem ($K=2$, smiling/not smiling) on recognizing smiling faces. (left: how data is stored in `peerannot` in a file `answers.json`, right: data collected)](./figures/json_answers.png){#fig-answers fig-align="center"}
 
 In @fig-answers, there are three tasks, $n_{\text{worker}}=4$ workers and $K=2$ classes.
-Any available task should be stored in a single file whose name follows the convention described in @lst-datasetconvention. These files are spread into a `train`, `val` and `test` subdir as in [`ImageFolder` datasets](https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html) from `torchvision`
+Any available task should be stored in a single file whose name follows the convention described in @lst-datasetconvention. These files are spread into a `train`, `val` and `test` subdirectories as in [`ImageFolder` datasets](https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html) from `torchvision`
 
 Finally, a `metadata.json` file includes relevant information related to the crowdsourcing experiment such as the number of workers, the number of tasks, *etc.*
 For example, a minimal `metadata.json` file for the toy dataset presented in @fig-answers is:
@@ -165,7 +167,7 @@ However, we emphasize that crowdsourcing strategies do not rely on the true labe
 ```{python}
 #| code-fold: true
 #| label: fig-cifarh
-#| fig-cap: Example of images from CIFAR-10H. We display images rowise according to the true label given initially in CIFAR-10.
+#| fig-cap: Example of images from CIFAR-10H. We display images row-wise according to the true label given initially in CIFAR-10.
 
 import torch
 import seaborn as sns
@@ -182,12 +184,12 @@ import utils as utx
 utx.figure_3()
 ```
 
-Examples of $\texttt{CIFAR-10H}$ images are available in @fig-cifarh, and $\texttt{LabelMe}$ examples in @fig-labelme here below.
+Examples of $\texttt{CIFAR-10H}$ images are available in @fig-cifarh, and $\texttt{LabelMe}$ examples in @fig-labelme below.
 
 ```{python}
 #| code-fold: true
 #| label: fig-labelme
-#| fig-cap: Example of images from LabelMe. We display images rowise according to the true label label given with the crowdsourced data.
+#| fig-cap: Example of images from LabelMe. We display images row-wise according to the true label given with the crowdsourced data.
 
 utx.figure_4()
 ```
@@ -198,7 +200,7 @@ Each of these tasks has been assigned a true label by the dataset's authors. Cro
 #| code-fold: true
 #| warning: false
 #| label: fig-cifarexamplevotes
-#| fig-cap: Example of crowdsourced images from CIFAR-10H. Each task has been labelled by multiple workers. We display the associated voting distribution over the possible classes. In addition, a true label is provided using the original CIFAR-10 dataset. This true label is only used for performance evaluation.
+#| fig-cap: Example of crowdsourced images from CIFAR-10H. Each task has been labeled by multiple workers. We display the associated voting distribution over the possible classes. In addition, a true label is provided using the original CIFAR-10 dataset. This true label is only used for performance evaluation.
 
 utx.figure_5()
 ```
@@ -206,15 +208,15 @@ utx.figure_5()
 # Aggregation strategies in crowdsourcing {#sec-introaggregation}
 
 The first question we address with `peerannot` is: *How to aggregate multiple labels into a single label from crowdsourced tasks?*
-The aggregation step can lead to two types of learnable labels $\hat y_i\in\Delta_{K}$ (where $\Delta_{K}$ is the simplex of dimension $K-1$ : $\Delta_{K}=\{p\in [K]: \sum_{k=1}^K p_k = 1, p_k \geq 0 \}$ ) depending on the use case for each task $x_i$, $i=1,\dots,n_{\text{task}}$:
+The aggregation step can lead to two types of learnable labels $\hat y_i\in\Delta_{K}$ (where $\Delta_{K}$ is the simplex of dimension $K-1$: $\Delta_{K}=\{p\in [K]: \sum_{k=1}^K p_k = 1, p_k \geq 0 \}$ ) depending on the use case for each task $x_i$, $i=1,\dots,n_{\text{task}}$:
 
 - a **hard** label: $\hat y_i$ is a Dirac distribution, this can be encoded as a classical label in $[K]$,
-- a **soft** label: $\hat y_i\in\Delta_{K}$ can represent any probability distribution on $[K]$. In that case, each coordinate of the $K-$ dimensional vector $\hat y_i$ represents the probability to belong to the given class.
+- a **soft** label: $\hat y_i\in\Delta_{K}$ can represent any probability distribution on $[K]$. In that case, each coordinate of the $K-$ dimensional vector $\hat y_i$ represents the probability of belonging to the given class.
 
 Learning from soft labels has been shown to improve learning performance and make the classifier learn the task ambiguity [@zhang2017mixup;@peterson_human_2019;@park2022calibration].
 However, crowdsourcing is often used as a stepping stone to create a new dataset.
 We usually expect a classification dataset to associate a task $x_i$ to a single label and not a full probability distribution.
-In this case, we recommend to release the anonymous answered labels and the aggregation strategy used to reach a consensus on a single label.
+In this case, we recommend releasing the anonymous answered labels and the aggregation strategy used to reach a consensus on a single label.
 With `peerannot`, both soft and hard labels can be produced.
 
 Note that when a strategy produces a soft label, a hard label can be easily induced by taking the mode, *i.e.*, the class achieving the maximum probability.
@@ -237,7 +239,7 @@ In practice, the confusion matrices of each worker is estimated via an aggregati
 ```{python}
 #| code-fold: true
 #| label: fig-confusionmatrix
-#| fig-cap: Three types of profiles of worker confusion matrices. The spammer answers independent from the true label. Expert workers identify classes without mistakes. In practice common workers are good for some classes but might confuse two (ore more) labels. All workers are simulated using the `peerannot simulate` command presented in @sec-evaluation-aggregation.
+#| fig-cap: Three types of profiles of worker confusion matrices. The spammer answers independently from the true label. Expert workers identify classes without mistakes. In practice common workers are good for some classes but might confuse two (or more) labels. All workers are simulated using the `peerannot simulate` command presented in @sec-evaluation-aggregation.
 
 
 mats = np.load("./simus/hammer_spammer/matrices.npy")
@@ -248,7 +250,7 @@ utx.figure_6(mats, mats_confu)
 
 In @fig-confusionmatrix, we illustrate multiple profiles of workers.
 In particular, one type of worker that can hurt data quality is the spammer.
-@raykar_ranking_2011 defined a spammer as a worker that answers randomly as:
+@raykar_ranking_2011 defined a spammer as a worker that answers randomly:
 $$
 \forall k\in[K],\ \mathbb{P}(y_i^{(j)}=k|y_i^\star) = \mathbb{P}(y_i^{(j)}=k)\enspace.
 $${#eq-spammer}
@@ -396,9 +398,9 @@ from pathlib import Path
 votes_path = Path.cwd() / "simus" / "independent" / "answers.json"
 metadata_path = Path.cwd() / "simus" / "independent" / "metadata.json"
 efforts = feedback_effort(votes_path)
-workerload = working_load(votes_path, metadata_path)
+workload = working_load(votes_path, metadata_path)
 feedback = feedback_effort(votes_path)
-utx.figure_simulations(workerload, feedback)
+utx.figure_simulations(workload, feedback)
 plt.show()
 ```
 
@@ -449,7 +451,7 @@ display(results)
 
 As expected by the simulation framework, @tbl-simu-independent fits the DS model, thus leading to better accuracy in retrieving the simulated labels for the DS strategy. The MV and NS aggregations do not consider any worker-ability scoring or the task's difficulty and perform the worst.
 
-**Remark.** `peerannot` can also simulate datasets with an imbalanced number of votes chosen uniformly at random between $1$ and the number of workers available). For example:
+**Remark.** `peerannot` can also simulate datasets with an imbalanced number of votes chosen uniformly at random between $1$ and the number of workers available. For example:
 
 ```{python}
 #| output: false
@@ -463,16 +465,16 @@ As expected by the simulation framework, @tbl-simu-independent fits the DS model
 ```{python}
 #| code-fold: true
 #| label: fig-simu2
-#| fig-cap: Distribution of number of tasks given per worker (left) and number of labels per task (right) in the independent mistakes setting with voting imbalance enabled.
+#| fig-cap: Distribution of the number of tasks given per worker (left) and of the number of labels per task (right) in the independent mistakes setting with voting imbalance enabled.
 
 sns.set_style("whitegrid")
 
 votes_path = Path.cwd() / "simus" / "independent-imbalanced" / "answers.json"
 metadata_path = Path.cwd() / "simus" / "independent-imbalanced" / "metadata.json"
 efforts = feedback_effort(votes_path)
-workerload = working_load(votes_path, metadata_path)
+workload = working_load(votes_path, metadata_path)
 feedback = feedback_effort(votes_path)
-utx.figure_simulations(workerload, feedback)
+utx.figure_simulations(workload, feedback)
 plt.show()
 ```
 
@@ -519,7 +521,7 @@ results = results.format(precision=3)
 display(results)
 ```
 
-While more realistic, working with an imbalanced number of votes per task can lead to disrupting orders of performance for some strategies (here GLAD is downgraded with respect to other strategies).
+While more realistic, working with an imbalanced number of votes per task can lead to disrupting orders of performance for some strategies (here GLAD is outperformed by other strategies).
 
 ### Simulated correlated mistakes
 
@@ -544,9 +546,9 @@ We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=30$ with $80\%$ o
 votes_path = Path.cwd() / "simus" / "student_teacher" / "answers.json"
 metadata_path = Path.cwd() / "simus" / "student_teacher" / "metadata.json"
 efforts = feedback_effort(votes_path)
-workerload = working_load(votes_path, metadata_path)
+workload = working_load(votes_path, metadata_path)
 feedback = feedback_effort(votes_path)
-utx.figure_simulations(workerload, feedback)
+utx.figure_simulations(workload, feedback)
 plt.show()
 ```
 
@@ -699,7 +701,7 @@ for strat in ["CrowdLayer", "CoNAL[scale=0]", "CoNAL[scale=1e-4]"]:
     --num-workers=8 --data-augmentation --seed=1
 
 
-# command to save separately a specific part of conal model (memory intensive otherwise)
+# command to save separately a specific part of CoNAL model (memory intensive otherwise)
 path_ = Path.cwd() / "datasets" / "labelme"
 best_conal = torch.load(path_ / "best_models" / "labelme_conal[scale=1e-4].pth",
 map_location="cpu")
@@ -913,7 +915,7 @@ for method in ["trace_confusion", "spam_score"]:
 #| code-fold: true
 #| warning: false
 #| label: fig-abilitiescifarh
-#| fig-cap: Comparison of ability scores by workers for the CIFAR-10H dataset. All metrics  computed identify the same poorly performing workers. A mass of good and expert workers can be seen as the dataset presents few disagreements, thus few data to seperate good from best workers.
+#| fig-cap: Comparison of ability scores by workers for the CIFAR-10H dataset. All metrics computed identify the same poorly performing workers. A mass of good and expert workers can be seen as the dataset presents few disagreements, thus few data to discriminate expert workers from the otherss.
 
 path_ = Path.cwd() / "datasets" / "cifar10H"
 results_identif = {"Trace DS": [], "spam_score": [], "glad": []}
@@ -947,7 +949,7 @@ for method in ["trace_confusion", "spam_score"]:
 #| code-fold: true
 #| warning: false
 #| label: fig-abilities-labelme
-#| fig-cap: Comparison of ability scores by workers for the labelme dataset. With few labels per task, workers are more difficult to rank. It is more difficult to separate workers with their abilities in this crowd. Hence the importance of investigating the generalization performance of the methods presented in the previous section.
+#| fig-cap: Comparison of ability scores by workers for the LabelMe dataset. With few labels per task, workers are more difficult to rank. It is more difficult to separate workers with their abilities in this crowd. Hence the importance of investigating the generalization performance of the methods presented in the previous section.
 
 path_ = Path.cwd() / "datasets" / "labelme"
 results_identif = {
@@ -1010,7 +1012,7 @@ We introduced `peerannot`, a library to handle crowdsourced datasets. This libra
 Our library also comes with templated datasets to better share crowdsourced datasets.
 Going beyond templating, it helps the crowdsourcing community to have openly accessible strategies to test, compare and improve to develop common strategies to analyze more and more common crowdsourced datasets.
 
-We hope that this library helps reproducibility in the crowdsourcing community and also standardizes training from crowdsourced datasets. New strategies can easily be incorporated into the open-source code [available on github](https://github.com/peerannot/peerannot). Finally, as `peerannot` is mostly directed to handle classification datasets, one of our future works would be to consider other `peerannot` modules to handle crowdsourcing for object detection, segmentation and even worker evaluation in other contexts like peer-grading.
+We hope that this library helps reproducibility in the crowdsourcing community and also standardizes training from crowdsourced datasets. New strategies can easily be incorporated into the open-source code [available on GitHub](https://github.com/peerannot/peerannot). Finally, as `peerannot` is mostly directed to handle classification datasets, one of our future works would be to consider other `peerannot` modules to handle crowdsourcing for object detection, segmentation and even worker evaluation in other contexts like peer-grading.
 
 
 # Appendix {.appendix}
@@ -1043,14 +1045,14 @@ We simulate $n_{\text{task}}=500$ tasks and $n_{\text{worker}}=100$ with $35\%$ 
 ```{python}
 #| code-fold: true
 #| label: fig-simu4
-#| fig-cap: Distribution of number of tasks given per worker (left) and number of labels per task (right) in the setting with simulated discrete difficulty levels.
+#| fig-cap: Distribution of the number of tasks given per worker (left) and of the number of labels per task (right) in the setting with simulated discrete difficulty levels.
 
 votes_path = Path.cwd() / "simus" / "discrete_difficulty" / "answers.json"
 metadata_path = Path.cwd() / "simus" / "discrete_difficulty" / "metadata.json"
 efforts = feedback_effort(votes_path)
-workerload = working_load(votes_path, metadata_path)
+workload = working_load(votes_path, metadata_path)
 feedback = feedback_effort(votes_path)
-utx.figure_simulations(workerload, feedback)
+utx.figure_simulations(workload, feedback)
 plt.show()
 ```
 
@@ -1063,7 +1065,7 @@ for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=2]", "DSWC[L=5]"]:
 ```
 ```{python}
 #| label: tbl-simu-discrete-diff
-#| tbl-cap: AccTrain metric on simulated mistakes when tasks are associated a difficulty level considering classical feature-blind label aggregation strategies
+#| tbl-cap: AccTrain metric on simulated mistakes made when tasks are associated with a difficulty level considering classical feature-blind label aggregation strategies.
 #| code-fold: true
 simu_corr = Path.cwd() / 'simus' / "discrete_difficulty"
 results = {
@@ -1100,7 +1102,7 @@ Finally, in this setting involving task difficulty coefficients, the only strate
 In this section, we provide several comparisons with the @CrowdKit library.
 
 - Framework: `peerannot` focuses on image classification problems with categorical answers. `crowd-kit` also considers textual responses and image segmentation with three aggregation strategies for each field.
-- Data storage: `peerannot` introduces this `.json` storage that can handle large datasets. `crowd-kit` stores the collected data in a `.csv` file with columns `task,worker,label`.
+- Data storage: `peerannot` introduces this `.json` storage that can handle large datasets. `crowd-kit` stores the collected data in a `.csv` file with columns `task, worker, label`.
 - Identification module: one of the major differences between the two libraries resides in the `identification` module of `peerannot`. This module allows us to explore the dataset and detect poorly performing workers / difficult tasks easily. `crowd-kit` only allows us to explore workers with the `accuracy_on_aggregation` metric that computes the accuracy of a worker given aggregated hard labels. `peerannot`, as demonstrated in @sec-exploration, proposes several metrics such as the spam score, GLAD's worker ability coefficient and the trace of the confusion matrices. As for the task side, `peerannot` proposes the different popular metrics in `crowd-kit` accompanied with the $\mathrm{WAUM}$ (and also the $\mathrm{AUMC}$) metrics from @lefort2022improve and GLAD's difficulty coefficients.
 - Training: `peerannot` lets users directly `train` a neural network architecture from the aggregated labels. This feature is not proposed by `crowd-kit`.
 - Simulation: `peerannot` created a `simulate` module to check strategies on. This feature is also not in the `crowd-kit` library.
