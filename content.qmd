@@ -358,7 +358,7 @@ While this metric is useful, in practice there are a few arguable issues:
 - in practice, true labels are unknown, thus this metric would not be computable.
 
 We first consider classical simulation settings in the literature that can easily be created and reproduced using `peerannot`.
-For each dataset, we present the distribution of the number of workers per task $(|\mathcal{A}(x_i)|)_{i=1,\dots, n_{\text{task}}}~$ @eq-workerset on the right and the distribution of the number of tasks per worker $(|\mathcal{T}(w_j)|)_{j=1,\dots,n_{\text{worker}}~$ @eq-taskset on the left.
+For each dataset, we present the distribution of the number of workers per task $(|\mathcal{A}(x_i)|)_{i=1,\dots, n_{\text{task}}}~$ @eq-workerset on the right and the distribution of the number of tasks per worker $(|\mathcal{T}(w_j)|)_{j=1,\dots,n_{\text{worker}}}$ @eq-taskset on the left.
 
 ### Simulated independent mistakes {#sec-simu-independent}
 
