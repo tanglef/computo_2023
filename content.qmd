@@ -214,7 +214,8 @@ Note that when a strategy produces a soft label, a hard label can be easily indu
 
 Moreover, the concept of confusion matrices has been commonly used to represent worker abilities.
 A confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ of a worker $w_j$ is defined such that $\pi^{(j)}_{k,\ell} = \mathbb{P}(y_i^{(j)}=\ell\vert y_i^\star=k)$.
-In practice, estimators $\hat{\pi}^{(j)}$ of the confusion matrices of each worker $w_j$ are obtained via an aggregation strategy, *e.g.,* with the Dawid and Skene's method [@dawid_maximum_1979] presented hereafter.
+These quantities are not obtained using the true labels as they are unknown.
+In practice, the confusion matrices of each worker is estimated via an aggregation strategy like Dawid and Skene's [@dawid_maximum_1979] presented in @sec-classical-models.
 
 ```{python}
 #| code-fold: true
@@ -229,7 +230,7 @@ In practice, estimators $\hat{\pi}^{(j)}$ of the confusion matrices of each work
 ```{python}
 #| code-fold: true
 #| label: fig-confusionmatrix
-#| fig-cap: Three types of profiles of worker confusion matrices. The spammer answers independently from the true label. Expert workers identify classes without mistakes. In practice common workers are good for some classes but might confuse two (or more) labels. All workers are simulated using the `peerannot simulate` command presented in @sec-evaluation-aggregation.
+#| fig-cap: Three types of profiles of worker confusion matrices simulated with `peerannot`. The spammer answers independently from the true label. Expert workers identify classes without mistakes. In practice common workers are good for some classes but might confuse two (or more) labels. All workers are simulated using the `peerannot simulate` command presented in @sec-evaluation-aggregation.
 
 
 mats = np.load("./simus/hammer_spammer/matrices.npy")
@@ -237,12 +238,11 @@ mats_confu = np.load("./simus/hammer_spammer/confusion/matrices.npy")
 
 utx.figure_6(mats, mats_confu)
 ```
-**XXX? je ne comprends dans la figure 6, tu utilise quelle methode? le code semble dire que tu ne fais pas de DS ou autre pour estimer le ground truth, donc utilise le ground truth? ici c'est un cas où c'est raisonnable sachant qu'on est en simulation...**
 
-In @fig-confusionmatrix, we illustrate multiple profiles of workers, in a simulated scenario.
+In @fig-confusionmatrix, we illustrate multiple profiles of workers simulated using `peerannot`.
 In particular, we display a type of worker that can hurt data quality: the spammer.
-@raykar_ranking_2011 defined a spammer as a worker that answers randomly,
-**XXX??? here you have to precise: is this just the fact that the row have constant value (i.e.,) [1/K,...1/K] or could you include the case where all rows are equal, but possibly different from the constant row? if this is the case the sentence should be : "a spammer as a worker that answers labels independently from the true label one"**
+@raykar_ranking_2011 defined a spammer as a worker that answers independently from the true label:
+
 $$
 \forall k\in[K],\ \mathbb{P}(y_i^{(j)}=k|y_i^\star) = \mathbb{P}(y_i^{(j)}=k)\enspace.
 $${#eq-spammer}
@@ -251,7 +251,7 @@ Each row of the confusion matrix represents the label's probability distribution
 Apart from the spammer, common mistakes often involve workers mixing up one or several classes.
 Expert workers have a confusion matrix close to the identity matrix.
 
-## Classical models
+## Classical models {#sec-classical-models}
 We list below the most classical aggregation strategies used in crowdsourcing.
 
 ### Majority vote (MV)
@@ -615,8 +615,7 @@ $$
 
 where the crossentropy loss for two distribution $u,v \in\Delta_{K}$ is defined as $\mathrm{CE}(u, v) = \sum_{k\in[K]} v_k\log(u_k)$.
 
-**XXX Below I dont' see where in the code is the DS method used in your CrowdLayer code, so if correct remove the mention to DS here.**
-The confusion matrices of DS are taken into the network architecture as a new layer of weights to transform the output probabilities.
+Where DS modeled workers as confusion matrices, CrowdLayer adds a layer of $\pi^{(j)}$'s into the backbone architecture as a new tensor layer to transform the output probabilities by the backbone classifier.
 The backbone classifier predicts a distribution that is then corrupted through the added layer to learn the worker-specific confusion.
 
 ### CoNAL
