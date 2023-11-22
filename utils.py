@@ -290,7 +290,7 @@ def figure_6(mats, mats_confu):
         ax=axs[1],
         classes=np.arange(5),
     )
-    axs[0].set_ylabel("Estimated true label")
+    axs[0].set_ylabel("True label")
     axs[1].set_ylabel("")
     axs[2].set_ylabel("")
     plt.tight_layout()
