@@ -202,7 +202,7 @@ The first question we address with `peerannot` is: *How to aggregate multiple la
 The aggregation step can lead to two types of learnable labels $\hat{y}_i\in\Delta_{K}$ (where $\Delta_{K}$ is the simplex of dimension $K-1$: $\Delta_{K}=\{p\in \mathbb{R}^K: \sum_{k=1}^K p_k = 1, p_k \geq 0 \}$ ) depending on the use case for each task $x_i$, $i=1,\dots,n_{\text{task}}$:
 
 - a **hard** label: $\hat{y}_i$ is a Dirac distribution, this can be encoded as a classical label in $[K]$,
-- a **soft** label: $\hat{y}_i\in\Delta_{K}$ can represent any probability distribution on $[K]$. In that case, each coordinate of the $K-$ dimensional vector $\hat{y}_i$ represents the probability of belonging to the given class.
+- a **soft** label: $\hat{y}_i\in\Delta_{K}$ can represent any probability distribution on $[K]$. In that case, each coordinate of the $K$-dimensional vector $\hat{y}_i$ represents the probability of belonging to the given class.
 
 Learning from soft labels has been shown to improve learning performance and make the classifier learn the task ambiguity [@zhang2017mixup;@peterson_human_2019;@park2022calibration].
 However, crowdsourcing is often used as a stepping stone to create a new dataset.
@@ -279,7 +279,7 @@ Assuming the workers are answering tasks independently, this model boils down to
 Each worker $w_j$ is assigned a confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ as described in @sec-introaggregation.
 The model assumes that for a task $x_i$, conditionally on the true label $y_i^\star=k$ the label distribution of the worker's answer follows a multinomial distribution with probabilities $\pi^{(j)}_{k,\cdot}$ for each worker.
 Each class has a prevalence $\rho_k=\mathbb{P}(y_i^\star=k)$ to appear in the dataset.
-Using the independence between workers, we obtain the following likelihood to maximize (with latent variables $\rho$, $\pi=\{\pi^{(j)}\}_{j}$ and unobserved variables $(y_i^{(j)})_{i,j}$):
+Using the independence between workers, we obtain the following likelihood to maximize, with latent variables $\rho$, $\pi=\{\pi^{(j)}\}_{j}$ and unobserved variables $(y_i^{(j)})_{i,j}$:
 $$
 \arg\max_{\rho,\pi}\displaystyle\prod_{i\in [n_{\texttt{task}}]}\prod_{k \in [K]}\bigg[\rho_k\prod_{j\in [n_{\texttt{worker}}]}
     \prod_{\ell\in [K]}\big(\pi^{(j)}_{k, \ell}\big)^{\mathbf{1}_{\{y_i^{(j)}=\ell\}}}
