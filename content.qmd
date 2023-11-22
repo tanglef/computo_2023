@@ -164,7 +164,7 @@ For both $\texttt{CIFAR-10H}$ and $\texttt{LabelMe}$, the dataset was originally
 These labels are used as true labels in evaluations and visualizations.
 However, we emphasize that crowdsourcing strategies do not rely on the true labels (only on the workers' answers).
 Examples of $\texttt{CIFAR-10H}$ images are available in @fig-cifarh, and $\texttt{LabelMe}$ examples in @fig-labelme in Appendix.
-Crowdsourcing votes however bring information about possible confusions (see @fig-cifarexamplevotes for an example with $\texttt{CIFAR-10H}$ and @fig-labelmeexamples with $\texttt{LabelMe}$).
+Crowdsourcing votes, however, bring information about possible confusions (see @fig-cifarexamplevotes for an example with $\texttt{CIFAR-10H}$ and @fig-labelmeexamples with $\texttt{LabelMe}$).
 
 ```{python}
 #| code-fold: true
@@ -230,7 +230,7 @@ In practice, the confusion matrices of each worker is estimated via an aggregati
 ```{python}
 #| code-fold: true
 #| label: fig-confusionmatrix
-#| fig-cap: Three types of profiles of worker confusion matrices simulated with `peerannot`. The spammer answers independently from the true label. Expert workers identify classes without mistakes. In practice common workers are good for some classes but might confuse two (or more) labels. All workers are simulated using the `peerannot simulate` command presented in @sec-evaluation-aggregation.
+#| fig-cap: Three types of profiles of worker confusion matrices simulated with `peerannot`. The spammer answers independently of the true label. Expert workers identify classes without mistakes. In practice common workers are good for some classes but might confuse two (or more) labels. All workers are simulated using the `peerannot simulate` command presented in @sec-evaluation-aggregation.
 
 
 mats = np.load("./simus/hammer_spammer/matrices.npy")
@@ -241,7 +241,7 @@ utx.figure_6(mats, mats_confu)
 
 In @fig-confusionmatrix, we illustrate multiple profiles of workers simulated using `peerannot`.
 In particular, we display a type of worker that can hurt data quality: the spammer.
-@raykar_ranking_2011 defined a spammer as a worker that answers independently from the true label:
+@raykar_ranking_2011 defined a spammer as a worker that answers independently of the true label:
 
 $$
 \forall k\in[K],\ \mathbb{P}(y_i^{(j)}=k|y_i^\star) = \mathbb{P}(y_i^{(j)}=k)\enspace.
@@ -292,7 +292,7 @@ In this case, denoting $T_{i,k}=\mathbf{1}_{\{y_i^{\star}=k \}}$ the vectors of 
 $$
 \arg\max_{\rho,\pi,T}\displaystyle\prod_{i\in [n_{\texttt{task}}]}\prod_{k \in [K]}\bigg[\rho_k\prod_{j\in [n_{\texttt{worker}}]}
     \prod_{\ell\in [K]}\big(\pi^{(j)}_{k, \ell}\big)^{\mathbf{1}_{\{y_i^{(j)}=\ell\}}}
-    \bigg]^{T_{i,k}},
+    \bigg]^{T_{i,k}}.
 $$
 
 This framework allows to estimate $\rho,\pi,T$ with an EM algorithm as follows:
