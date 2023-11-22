@@ -615,8 +615,9 @@ $$
 
 where the crossentropy loss for two distribution $u,v \in\Delta_{K}$ is defined as $\mathrm{CE}(u, v) = \sum_{k\in[K]} v_k\log(u_k)$.
 
-Where DS modeled workers as confusion matrices, CrowdLayer adds a layer of $\pi^{(j)}$'s into the backbone architecture as a new tensor layer to transform the output probabilities by the backbone classifier.
+Where DS modeled workers as confusion matrices, CrowdLayer adds a layer of $\pi^{(j)}$s into the backbone architecture as a new tensor layer to transform the output probabilities.
 The backbone classifier predicts a distribution that is then corrupted through the added layer to learn the worker-specific confusion.
+The weights in the tensor layer of $\pi^{(j)}$s are learned during the optimization procedure.
 
 ### CoNAL
 
