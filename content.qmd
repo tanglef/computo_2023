@@ -88,7 +88,7 @@ Note that indices start at position $1$ in the equation to follow mathematical s
 
 With crowdsourced data the true label of a task $x_i$, denoted $y_i^\star$ is unknown, and there is no single label that can be trusted as in standard supervised learning (even on the train set!).
 Instead, there is a crowd of $n_{\text{worker}}$ workers from which multiple workers $(w_j)_j$ propose a label $(y_i^{(j)})_j$.
-These proposed labels are used to estimate a true label.
+These proposed labels are used to estimate the true label.
 The set of workers answering the task $x_i$ is denoted by
 $$
 \mathcal{A}(x_i)=\left\{j\in[n_\text{worker}]: w_j \text{ answered }x_i\right\}.
@@ -248,7 +248,7 @@ $$
 $$
 
 When the true labels are not available, the data comes from a mixture of categorical distributions.
-To retrieve ground truth labels and be able to estimate these parameters, @dawid_maximum_1979 have proposed to consider the true labels as missing parameters.
+To retrieve ground truth labels and be able to estimate these parameters, @dawid_maximum_1979 have proposed to consider the true labels as additional unknown parameters.
 In this case, denoting $T_{i,k}=\mathbf{1}_{\{y_i^{\star}=k \}}$ the vectors of label class indicators for each task, the likelihood with known true labels is:
 $$
 \arg\max_{\rho,\pi,T}\displaystyle\prod_{i\in [n_{\texttt{task}}]}\prod_{k \in [K]}\bigg[\rho_k\prod_{j\in [n_{\texttt{worker}}]}
@@ -314,7 +314,7 @@ $$
 $$
 
 In the following, we write $\operatornamewithlimits{AccTrain}$ for $\operatornamewithlimits{AccTrain}(\mathcal{D}_{\text{train}})$ as we only consider the full training set so there is no ambiguity.
-The $\operatornamewithlimits{AccTrain}$ computes computes the number of correctly predicted labels by the aggregation strategy knowing a ground truth.
+The $\operatornamewithlimits{AccTrain}$ computes the number of correctly predicted labels by the aggregation strategy knowing a ground truth.
 While this metric is useful, in practice there are a few arguable issues:
 
 - the $\operatornamewithlimits{AccTrain}$ metric does not consider the ambiguity of the soft label, only the most probable class, whereas in some contexts ambiguity can be informative,
