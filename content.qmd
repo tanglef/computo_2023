@@ -812,7 +812,7 @@ First, let us consider a dataset with a large number of tasks, annotations and w
 ```{python}
 #| code-fold: true
 #| output: true
-#| fig-cap: Most difficult tasks identified depending on the strategy used (entropy, GLAD or WAUM) using a Resnet34. Classes displayed are from the MV aggregation.
+#| fig-cap: Most difficult tasks  sorted by class from MV aggregation identified depending on the strategy used (entropy, GLAD or WAUM) using a Resnet34.
 
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -861,7 +861,7 @@ Now, let us compare the tasks' difficulty distribution depending on the strategy
 
 ```{python}
 #| code-fold: true
-#| fig-cap: Most difficult tasks identified depending on the strategy used (entropy, GLAD or WAUM) using a VGG-16 with two dense layers. Classes displayed are from the MV aggregation.
+#| fig-cap: Most difficult tasks sorted by class from MV aggregation identified depending on the strategy used (entropy, GLAD or WAUM) using a VGG-16 with two dense layers.
 classes = {
     0: "coast",
     1: "forest",
