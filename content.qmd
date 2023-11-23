@@ -359,7 +359,9 @@ utx.figure_simulations(workload, feedback)
 plt.show()
 ```
 
-With the obtained answers, we can look at the aforementioned aggregation strategies performance:
+With the obtained answers, we can look at the aforementioned aggregation strategies performance.
+The `peerannot aggregate` command takes as input the path to the data folder and the aggregation `--strategy/-s` to perform.
+Other arguments are available and described in the `--help` description.
 
 ```{python}
 #| output: false
@@ -682,6 +684,7 @@ The $\texttt{LabelMe}$ dataset was extracted from crowdsourcing segmentation exp
 Let us use `peerannot` to train a VGG-16 with two dense layers on the $\texttt{LabelMe}$ dataset.
 Note that this modification was introduced to reach state-of-the-art performance in [@chu2021learning].
 Other models from the `torchvision` library can be used, such as Resnets, Alexnet *etc.*
+The `aggregate-deep` command takes as input the path to the data folder, `--output-name/-o` is the name for the output file, `--n-classes/-K` the number of classes, `--strategy/-s` the learning strategy to perform (*e.g.*, CrowdLayer or CoNAL), the backbone classifier in `--model` and then optimization hyperparameters for pytorch described with more details using the `peerannot aggregate-deep --help` command.
 
 ```{python}
 #| eval: false
