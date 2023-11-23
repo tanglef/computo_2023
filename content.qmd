@@ -65,10 +65,10 @@ ImageNet [@imagenet_cvpr09] or Pl\@ntnet [@Garcin_Joly_Bonnet_Affouard_Lombardo_
 
 Crowdsourced datasets induce at least three major challenges to which we contribute with `peerannot`:
 
+  1) **How to aggregate multiple labels into a single label from crowdsourced tasks?** This occurs for example when dealing with a single dataset that has been labeled by multiple workers with disagreements. This is also encountered with other scoring issues such as polls, reviews, peer-grading, *etc.* In our framework this is treated with the `aggregate` command, which given multiple labels, infers a label. From aggregated labels, a classifier can then be trained using the `train` command.
+  1) **How to learn a classifier from crowdsourced datasets?** Where the first question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision is common in machine learning, however, it requires the actual tasks (the images, texts, videos, *etc.*) to train on -- and in crowdsourced datasets publicly available, they are not always available. This is treated with the `aggregate-deep` command that runs strategies where the aggregation has been transformed into a deep learning optimization problem.
   1) **How to identify good workers in the crowd and difficult tasks?** When multiple answers are given to a single task, looking for who to trust for which type of task becomes necessary to estimate the labels or later train a model with as few noise sources as possible. The module `identify` uses different scoring metrics to create a worker and/or task evaluation.
   This is particularly relevant considering the gamification of crowdsourcing experiments [@plantgame2016]
-  1) **How to aggregate multiple labels into a single label from crowdsourced tasks?** This occurs for example when dealing with a single dataset that has been labeled by multiple workers with disagreements. This is also encountered with other scoring issues such as polls, reviews, peer-grading, *etc.* In our framework this is treated with the `aggregate` command, which given multiple labels, infers a label. From aggregated labels, a classifier can then be trained using the `train` command.
-  1) **How to learn a classifier from crowdsourced datasets?** Where the second question is bound by aggregating multiple labels into a single one, this considers the case where we do not need a single label to train on, but instead train a classifier on the crowdsourced data, with the motivation to perform well on a testing set. This end-to-end vision is common in machine learning, however, it requires the actual tasks (the images, texts, videos, *etc.*) to train on -- and in crowdsourced datasets publicly available, they are not always available. This is treated with the `aggregate-deep` command that runs strategies where the aggregation has been transformed into a deep learning optimization problem.
 
 The library `peerannot` addresses these practical questions within a reproducible setting. Indeed, the complexity of experiments often leads to a lack of transparency and reproducible results for simulations and real datasets.
 We propose standard simulation settings with explicit implementation parameters that can be shared.
@@ -84,7 +84,7 @@ Let us consider the classical supervised learning classification framework. A tr
 In the following, the tasks considered are generally RGB images. We use the notation $\sigma(\cdot)$ for the softmax function.
 In particular, given a classifier $\mathcal{C}$ with logits outputs, $\sigma(\mathcal{C}(x_i))_{[1]}$ represents the largest probability and we can sort the probabilities as $\sigma(\mathcal{C}(x_i))_{[1]}\geq \sigma(\mathcal{C}(x_i))_{[2]}\geq \dots\geq \sigma(\mathcal{C}(x_i))_{[K]}$. The indicator function is denoted $\mathbf{1}(\cdot)$.
 We use the $i$ index notation to range over the different tasks and the $j$ index notation for the workers in the crowdsourcing experiment.
-Note that indices start at position $1$ in the equation to follow mathematical standard notation such as $[K]=\{1,\dots, K\}$ but it should be noted that, as this is a `Python` library, in the code indices start at the $0$ position.
+Note that indices start at position $1$ in the equation to follow mathematical standard notation but it should be noted that, as this is a `Python` library, in the code indices start at the $0$ position.
 
 With crowdsourced data the true label of a task $x_i$, denoted $y_i^\star$ is unknown, and there is no single label that can be trusted as in standard supervised learning (even on the train set!).
 Instead, there is a crowd of $n_{\text{worker}}$ workers from which multiple workers $(w_j)_j$ propose a label $(y_i^{(j)})_j$.
@@ -120,7 +120,7 @@ Let us set up a toy dataset example to understand the data structure and how to 
 datasetname
       ├── train
       │     ├── ...
-      │     ├── data as imagename-<key>.png
+      │     ├── images
       │     └── ...
       ├── val
       ├── test
@@ -129,8 +129,8 @@ datasetname
 ```
 
 The `answers.json` file stores the different votes for each task as described in @fig-answers.
-Thus, for example for an image named `smiley_face-1`, the associated labels are stored in the `answers.json` at the key numbered `1`.
-This key identification system allows us to track directly from the filename the crowdsourced labels without having to rely on multiple indexing files as can be traditionally proposed.
+This `.json` is the rosetta stone between the task ids and the images.
+It contains the tasks' id, the workers's id and the proposed label for each given vote.
 Furthermore, storing labels in a dictionary is more memory-friendly than having an array of size `(n_task,n_worker)` and writing $y_i^{(j)}=-1$ when the worker $w_j$ did not see the task $x_i$ and $y_i^{(j)}\in[K]$ otherwise.
 
 ![Data storage for the `toy-data` crowdsourced dataset, a binary classification problem ($K=2$, smiling/not smiling) on recognizing smiling faces. (left: how data is stored in `peerannot` in a file `answers.json`, right: data collected)](./figures/json_answers.png){#fig-answers fig-align="center"}
@@ -160,9 +160,9 @@ To install them, run the `install` command from `peerannot`:
 ! peerannot install ./datasets/cifar10H/cifar10h.py
 ```
 
-For both $\texttt{CIFAR-10H}$ and $\texttt{LabelMe}$, the dataset was originally released in classical supervised learning form (without crowdsourcing).
+For both $\texttt{CIFAR-10H}$ and $\texttt{LabelMe}$, the dataset was  was originally released for standard supervised learning (classification).
+Both datasets has been reannotated by a crowd or workers.
 These labels are used as true labels in evaluations and visualizations.
-However, we emphasize that crowdsourcing strategies do not rely on the true labels (only on the workers' answers).
 Examples of $\texttt{CIFAR-10H}$ images are available in @fig-cifarh, and $\texttt{LabelMe}$ examples in @fig-labelme in Appendix.
 Crowdsourcing votes, however, bring information about possible confusions (see @fig-cifarexamplevotes for an example with $\texttt{CIFAR-10H}$ and @fig-labelmeexamples with $\texttt{LabelMe}$).
 
@@ -211,45 +211,6 @@ In this case, we recommend releasing the anonymous answered labels and the aggre
 With `peerannot`, both soft and hard labels can be produced.
 
 Note that when a strategy produces a soft label, a hard label can be easily induced by taking the mode, *i.e.,* the class achieving the maximum probability.
-
-Moreover, the concept of confusion matrices has been commonly used to represent worker abilities.
-A confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ of a worker $w_j$ is defined such that $\pi^{(j)}_{k,\ell} = \mathbb{P}(y_i^{(j)}=\ell\vert y_i^\star=k)$.
-These quantities are not obtained using the true labels as they are unknown.
-In practice, the confusion matrices of each worker is estimated via an aggregation strategy like Dawid and Skene's [@dawid_maximum_1979] presented in @sec-classical-models.
-
-```{python}
-#| code-fold: true
-#| output: false
-!peerannot simulate --n-worker=10 --n-task=100 --n-classes=5 \
-  --strategy hammer-spammer --feedback=5 --seed=0 \
-  --folder ./simus/hammer_spammer
-!peerannot simulate --n-worker=10 --n-task=100 --n-classes=5 \
-  --strategy independent-confusion --feedback=5 --seed=0 \
-  --folder ./simus/hammer_spammer/confusion
-```
-```{python}
-#| code-fold: true
-#| label: fig-confusionmatrix
-#| fig-cap: Three types of profiles of worker confusion matrices simulated with `peerannot`. The spammer answers independently of the true label. Expert workers identify classes without mistakes. In practice common workers are good for some classes but might confuse two (or more) labels. All workers are simulated using the `peerannot simulate` command presented in @sec-evaluation-aggregation.
-
-
-mats = np.load("./simus/hammer_spammer/matrices.npy")
-mats_confu = np.load("./simus/hammer_spammer/confusion/matrices.npy")
-
-utx.figure_6(mats, mats_confu)
-```
-
-In @fig-confusionmatrix, we illustrate multiple profiles of workers simulated using `peerannot`.
-In particular, we display a type of worker that can hurt data quality: the spammer.
-@raykar_ranking_2011 defined a spammer as a worker that answers independently of the true label:
-
-$$
-\forall k\in[K],\ \mathbb{P}(y_i^{(j)}=k|y_i^\star) = \mathbb{P}(y_i^{(j)}=k)\enspace.
-$${#eq-spammer}
-
-Each row of the confusion matrix represents the label's probability distribution given a true label. Hence, the spammer has a confusion matrix with near-identical rows.
-Apart from the spammer, common mistakes often involve workers mixing up one or several classes.
-Expert workers have a confusion matrix close to the identity matrix.
 
 ## Classical models {#sec-classical-models}
 We list below the most classical aggregation strategies used in crowdsourcing.
@@ -345,6 +306,7 @@ Each model is a class object in its own `Python` file. It inherits from the `Cro
 
 One way to evaluate the label aggregation strategies is to measure their accuracy.
 This means that the underlying ground truth must be known -- at least for a representative subset.
+This is the case in simulation settings where the ground truth is available.
 As the set of $n_{\text{task}}$ can be seen as a training set for a future classifier, we denote this metric $\operatornamewithlimits{AccTrain}$ on a dataset $\mathcal{D}$ for some given aggregated label $(\hat{y}_i)_i$ as:
 
 $$
@@ -352,6 +314,7 @@ $$
 $$
 
 In the following, we write $\operatornamewithlimits{AccTrain}$ for $\operatornamewithlimits{AccTrain}(\mathcal{D}_{\text{train}})$ as we only consider the full training set so there is no ambiguity.
+The $\operatornamewithlimits{AccTrain}$ computes computes the number of correctly predicted labels by the aggregation strategy knowing a ground truth.
 While this metric is useful, in practice there are a few arguable issues:
 
 - the $\operatornamewithlimits{AccTrain}$ metric does not consider the ambiguity of the soft label, only the most probable class, whereas in some contexts ambiguity can be informative,
@@ -591,6 +554,47 @@ However, these are unknown outside of a simulation framework, thus if we want to
 This can be done easily with `peerannot` as we demonstrated using the `aggregate` module.
 However, one might not want to generate a label, simply learn a classifier to predict labels on unseen data. This leads us to another module part of `peerannot`.
 
+## More on confusion matrices in simulation settings
+
+Moreover, the concept of confusion matrices has been commonly used to represent worker abilities.
+Let us remind that a confusion matrix $\pi^{(j)}\in\mathbb{R}^{K\times K}$ of a worker $w_j$ is defined such that $\pi^{(j)}_{k,\ell} = \mathbb{P}(y_i^{(j)}=\ell\vert y_i^\star=k)$.
+These quantities need to be estimated since no true label is available in a crowd-sourced scenario.
+In practice, the confusion matrices of each worker is estimated via an aggregation strategy like Dawid and Skene's [@dawid_maximum_1979] presented in @sec-classical-models.
+
+```{python}
+#| code-fold: false
+#| output: false
+!peerannot simulate --n-worker=10 --n-task=100 --n-classes=5 \
+  --strategy hammer-spammer --feedback=5 --seed=0 \
+  --folder ./simus/hammer_spammer
+!peerannot simulate --n-worker=10 --n-task=100 --n-classes=5 \
+  --strategy independent-confusion --feedback=5 --seed=0 \
+  --folder ./simus/hammer_spammer/confusion
+```
+```{python}
+#| code-fold: true
+#| label: fig-confusionmatrix
+#| fig-cap: Three types of profiles of worker confusion matrices simulated with `peerannot`. The spammer answers independently of the true label. Expert workers identify classes without mistakes. In practice common workers are good for some classes but might confuse two (or more) labels. All workers are simulated using the `peerannot simulate` command presented in @sec-evaluation-aggregation.
+
+
+mats = np.load("./simus/hammer_spammer/matrices.npy")
+mats_confu = np.load("./simus/hammer_spammer/confusion/matrices.npy")
+
+utx.figure_6(mats, mats_confu)
+```
+
+In @fig-confusionmatrix,  we illustrate multiple workers' profile (as reflected by their confusion matrix) on a simulate scenario where the ground truth is available. For that we generate toy datasets with the `simulate` command from `peerannot`.
+In particular, we display a type of worker that can hurt data quality: the spammer.
+@raykar_ranking_2011 defined a spammer as a worker that answers independently of the true label:
+
+$$
+\forall k\in[K],\ \mathbb{P}(y_i^{(j)}=k|y_i^\star) = \mathbb{P}(y_i^{(j)}=k)\enspace.
+$${#eq-spammer}
+
+Each row of the confusion matrix represents the label's probability distribution given a true label. Hence, the spammer has a confusion matrix with near-identical rows.
+Apart from the spammer, common mistakes often involve workers mixing up one or several classes.
+Expert workers have a confusion matrix close to the identity matrix.
+
 # Learning from crowdsourced tasks
 
 Commonly, tasks are crowdsourced to create a large annotated training set as modern machine learning models require more and more data.
@@ -670,6 +674,8 @@ Few real crowdsourcing experiments have been released publicly.
 Among the available ones, $\texttt{CIFAR-10H}$ [@peterson_human_2019] is one of the largest with $10 000$ tasks labeled by workers (the testing set of CIFAR-10).
 The main limitation of $\texttt{CIFAR-10H}$ is that there are few disagreements between workers and a simple majority voting already leads to a near-perfect $\mathrm{AccTrain}$ error.
 Hence, comparing the impact of aggregation and end-to-end strategies might not be relevant [@peterson_human_2019;@aitchison2020statistical], it is however a good benchmark for task difficulty identification and worker evaluation scoring.
+Each of these dataset contains a test set, with known ground truth.
+Thus, we can train a classifier from the crowdsourced data, and compare predictive performance on the test set.
 
 The $\texttt{LabelMe}$ dataset was extracted from crowdsourcing segmentation experiments and a subset of $K=8$ classes was released in @rodrigues2017learning.
 

@@ -90,7 +90,7 @@ def figure_4():
 def figure_5():
     nrow = 2
     ncol = 5
-    fig, axs = plt.subplots(nrow, ncol, sharey="row", figsize=(15, 8))
+    fig, axs = plt.subplots(nrow, ncol, sharey="row", figsize=(12, 5))
     match_ = {
         0: "bird",
         1: "car",
@@ -184,7 +184,7 @@ def figure_5_labelmeversion():
         7: "tallbuilding",
     }
 
-    fig, axs = plt.subplots(nrow, ncol, sharey="row", figsize=(15, 8))
+    fig, axs = plt.subplots(nrow, ncol, sharey="row", figsize=(12, 5))
     path = Path.cwd() / "datasets" / "labelme" / "train"
     list_numbers = [0, 50, 3, 4, 91]
     names = []
