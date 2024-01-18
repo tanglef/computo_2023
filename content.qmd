@@ -154,6 +154,7 @@ The `toy-data` example dataset is available as an example [in the `peerannot` re
 Classical datasets in crowdsourcing such as $\texttt{CIFAR-10H}$ [@peterson_human_2019] and $\texttt{LabelMe}$ [@rodrigues2014gaussian] can be installed directly using `peerannot`.
 To install them, run the `install` command from `peerannot`:
 ```{python}
+#| code-fold: false
 #| output: false
 #| eval: false
 ! peerannot install ./datasets/labelme/labelme.py
@@ -334,6 +335,7 @@ We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=30$ workers with 
 With $200$ tasks and $30$ workers, asking for $10$ leads to around $\frac{200\times 10}{30}\simeq 67$ tasks per worker (with variations due to randomness in the affectations).
 
 ```{python}
+#| code-fold: false
 #| output: false
 ! peerannot simulate --n-worker=30 --n-task=200  --n-classes=5 \
                      --strategy independent-confusion \
@@ -364,6 +366,7 @@ The `peerannot aggregate` command takes as input the path to the data folder and
 Other arguments are available and described in the `--help` description.
 
 ```{python}
+#| code-fold: false
 #| output: false
 for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=5]", "DSWC[L=10]"]:
   ! peerannot aggregate ./simus/independent/ -s {strat}
@@ -411,6 +414,7 @@ As expected by the simulation framework, @tbl-simu-independent fits the DS model
 **Remark:** `peerannot` can also simulate datasets with an imbalanced number of votes chosen uniformly at random between $1$ and the number of workers available. For example:
 
 ```{python}
+#| code-fold: false
 #| output: false
 ! peerannot simulate --n-worker=30 --n-task=200  --n-classes=5 \
                      --strategy independent-confusion \
@@ -438,6 +442,7 @@ plt.show()
 With the obtained answers, we can look at the aforementioned aggregation strategies performance:
 
 ```{python}
+#| code-fold: false
 #| output: false
 for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=5]", "DSWC[L=10]"]:
   ! peerannot aggregate ./simus/independent-imbalanced/ -s {strat}
@@ -487,6 +492,7 @@ The correlated mistakes are also known as the student-teacher or junior-expert s
 We simulate $n_{\text{task}}=200$ tasks and $n_{\text{worker}}=30$ with $80\%$ of students in the crowd. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
 
 ```{python}
+#| code-fold: false
 #| output: false
 ! peerannot simulate --n-worker=30 --n-task=200  --n-classes=5 \
                      --strategy student-teacher \
@@ -512,6 +518,7 @@ plt.show()
 With the obtained answers, we can look at the aforementioned aggregation strategies performance:
 
 ```{python}
+#| code-fold: false
 #| output: false
 for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=5]", "DSWC[L=6]", "DSWC[L=10]"]:
   ! peerannot aggregate ./simus/student_teacher/ -s {strat}
@@ -687,6 +694,7 @@ Other models from the `torchvision` library can be used, such as Resnets, Alexne
 The `aggregate-deep` command takes as input the path to the data folder, `--output-name/-o` is the name for the output file, `--n-classes/-K` the number of classes, `--strategy/-s` the learning strategy to perform (*e.g.*, CrowdLayer or CoNAL), the backbone classifier in `--model` and then optimization hyperparameters for pytorch described with more details using the `peerannot aggregate-deep --help` command.
 
 ```{python}
+#| code-fold: false
 #| eval: false
 #| output: false
 for strat in ["MV", "NaiveSoft", "DS", "GLAD"]:
@@ -803,6 +811,7 @@ The WAUM can handle any number of labels, but the larger the better. However, as
 First, let us consider a dataset with a large number of tasks, annotations and workers: the $\texttt{CIFAR-10H}$ dataset by @peterson_human_2019.
 
 ```{python}
+#| code-fold: false
 #| output: false
 #| eval: false
 ! peerannot identify ./datasets/cifar10H -s entropy -K 10 --labels ./datasets/cifar10H/answers.json
@@ -850,6 +859,7 @@ Hence, the entropy in the distribution of the votes is no longer a reliable metr
 Now, let us compare the tasks' difficulty distribution depending on the strategy considered using `peerannot`.
 
 ```{python}
+#| code-fold: false
 #| output: false
 #| eval: false
 
@@ -913,6 +923,7 @@ The $\texttt{CIFAR-10H}$ dataset has few disagreements among workers.
 However, these strategies disagree on the ranking of good against best workers as they do not measure the same properties.
 
 ```{python}
+#| code-fold: false
 #| output: false
 #| eval: false
 ! peerannot aggregate ./datasets/cifar10H/ -s GLAD
@@ -946,6 +957,7 @@ Finally, let us evaluate workers for the $\texttt{LabelMe}$ dataset.
 Because of the lack of data (up to 3 labels per task), ranking workers is more difficult than in the $\texttt{CIFAR-10H}$ dataset.
 
 ```{python}
+#| code-fold: false
 #| output: false
 #| eval: true
 ! peerannot aggregate ./datasets/labelme/ -s GLAD
@@ -1046,6 +1058,7 @@ Each worker then answers independently to the presented tasks.
 We simulate $n_{\text{task}}=500$ tasks and $n_{\text{worker}}=100$ with $35\%$ of good workers in the crowd and $50\%$ of easy tasks. There are $K=5$ possible classes. Each task receives $\vert\mathcal{A}(x_i)\vert=10$ labels.
 
 ```{python}
+#| code-fold: false
 #| output: false
 ! peerannot simulate --n-worker=100 --n-task=200  --n-classes=5 \
                      --strategy discrete-difficulty \
@@ -1072,6 +1085,8 @@ With the obtained answers, we can look at the aforementioned aggregation strateg
 
 ```{python}
 #| output: false
+#| code-fold: false
+
 for strat in ["MV", "NaiveSoft", "DS", "GLAD", "DSWC[L=2]", "DSWC[L=5]"]:
   ! peerannot aggregate ./simus/discrete_difficulty/ -s {strat}
 ```
@@ -1128,6 +1143,7 @@ The differences in results across iterations for the MV strategy come from the r
 We provide a clone of the crowdsourcing benchmark and the results are obtained by running the following command:
 
 ```{bash}
+#| code-fold: false
 benchopt run ./benchmark_crowdsourcing
 ```
 
@@ -1185,6 +1201,7 @@ This test set is only used to compute the $\mathrm{AccTrain}$ metric.
 Note that we do not perform deep-learning methods as the tasks of comparing the birds from two audio files and designing specific architectures to match this framework is out of the scope of this paper.
 
 ```{python}
+#| code-fold: false
 #| output: false
 #| eval: false
 ! peerannot install ./datasets/birds_audio/birds_audio.py
@@ -1208,6 +1225,7 @@ We then can run our aggregation strategies.
 ```{python}
 #| output: false
 #| eval: false
+#| code-fold: false
 for strat in ["MV", "NaiveSoft", "DS", "GLAD"]:
   ! peerannot aggregate ./datasets/birds_audio -s {strat}
 ```
@@ -1252,12 +1270,14 @@ display(results)
 We can explore what tasks lead to the most disagreements depending on the entropy criterion or GLAD's difficulty-estimated latent variable.
 
 ```{python}
+#| code-fold: false
 #| output: false
 ! peerannot identify ./datasets/birds_audio -s entropy -K 2 --labels ./datasets/birds_audio/answers.json
 ```
 
 Using the entropy criterion, the most difficult tasks (highest entropy) and GLAD's difficulty, we recover the index of the most ambiguous tasks.
 ```{python}
+#| code-fold: true
 entrop = np.load(
     Path.cwd() / "datasets" / "birds_audio" / "identification" / "entropies.npy"
 )
@@ -1292,6 +1312,7 @@ This gives us an idea of the level of noise in the answers.
 
 ```{python}
 #| output: false
+#| code-fold: false
 for method in ["trace_confusion", "spam_score"]:
   ! peerannot identify ./datasets/birds_audio/ --n-classes=2 \
                        -s {method} --labels ./datasets/birds_audio/answers.json
@@ -1317,7 +1338,7 @@ plt.show()
 From @fig-abilitiesbird, we notice that very few workers are identified as spammers and that different worker identification strategies seem to perform similarly. Here we show the worse workers' indices depending on each strategy.
 
 ```{python}
-# | code-fold: true
+#| code-fold: true
 worse_glad = np.argsort(results_identif["glad"][::-1].to_list())[:5]
 worse_ds = np.argsort(results_identif["Trace DS"][::-1].to_list())[:5]
 worse_spam = np.argsort(results_identif["spam_score"][::-1].to_list())[:5]
