@@ -20,9 +20,7 @@ sns.set_style("whitegrid")
 def figure_3():
     nrow = 5
     ncol = 5
-    fig, axs = plt.subplots(
-        nrow, ncol, sharey="row", sharex="col", figsize=(12, 8)
-    )
+    fig, axs = plt.subplots(nrow, ncol, sharey="row", sharex="col", figsize=(12, 8))
     match_ = {
         0: "bird",
         1: "car",
@@ -56,9 +54,7 @@ def figure_3():
 def figure_4():
     nrow = 5
     ncol = 5
-    fig, axs = plt.subplots(
-        nrow, ncol, sharey="row", sharex="col", figsize=(12, 8)
-    )
+    fig, axs = plt.subplots(nrow, ncol, sharey="row", sharex="col", figsize=(12, 8))
     match_ = {
         0: "coast",
         1: "forest",
@@ -156,9 +152,7 @@ def figure_5():
             axs[1, i].set_ylim([0, 100])
             axs[1, i].set_ylabel("")
         else:
-            axs[1, i].yaxis.set_major_formatter(
-                mtick.PercentFormatter(decimals=0)
-            )
+            axs[1, i].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
     # cols = [rf"$y^\star=${match_[i]}" for i in range(5)]
     # for ax, col in zip(axs[0], cols):
     #     ax.set_title(col)
@@ -220,9 +214,7 @@ def figure_5_labelmeversion():
             axs[1, i].set_ylim([0, 100])
             axs[1, i].set_ylabel("")
         else:
-            axs[1, i].yaxis.set_major_formatter(
-                mtick.PercentFormatter(decimals=0)
-            )
+            axs[1, i].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
     for ax in axs.flatten():
         ax.xaxis.label.set_size(15)
         ax.yaxis.label.set_size(15)
@@ -258,9 +250,7 @@ def hinton(matrix, max_weight=None, ax=None, classes=None, my_title={}):
         idx = np.searchsorted(np.linspace(0, 1, 256), w)
         color = newcolors[idx]
         size = (
-            np.sqrt(abs(w) / max_weight)
-            if w > 0
-            else np.sqrt(abs(1e-8) / max_weight)
+            np.sqrt(abs(w) / max_weight) if w > 0 else np.sqrt(abs(1e-8) / max_weight)
         )
         x, y = y, x
         rect = plt.Rectangle(
@@ -277,12 +267,8 @@ def hinton(matrix, max_weight=None, ax=None, classes=None, my_title={}):
 
 def figure_6(mats, mats_confu):
     fig, axs = plt.subplots(1, 3, sharey=True)
-    hinton(
-        mats[-1], 1, my_title="Spammer worker", ax=axs[0], classes=np.arange(5)
-    )
-    hinton(
-        mats[0], 1, my_title="Expert worker", ax=axs[2], classes=np.arange(5)
-    )
+    hinton(mats[-1], 1, my_title="Spammer worker", ax=axs[0], classes=np.arange(5))
+    hinton(mats[0], 1, my_title="Expert worker", ax=axs[2], classes=np.arange(5))
     hinton(
         mats_confu[8],
         1,
@@ -326,9 +312,7 @@ def load_data(dataset, n_classes, classes):
     entrop = np.load(f"./datasets/{dataset}/identification/entropies.npy")
     path_train = Path(f"./datasets/{dataset}/train")
     glad = 1 / np.exp(
-        np.load(f"./datasets/{dataset}/identification/glad/difficulties.npy")[
-            :, 1
-        ]
+        np.load(f"./datasets/{dataset}/identification/glad/difficulties.npy")[:, 1]
     )
     dfwaum = (
         pd.read_csv(
@@ -353,7 +337,7 @@ def load_data(dataset, n_classes, classes):
         for k in range(n_classes):
             imgs.append([])
             flag = 0
-            for (id_, file) in list(
+            for id_, file in list(
                 itertools.product(idxs, path_train.glob(f"{classes[k]}/*"))
             ):
                 if file.stem.endswith(f"-{id_}") and mv[int(id_)] == k:
@@ -482,3 +466,26 @@ def generate_plot(n_classes, all_images, classes):
     fig, ax = plt.subplots(figsize=(0.1, 0.1), layout="constrained")
     ax.axis("off")
     plt.show()
+
+
+def figure_bird(workerload, feedback):
+    nbins = 17
+    fig, ax = plt.subplots(1, 2, figsize=(9, 4))
+    sns.histplot(workerload, stat="percent", bins=nbins, shrink=1, ax=ax[0])
+    ax[0].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
+    ax[0].set_xlabel(r"$\vert\mathcal{T}(w_j)\vert$")
+    sns.histplot(feedback, stat="percent", bins=nbins, shrink=1, ax=ax[1])
+    ax[1].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
+    ax[0].tick_params(axis="x", rotation=45)
+    ax[1].set_xlabel(r"$\vert\mathcal{A}(x_i)\vert$")
+    # ax[1].set_xlim(8, 12)s
+    ax[0].set_yscale("log")
+    ax[1].set_yscale("log")
+    for i in range(2):
+        ax[i].xaxis.set_major_locator(MaxNLocator(integer=True))
+        ax[i].xaxis.label.set_size(15)
+        ax[i].yaxis.label.set_size(15)
+        ax[i].xaxis.set_tick_params(labelsize=13)
+        ax[i].yaxis.set_tick_params(labelsize=13)
+        ax[i].title.set_size(18)
+    plt.tight_layout()

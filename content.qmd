@@ -1008,6 +1008,8 @@ The spam score, DS model and CoNAL all show similar results in the distribution 
 However, this does not account for the ranking of a given worker by the methods considered.
 The exploration of the dataset lets us look at different scores, but generalization performance presented in @sec-real-datasets should also be considered in crowdsourcing.
 This difference in worker evaluation scores indeed further highlights the importance of using multiple test metrics to compare the model's prediction performance in crowdsourcing.
+Poorly performing workers could be removed from the dataset with naive strategies like MV or NS.
+However, some label aggregation strategies like DS or GLAD can sometimes use adversarial votes as information -- for example in binary classification, with a worker answering always the opposite label the confusion matrix retrieves the true label.
 We have seen that the library `peerannot` allows users to explore the datasets, both in terms of tasks and workers, and easily compare predictive performance in this setting.
 
 In practice, the data exploration step can be used to detect possible ambiguities in the dataset's tasks, but also remove answers from spammers to improve the data quality as shown in @fig-pipeline.
@@ -1163,3 +1165,169 @@ utx.figure_3()
 
 utx.figure_4()
 ```
+
+## Case study with bird sound classification
+
+We shared our results on the classical CIFAR-10H and LabelMe datasets.
+More recently, @lehikoinen2023successful developed a platform for bird sound classification.
+They released the data for the following crowdsourcing experiment.
+Given the sample of the audio of a species (the letter), users were presented with a new audio sample (the candidate).
+The question is as follows: *Is the species vocalizing in the candidate the same as the species in the letter?"*
+The answer is a binary yes or no.
+In total, $n_{\text{worker}}=205$ workers labeled $n_{\text{task}}=79,592$ candidates.
+Each task received between $1$ and $77$ annotations.
+Workers answered between $1$ and $30,759$ tasks (only one worker achieved that record, and $23\%$ of the workers answered $100$ tasks).
+There is no test set available as is in the original dataset.
+However, to have an idea of the level of performance of the label aggregation strategies, we use the fact that workers reported their level of expertise between $1$ and $4$.
+The latter corresponds to "I am bird researcher or professional birdwatcher".
+This generates a test set of $13,041$ tasks where the expert label is used as the current truth.
+This test set is only used to compute the $\mathrm{AccTrain}$ metric.
+Note that we do not perform deep-learning methods as the tasks of comparing the birds from two audio files and designing specific architectures to match this framework is out of the scope of this paper.
+
+```{python}
+#| output: false
+#| eval: false
+! peerannot install ./datasets/birds_audio/birds_audio.py
+```
+
+```{python}
+# | code-fold: true
+# | label: fig-birdsrep
+# | fig-cap: Distribution of the number of tasks given per worker (left) and of the number of labels per task (right) in the Audio Birds letters dataset.
+votes_path = Path.cwd() / "datasets" / "birds_audio" / "answers.json"
+metadata_path = Path.cwd() / "datasets" / "birds_audio" / "metadata.json"
+efforts = feedback_effort(votes_path)
+workload = working_load(votes_path, metadata_path)
+feedback = feedback_effort(votes_path)
+utx.figure_bird(workload, feedback)
+plt.show()
+```
+
+We then can run our aggregation strategies.
+
+```{python}
+#| output: false
+#| eval: false
+for strat in ["MV", "NaiveSoft", "DS", "GLAD"]:
+  ! peerannot aggregate ./datasets/birds_audio -s {strat}
+```
+```{python}
+#| label: tbl-birds
+#| tbl-cap: AccTrain metric on birds audio dataset considering classical feature-blind label aggregation strategies.
+#| code-fold: true
+birds = Path.cwd() / 'datasets' / "birds_audio"
+results = {
+  "mv": [], "naivesoft": [],
+  "ds": [], "glad": []
+  }
+with open(votes_path, "r") as f:
+  answers = json.load(f)
+ground_truth = np.loadtxt(birds / "truth.txt", dtype=int)
+mask = np.zeros(len(answers), dtype=bool)
+for i, tt in enumerate(ground_truth):
+    if tt != -1:
+        mask[i] = True
+for strategy in results.keys():
+  path_labels = birds / "labels" / f"labels_BirdAudio_{strategy}.npy"
+  labels = np.load(path_labels)
+  acc = (
+          np.mean(labels[mask] == ground_truth[mask])
+          if labels.ndim == 1
+          else np.mean(
+              np.argmax(labels[mask], axis=1)
+              == ground_truth[mask]
+          )
+        )
+  results[strategy].append(acc)
+results["NS"] = results["naivesoft"]
+results.pop("naivesoft")
+results = pd.DataFrame(results, index=['AccTrain'])
+results.columns = map(str.upper, results.columns)
+results = results.style.set_table_styles([dict(selector='th', props=[('text-align', 'center')])])
+results.set_properties(**{'text-align': 'center'})
+results = results.format(precision=3)
+display(results)
+```
+
+We can explore what tasks lead to the most disagreements depending on the entropy criterion or GLAD's difficulty-estimated latent variable.
+
+```{python}
+#| output: false
+! peerannot identify ./datasets/birds_audio -s entropy -K 2 --labels ./datasets/birds_audio/answers.json
+```
+
+Using the entropy criterion, the most difficult tasks (highest entropy) and GLAD's difficulty, we recover the index of the most ambiguous tasks.
+```{python}
+entrop = np.load(
+    Path.cwd() / "datasets" / "birds_audio" / "identification" / "entropies.npy"
+)
+glad = 1 / np.exp(
+  np.load(Path.cwd() / "datasets" /"birds_audio"/"identification"/"glad"/"difficulties.npy")[:, 1]
+)
+idxs_entrop = np.argsort(entrop)[::-1]
+idxs_glad = np.argsort(glad)[::-1]
+print("Highest entropy tasks index:", list(idxs_entrop[:5]))
+print("Highest GLAD difficulty index:", list(idxs_glad[:5]))
+```
+
+- Entropy: we obtain the candidate `MRG18_20180514_000000_203.mp3` that was to be compared with the letter `HLO15_20180515_021439_31.mp3` (one worker agrees and another disagrees):
+{{< video ./datasets/birds_audio/bird_sound_training_data/audio_files/MRG18_20180514_000000_203.mp3 width="90%" >}}
+{{< video ./datasets/birds_audio/bird_sound_training_data/audio_files/HLO15_20180515_021439_31.mp3 width="90%" >}}
+And the candidate `MRG24_20180512_000000_437.mp3` that was to be compared with the letter `HLO12_20180511_150153_42.mp3` (one worker agrees and another disagrees):
+{{< video ./datasets/birds_audio/bird_sound_training_data/audio_files/MRG24_20180512_000000_437.mp3 width="90%" >}}
+{{< video ./datasets/birds_audio/bird_sound_training_data/audio_files/HLO12_20180511_150153_42.mp3 width="90%" >}}
+
+- GLAD: we obtain the candidate `HLO04_20180511_034424_15.mp3` that was to be compared with the letter `MRG11_20180519_000000_506.mp3` ($53$ votes, $29$ aggreeing and $24$ disagreeing):
+{{< video ./datasets/birds_audio/bird_sound_training_data/audio_files/HLO04_20180511_034424_15.mp3 width="50%" >}}
+{{< video ./datasets/birds_audio/bird_sound_training_data/audio_files/MRG11_20180519_000000_506.mp3 width="90%" >}}
+
+And the candidate `MRG27_20180512_000000_597.mp3` that was to be compared with the letter `HLO01_20180601_080126_30.mp3` ($43$ votes, $23$ aggreeing and $20$ disagreeing):
+{{< video ./datasets/birds_audio/bird_sound_training_data/audio_files/MRG27_20180512_000000_597.mp3 width="90%" >}}
+{{< video ./datasets/birds_audio/bird_sound_training_data/audio_files/HLO01_20180601_080126_30.mp3 width="90%" >}}
+
+In this dataset, a single task with two different votes has the highest entropy. GLAD's coefficient lets us explore tasks with multiple votes where workers were split.
+
+We can also explore the dataset from a worker's point of view and visualize workers' performance and how many are identified as poorly performing.
+This gives us an idea of the level of noise in the answers.
+
+```{python}
+#| output: false
+for method in ["trace_confusion", "spam_score"]:
+  ! peerannot identify ./datasets/birds_audio/ --n-classes=2 \
+                       -s {method} --labels ./datasets/birds_audio/answers.json
+```
+
+```{python}
+#| code-fold: true
+#| warning: false
+#| label: fig-abilitiesbird
+#| fig-cap: Comparison of ability scores by workers for the birds audio dataset. Most workers do seem to perform similarly, with very little noise voluntarily induced.
+
+path_ = Path.cwd() / "datasets" / "birds_audio"
+results_identif = {"Trace DS": [], "spam_score": [], "glad": []}
+results_identif["Trace DS"].extend(np.load(path_ / 'identification' / "traces_confusion.npy"))
+results_identif["spam_score"].extend(np.load(path_ / 'identification' / "spam_score.npy"))
+results_identif["glad"].extend(np.load(path_ / 'identification' / "glad" / "abilities.npy")[:, 1])
+results_identif = pd.DataFrame(results_identif)
+g = sns.pairplot(results_identif, corner=True, diag_kind="kde", plot_kws={'alpha':0.2})
+plt.tight_layout()
+plt.show()
+```
+
+From @fig-abilitiesbird, we notice that very few workers are identified as spammers and that different worker identification strategies seem to perform similarly. Here we show the worse workers' indices depending on each strategy.
+
+```{python}
+# | code-fold: true
+worse_glad = np.argsort(results_identif["glad"][::-1].to_list())[:5]
+worse_ds = np.argsort(results_identif["Trace DS"][::-1].to_list())[:5]
+worse_spam = np.argsort(results_identif["spam_score"][::-1].to_list())[:5]
+print("Worse workers using GLAD", worse_glad)
+print("Worse workers using DS trace", worse_ds)
+print("Worse workers using Spam Score", worse_spam)
+```
+
+One of the closing statements of @lehikoinen2023successful is "we learned lessons for how to better implement similar citizen science projects in the future".
+On one hand, identifying the most ambiguous tasks can help by saving only these tasks to the most expert workers and acquiring better data.
+On the other hand, combining the task difficulty with the worker ability performance metrics could help to create personal feeds of tasks to label and generate more worker participation.
+Finally, the label aggregation step can lead to training classifiers with better labels.
+We hope that allowing easy access thanks to the `peerannot` library to each of those steps can indeed help to better implement citizen science projects and use the collected data.
