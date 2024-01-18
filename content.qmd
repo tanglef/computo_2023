@@ -1220,7 +1220,7 @@ utx.figure_bird(workload, feedback)
 plt.show()
 ```
 
-We then can run our aggregation strategies.
+We then can run our aggregation strategies, and from @tbl-birds we see that strategies reach the same levels of label recovery, however naive they are. Indeed, most tasks have very few disagreements.
 
 ```{python}
 #| output: false
