@@ -1146,7 +1146,7 @@ We provide a clone of the crowdsourcing benchmark and the results are obtained b
 benchopt run ./benchmark_crowdsourcing
 ```
 
-First, let us see the performances on the [Bluebirds](https://github.com/welinder/cubam/tree/public/demo/bluebirds) dataset, a small dataset with 39 workers, 108 tasks and $K=2$ classes.
+First, let us see the performance on the [Bluebirds](https://github.com/welinder/cubam/tree/public/demo/bluebirds) dataset, a small dataset with 39 workers, 108 tasks and $K=2$ classes.
 
 ![Aggregation strategies computational time during optimization procedure for the BlueBirds dataset with K=2.](./figures/bluebirds_benchopt.png){#fig-bluebirdsbench}
 
@@ -1186,16 +1186,16 @@ utx.figure_4()
 We shared our results on the classical CIFAR-10H and LabelMe datasets.
 More recently, @lehikoinen2023successful developed a platform for bird sound classification.
 They released the data for the following crowdsourcing experiment.
-Given the sample of the audio of a species (the letter), users were presented with a new audio sample (the candidate).
+Given the sample of the audio of a species (denoted as a letter on their web portal), users were presented with a new audio sample (the candidate).
 The question is as follows: *Is the species vocalizing in the candidate the same as the species in the letter?"*
 The answer is a binary yes or no.
-In total, $n_{\text{worker}}=205$ workers labeled $n_{\text{task}}=79,592$ candidates.
+In total, $n_{\text{worker}}=205$ workers labeled $n_{\text{task}}=79\, 592$ candidates.
 Each task received between $1$ and $77$ annotations.
-Workers answered between $1$ and $30,759$ tasks (only one worker achieved that record, and $23\%$ of the workers answered $100$ tasks).
+Workers answered between $1$ and $30\,759$ tasks (only one worker achieved that record, and $23\%$ of the workers answered $100$ tasks).
 There is no test set available as is in the original dataset.
 However, to have an idea of the level of performance of the label aggregation strategies, we use the fact that workers reported their level of expertise between $1$ and $4$.
 The latter corresponds to "I am bird researcher or professional birdwatcher".
-This generates a test set of $13,041$ tasks where the expert label is used as the current truth.
+This generates a test set of $13\,041$ tasks where the expert label is used as the current truth.
 This test set is only used to compute the $\mathrm{AccTrain}$ metric.
 Note that we do not perform deep-learning methods as the tasks of comparing the birds from two audio files and designing specific architectures to match this framework is out of the scope of this paper.
 
@@ -1220,6 +1220,7 @@ plt.show()
 ```
 
 We then can run our aggregation strategies, and from @tbl-birds we see that strategies reach the same levels of label recovery, however naive they are. Indeed, most tasks have very few disagreements.
+Note that NS and MV performance difference comes from the random tie-breakers in case of equalities.
 
 ```{python}
 #| output: false
@@ -1341,9 +1342,9 @@ From @fig-abilitiesbird, we notice that very few workers are identified as spamm
 worse_glad = np.argsort(results_identif["glad"][::-1].to_list())[:5]
 worse_ds = np.argsort(results_identif["Trace DS"][::-1].to_list())[:5]
 worse_spam = np.argsort(results_identif["spam_score"][::-1].to_list())[:5]
-print("Worse workers using GLAD", worse_glad)
-print("Worse workers using DS trace", worse_ds)
-print("Worse workers using Spam Score", worse_spam)
+print("Worse workers using GLAD", list(worse_glad))
+print("Worse workers using DS trace", list(worse_ds))
+print("Worse workers using Spam Score", list(worse_spam))
 ```
 
 One of the closing statements of @lehikoinen2023successful is "we learned lessons for how to better implement similar citizen science projects in the future".

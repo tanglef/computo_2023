@@ -469,7 +469,7 @@ def generate_plot(n_classes, all_images, classes):
 
 
 def figure_bird(workerload, feedback):
-    nbins = 17
+    nbins = 40
     fig, ax = plt.subplots(1, 2, figsize=(9, 4))
     sns.histplot(workerload, stat="percent", bins=nbins, shrink=1, ax=ax[0])
     ax[0].yaxis.set_major_formatter(mtick.PercentFormatter(decimals=0))
