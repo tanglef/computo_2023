@@ -54,7 +54,7 @@ format:
 jupyter: python3
 number-sections: true
 execute:  # to remove at the end
-  cache: false
+  cache: true
 ---
 
 # Introduction: crowdsourcing in image classification
@@ -1278,7 +1278,7 @@ And the candidate `MRG24_20180512_000000_437.mp3` that was to be compared with t
 {{< video ./datasets/birds_audio/bird_sound_training_data/audio_files/HLO12_20180511_150153_42.mp3 width="90%" >}}
 
 - GLAD: we obtain the candidate `HLO04_20180511_034424_15.mp3` that was to be compared with the letter `MRG11_20180519_000000_506.mp3` ($53$ votes, $29$ aggreeing and $24$ disagreeing):
-{{< video ./datasets/birds_audio/bird_sound_training_data/audio_files/HLO04_20180511_034424_15.mp3 width="50%" >}}
+{{< video ./datasets/birds_audio/bird_sound_training_data/audio_files/HLO04_20180511_034424_15.mp3 width="90%" >}}
 {{< video ./datasets/birds_audio/bird_sound_training_data/audio_files/MRG11_20180519_000000_506.mp3 width="90%" >}}
 
 And the candidate `MRG27_20180512_000000_597.mp3` that was to be compared with the letter `HLO01_20180601_080126_30.mp3` ($43$ votes, $23$ aggreeing and $20$ disagreeing):
