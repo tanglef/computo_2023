@@ -1143,7 +1143,6 @@ The differences in results across iterations for the MV strategy come from the r
 We provide a clone of the crowdsourcing benchmark and the results are obtained by running the following command:
 
 ```{bash}
-#| code-fold: false
 benchopt run ./benchmark_crowdsourcing
 ```
 
