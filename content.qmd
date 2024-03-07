@@ -745,9 +745,13 @@ for res in dir_results.glob("modellabelme/*"):
     ece.append(dd["test_ece"])
 results = pd.DataFrame(list(zip(meth, accuracy, ece)),
                        columns=["method", "AccTest", "ECE"])
-results["method"] = [
-  "NS", "CoNAL[scale=0]", "CrowdLayer", "CoNAL[scale=1e-4]", "MV", "DS", "GLAD"
-  ]
+transform = {"naivesoft": "NS",
+             "conal[scale=0]": "CoNAL[scale=0]",
+             "crowdlayer": "CrowdLayer",
+             "conal[scale=1e-4]": "CoNAL[scale=1e-4]",
+             "mv": "MV", "ds": "DS",
+             "glad": "GLAD"}
+results = results.replace({"method":transform})
 results = results.sort_values(by="AccTest", ascending=True)
 results.reset_index(drop=True, inplace=True)
 results = results.style.set_table_styles([dict(selector='th', props=[
